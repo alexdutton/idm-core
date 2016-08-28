@@ -1,0 +1,75 @@
+# Affiliation types
+
+- model: org_relationship.AffiliationType
+  pk: staff
+  fields:
+    label: 'staff'
+- model: org_relationship.AffiliationType
+  pk: contract-staff
+  fields:
+    label: 'contract staff'
+- model: org_relationship.AffiliationType
+  pk: undergraduate
+  fields:
+    label: 'undergraduate'
+- model: org_relationship.AffiliationType
+  pk: postgraduate
+  fields:
+    label: 'postgraduate'
+- model: org_relationship.AffiliationType
+  pk: academic-visitor
+  fields:
+    label: 'academic visitor'
+- model: org_relationship.AffiliationType
+  pk: student-applicant
+  fields:
+    label: 'student applicant'
+- model: org_relationship.AffiliationType
+  pk: staff-applicant
+  fields:
+    label: 'staff applicant'
+- model: org_relationship.AffiliationType
+  pk: returner
+  fields:
+    label: 'returner'
+- model: org_relationship.AffiliationType
+  pk: congregation
+  fields:
+    label: 'member of Congregation'
+- model: org_relationship.AffiliationType
+  pk: convovation
+  fields:
+    label: 'member of Convocation'
+- model: org_relationship.AffiliationType
+  pk: alumnus
+  fields:
+    label: 'alumnus or alumna'
+- model: org_relationship.AffiliationType
+  pk: friend
+  fields:
+    label: 'friend'
+
+
+# Role types
+
+- model: org_relationship.RoleType
+  pk: itss
+  fields:
+    label: ITSS
+- model: org_relationship.RoleType
+  pk: itss01
+  fields:
+    label: Primary ITSS
+- model: org_relationship.RoleType
+  pk: webmaster
+  fields:
+    label: Webmaster
+- model: org_relationship.RoleType
+  pk: senior-tutor
+  fields:
+    label: Senior Tutor
+- model: org_relationship.RoleType
+  pk: data-controller
+  fields:
+    label: Data Controller
+
