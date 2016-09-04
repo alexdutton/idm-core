@@ -54,7 +54,7 @@ else:
     INSTALLED_APPS.append('django_extensions')
 
 MIDDLEWARE_CLASSES = [
-    'reversion.middleware.RevisionMiddleware',
+    #'reversion.middleware.RevisionMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',

@@ -1,5 +1,6 @@
 from rest_framework import serializers
 
+from oxidentity.attestation.serializers import Attestable
 from oxidentity.name.models import NameContext
 from . import models
 
@@ -23,7 +24,7 @@ class EmbeddedNameComponentSerializer(NameComponentSerializer):
         exclude = ('id',)
 
 
-class NameSerializer(serializers.HyperlinkedModelSerializer):
+class NameSerializer(Attestable, serializers.HyperlinkedModelSerializer):
     components = EmbeddedNameComponentSerializer(many=True)
     contexts = serializers.PrimaryKeyRelatedField(queryset=NameContext.objects.all(), many=True)
 

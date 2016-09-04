@@ -26,5 +26,5 @@ class SourceDocumentSerializer(serializers.HyperlinkedModelSerializer):
         model = models.SourceDocument
 
 
-class Attestable(serializers.BaseSerializer):
+class Attestable(serializers.Serializer):
     attestations = AttestationSerializer(many=True)

@@ -21,9 +21,11 @@ person_router = routers.NestedSimpleRouter(router, r'person', lookup='person')
 person_router.register('nationality', oxidentity.nationality.views.NationalityViewSet, base_name='person-nationality')
 person_router.register('affiliation', oxidentity.org_relationship.views.AffiliationViewSet, base_name='person-affiliation')
 person_router.register('role', oxidentity.org_relationship.views.RoleViewSet, base_name='person-role')
+person_router.register('source-document', oxidentity.attestation.views.SourceDocumentViewSet, base_name='person-source-document')
 
 
 router.register('name', oxidentity.name.views.NameViewSet)
+router.register('nationality', oxidentity.nationality.views.NationalityViewSet)
 router.register('source-document', oxidentity.attestation.views.SourceDocumentViewSet)
 router.register('attestation', oxidentity.attestation.views.AttestationViewSet)
 router.register('affiliation', oxidentity.org_relationship.views.AffiliationViewSet)

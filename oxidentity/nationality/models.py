@@ -22,4 +22,4 @@ class Country(models.Model):
 
 class Nationality(Attestable, models.Model):
     person = models.ForeignKey(Person)
-    nationality = models.ForeignKey(Country)
+    country = models.ForeignKey(Country)

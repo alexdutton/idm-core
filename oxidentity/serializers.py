@@ -1,12 +1,13 @@
 from rest_framework import serializers
 from rest_framework.serializers import HyperlinkedModelSerializer, ModelSerializer
 
+#from fields import SubObjectField
 from oxidentity.gender.models import Gender
 from oxidentity.gender.serializers import GenderSerializer, PronounField
 from oxidentity.models import Person
 from oxidentity.name.serializers import NameSerializer, EmbeddedNameSerializer
 from oxidentity.nationality.models import Country, Nationality
-from oxidentity.nationality.serializers import CountrySerializer
+from oxidentity.nationality.serializers import CountrySerializer, NationalitySerializer
 
 
 class PersonSerializer(HyperlinkedModelSerializer):
@@ -17,7 +18,7 @@ class PersonSerializer(HyperlinkedModelSerializer):
     # gender_id = serializers.CharField(allow_null=True, default=None)
     # legal_gender_id = serializers.CharField(allow_null=True, default=None)
     pronouns = PronounField(default={})
-    nationalities = serializers.HyperlinkedIdentityField(many=True, read_only=True, view_name='country-detail')
+    nationalities = NationalitySerializer(many=True, default=(), source='nationality_set')
 
     class Meta:
         model = Person
@@ -28,8 +29,12 @@ class PersonSerializer(HyperlinkedModelSerializer):
 
     def create(self, validated_data):
         names = validated_data.pop('names', ())
+        nationalities = validated_data.pop('nationality_set', ())
         person = super(PersonSerializer, self).create(validated_data)
         for name in names:
             name['person'] = person
+        for nationality in nationalities:
+            nationality['person'] = person
         self.fields['names'].create(names)
+        self.fields['nationalities'].create(nationalities)
         return person
