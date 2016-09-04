@@ -1,0 +1,27 @@
+{
+    "names": [{
+        "components": [
+            {"type": "title", "value": "Mr"},
+            {"type": "given", "value": "Charles"},
+            {"type": "middle", "value": "Lutwidge"},
+            {"type": "family", "value": "Dodgson"}
+        ],
+        "contexts": ["formal"]
+    }, {
+        "components": [
+            {"type": "given", "value": "Lewis"},
+            {"type": "family", "value": "Carroll"}
+        ],
+        "contexts": ["presentational"]
+    }, {
+        "components": [
+            {"type": "name", "value": "Dodgers"}
+        ],
+        "contexts": ["informal"]
+    }],
+    "legal_gender_id": "http://localhost:8000/gender/male/",
+    "gender_id": "male",
+    "nationalities": [{"country": "GBR"}]
+}
+            
+
