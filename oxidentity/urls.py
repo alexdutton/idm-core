@@ -5,6 +5,7 @@ from rest_framework_nested import routers
 import oxidentity.views
 import oxidentity.gender.views
 import oxidentity.name.views
+import oxidentity.identifier.views
 import oxidentity.attestation.views
 import oxidentity.org_relationship.views
 import oxidentity.nationality.views
@@ -15,6 +16,7 @@ router.register('gender', oxidentity.gender.views.GenderViewSet)
 router.register('country', oxidentity.nationality.views.CountryViewSet)
 router.register('affiliation-type', oxidentity.org_relationship.views.AffiliationTypeViewSet)
 router.register('role-type', oxidentity.org_relationship.views.RoleTypeViewSet)
+router.register('identifier-type', oxidentity.identifier.views.IdentifierTypeViewSet)
 router.register('unit', oxidentity.org_relationship.views.UnitViewSet)
 
 person_router = routers.NestedSimpleRouter(router, r'person', lookup='person')

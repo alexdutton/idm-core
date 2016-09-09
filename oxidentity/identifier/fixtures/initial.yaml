@@ -1,0 +1,12 @@
+- model: identifier.IdentifierType
+  pk: username
+  fields:
+    label: 'SSO username'
+- model: identifier.IdentifierType
+  pk: person
+  fields:
+    label: 'person ID'
+- model: identifier.IdentifierType
+  pk: card-number
+  fields:
+    label: 'card number'

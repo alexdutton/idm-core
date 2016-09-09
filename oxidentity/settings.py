@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'oxidentity.org_relationship',
     'oxidentity.attestation',
     'oxidentity.gender',
+    'oxidentity.identifier',
     'oxidentity.name',
     'oxidentity.nationality',
     'oxidentity.delayed_save',
