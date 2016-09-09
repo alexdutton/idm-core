@@ -2,9 +2,21 @@ import celery.app.control
 from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 from django.utils import timezone
+from django_fsm import FSMField, transition, RETURN_VALUE
 
 from oxidentity.delayed_save.models import DelayedSave
 from oxidentity.models import Person
+
+
+STATE_CHOICES = (
+    ('new', 'New'),
+    ('declined', 'Declined'),
+    ('offered', 'Offered'),
+    ('requested', 'Requested'),
+    ('active', 'Active'),
+    ('inactive', 'Inactive'),
+    ('suspended', 'Suspended'),
+)
 
 class Unit(models.Model):
     id = models.CharField(max_length=32, primary_key=True)
@@ -36,14 +48,13 @@ class Relationship(models.Model):
     effective_end_date = models.DateTimeField(null=True, blank=True)
     review_date = models.DateTimeField(null=True, blank=True)
 
-    suspended = models.BooleanField(default=False)
     suspended_until = models.DateTimeField(null=True, blank=True)
 
     comment = models.TextField(blank=True)
 
     dependent_on = models.ForeignKey('self', null=True, blank=True)
 
-    active = models.BooleanField(default=False)
+    state = FSMField(max_length=16, choices=STATE_CHOICES, db_index=True, default='new', protected=True)
 
     delayed_save = GenericRelation(DelayedSave)
 
@@ -70,11 +81,36 @@ class Relationship(models.Model):
         elif self.delayed_save.exists():
             self.delayed_save.get().delete()
 
+    @property
+    def extant(self):
+        now = timezone.now()
+        return (not (self.effective_start_date or self.start_date) or \
+                (self.effective_start_date or self.start_date) < now) and \
+               (not (self.effective_end_date or self.end_date) or \
+                (self.effective_end_date or self.end_date) > now)
+
+    @transition(field=state, source=['suspended'], target=RETURN_VALUE('active', 'inactive'))
+    def unsuspend(self):
+        return 'active' if self.extant else 'inactive'
+
+    @transition(field=state, source=['active', 'inactive'], target='suspended')
+    def suspend(self):
+        pass
+
+    @transition(field=state, source='offered', target=RETURN_VALUE('active', 'inactive'))
+    def accept(self):
+        return 'active' if self.extant else 'inactive'
+
+    @transition(field=state, source='offered', target='rejected')
+    def reject(self):
+        pass
+
+cd
 
     def save(self, *args, **kwargs):
         now = timezone.now()
-        if self.suspended and self.suspended_until and self.suspended_until < now:
-            self.suspended = False
+        if self.state == 'suspended' and self.suspended_until and self.suspended_until < now:
+            self.state = 'active'
         self.active = (not (self.effective_start_date or self.start_date) or \
                        (self.effective_start_date or self.start_date) < now) and \
                       (not (self.effective_end_date or self.end_date) or \
