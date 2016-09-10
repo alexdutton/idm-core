@@ -1,8 +1,6 @@
 from rest_framework import serializers
 from rest_framework.serializers import HyperlinkedModelSerializer, ModelSerializer
 
-#from fields import SubObjectField
-from oxidentity.gender.models import Gender
 from oxidentity.gender.serializers import GenderSerializer, PronounField
 from oxidentity.models import Person
 from oxidentity.name.serializers import NameSerializer, EmbeddedNameSerializer
