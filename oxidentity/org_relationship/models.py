@@ -2,21 +2,28 @@ import celery.app.control
 from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 from django.utils import timezone
-from django_fsm import FSMField, transition, RETURN_VALUE
+from django_fsm import FSMField, transition, RETURN_VALUE, FSMFieldMixin
 
 from oxidentity.delayed_save.models import DelayedSave
 from oxidentity.models import Person
 
 
+class FSMBooleanField(FSMFieldMixin, models.BooleanField):
+    """
+    Same as FSMField, but stores the state value in a BooleanField.
+    """
+    pass
+
 STATE_CHOICES = (
-    ('new', 'New'),
     ('declined', 'Declined'),
     ('offered', 'Offered'),
     ('requested', 'Requested'),
     ('active', 'Active'),
-    ('inactive', 'Inactive'),
+    ('forthcoming', 'Forthcoming'),
+    ('historic', 'Historic'),
     ('suspended', 'Suspended'),
 )
+
 
 class Unit(models.Model):
     id = models.CharField(max_length=32, primary_key=True)
@@ -54,7 +61,8 @@ class Relationship(models.Model):
 
     dependent_on = models.ForeignKey('self', null=True, blank=True)
 
-    state = FSMField(max_length=16, choices=STATE_CHOICES, db_index=True, default='new', protected=True)
+    state = FSMField(max_length=16, choices=STATE_CHOICES, db_index=True, protected=True)
+    suspended = FSMBooleanField(db_index=True, default=False, protected=True)
 
     delayed_save = GenericRelation(DelayedSave)
 
@@ -89,33 +97,55 @@ class Relationship(models.Model):
                (not (self.effective_end_date or self.end_date) or \
                 (self.effective_end_date or self.end_date) > now)
 
-    @transition(field=state, source=['suspended'], target=RETURN_VALUE('active', 'inactive'))
+    @transition(field=suspended, source=True, target=False)
     def unsuspend(self):
-        return 'active' if self.extant else 'inactive'
+        self.suspended_until = None
+        if self.state == 'suspended':
+            self._unsuspend_state()
 
-    @transition(field=state, source=['active', 'inactive'], target='suspended')
-    def suspend(self):
+    @transition(field=suspended, source=False, target=True)
+    def suspend(self, until=None):
+        self.suspended_until = until
+        if self.state == 'active':
+            self._suspend_state()
+
+    @transition(field=state, source='suspended', target='active')
+    def _unsuspend_state(self):
         pass
 
-    @transition(field=state, source='offered', target=RETURN_VALUE('active', 'inactive'))
+    @transition(field=state, source='active', target='suspended')
+    def _suspend_state(self):
+        pass
+
+    @transition(field=state, source='offered', target=RETURN_VALUE())
     def accept(self):
-        return 'active' if self.extant else 'inactive'
+        return self._time_has_passed(now_active=True)
 
     @transition(field=state, source='offered', target='rejected')
     def reject(self):
         pass
 
-cd
+    @transition(field=state, source='*', target=RETURN_VALUE())
+    def _time_has_passed(self, now_active=False):
+        start_date = self.effective_start_date or self.start_date
+        end_date = self.effective_end_date or self.end_date
+        now = timezone.now()
+
+        if self.state == 'suspended' and self.suspended_until and self.suspended_until < now:
+            self.unsuspend()
+
+        if now_active or self.state in {'forthcoming', 'active', 'historic'}:
+            if start_date < now < end_date:
+                return 'active' if not self.suspended else 'suspended'
+            elif now < start_date:
+                return 'forthcoming'
+            elif end_date < now:
+                return 'historic'
+        else:
+            return self.state
 
     def save(self, *args, **kwargs):
-        now = timezone.now()
-        if self.state == 'suspended' and self.suspended_until and self.suspended_until < now:
-            self.state = 'active'
-        self.active = (not (self.effective_start_date or self.start_date) or \
-                       (self.effective_start_date or self.start_date) < now) and \
-                      (not (self.effective_end_date or self.end_date) or \
-                       (self.effective_end_date or self.end_date) > now) and \
-                      not self.suspended
+        self._time_has_passed()
         super().save(*args, **kwargs)
         self.schedule_resave()
 

@@ -8,6 +8,7 @@ django-fsm
 django-haystack
 django-reversion
 django-transaction-hooks
+drf-fsm-transitions
 drf-haystack
 drf-nested-routers
 kombu
