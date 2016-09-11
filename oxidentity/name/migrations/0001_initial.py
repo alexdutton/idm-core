@@ -13,7 +13,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Name',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, primary_key=True, auto_created=True)),
+                ('id', models.AutoField(primary_key=True, verbose_name='ID', auto_created=True, serialize=False)),
                 ('plain', models.TextField(blank=True)),
                 ('plain_full', models.TextField(blank=True)),
                 ('marked_up', models.TextField(blank=True)),
@@ -21,17 +21,20 @@ class Migration(migrations.Migration):
                 ('sort', models.TextField(blank=True)),
                 ('first', models.TextField(blank=True)),
                 ('last', models.TextField(blank=True)),
-                ('active', models.BooleanField(default=False)),
+                ('active', models.BooleanField(default=True)),
             ],
+            options={
+                'abstract': False,
+            },
         ),
         migrations.CreateModel(
             name='NameComponent',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, primary_key=True, auto_created=True)),
+                ('id', models.AutoField(primary_key=True, verbose_name='ID', auto_created=True, serialize=False)),
                 ('order', models.PositiveSmallIntegerField()),
-                ('type', models.CharField(max_length=20, choices=[('title', 'Title'), ('given', 'Given name'), ('middle', 'Middle name'), ('family', 'Family name'), ('suffix', 'Suffix'), ('name', 'Name')])),
+                ('type', models.CharField(choices=[('title', 'Title'), ('given', 'Given name'), ('middle', 'Middle name'), ('family', 'Family name'), ('suffix', 'Suffix'), ('name', 'Name')], max_length=20)),
                 ('value', models.TextField()),
-                ('name', models.ForeignKey(related_name='components', to='name.Name')),
+                ('name', models.ForeignKey(to='name.Name', related_name='components')),
             ],
             options={
                 'ordering': ('order',),
@@ -40,7 +43,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='NameContext',
             fields=[
-                ('id', models.CharField(max_length=32, serialize=False, primary_key=True)),
+                ('id', models.CharField(max_length=32, primary_key=True, serialize=False)),
                 ('label', models.TextField()),
             ],
         ),

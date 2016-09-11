@@ -1,7 +1,7 @@
 from django.db import models
 
 from oxidentity.attestation.models import Attestable
-from oxidentity.models import Person
+from oxidentity.models import Identity
 
 
 class IdentifierType(models.Model):
@@ -11,9 +11,9 @@ class IdentifierType(models.Model):
 
 class Identifier(Attestable, models.Model):
     type = models.ForeignKey(IdentifierType)
-    person = models.ForeignKey(Person, db_index=True)
+    identity = models.ForeignKey(Identity, db_index=True)
     value = models.CharField(max_length=64)
 
     class Meta:
-        unique_together = (('type', 'person'), ('type', 'value'))
-        index_together = (('type', 'person'), ('type', 'value'))
+        unique_together = (('type', 'identity'), ('type', 'value'))
+        index_together = (('type', 'identity'), ('type', 'value'))

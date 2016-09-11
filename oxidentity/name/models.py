@@ -5,7 +5,7 @@ from django.db import models
 from django.db.models.signals import post_save, post_delete
 
 from oxidentity.attestation.models import Attestable
-from oxidentity.models import Person
+from oxidentity.models import Identity
 
 NAME_COMPONENT_TYPE_CHOICES = (
     ('title', 'Title'),
@@ -26,7 +26,7 @@ class NameContext(models.Model):
 
 
 class Name(Attestable, models.Model):
-    person = models.ForeignKey(Person, related_name='names')
+    identity = models.ForeignKey(Identity, related_name='names')
 
     plain = models.TextField(blank=True)
     plain_full = models.TextField(blank=True)
@@ -102,8 +102,8 @@ post_delete.connect(name_component_changed, sender=NameComponent)
 
 
 def name_changed(instance, **kwargs):
-    person = instance.person
-    names = list(person.names.filter(active=True).order_by('id'))
+    identity = instance.identity
+    names = list(identity.names.filter(active=True).order_by('id'))
     names_by_context = collections.defaultdict(list)
     for name in names:
         for context in name.contexts.all():
@@ -111,12 +111,12 @@ def name_changed(instance, **kwargs):
 
     for context in ('presentational', 'formal', 'informal'):
         if context in names_by_context:
-            person.primary_name = names_by_context[context][0]
+            identity.primary_name = names_by_context[context][0]
             break
     else:
-        person.primary_name = None
+        identity.primary_name = None
 
-    person.save()
+    identity.save()
 
 post_save.connect(name_changed, sender=Name)
 post_delete.connect(name_changed, sender=Name)

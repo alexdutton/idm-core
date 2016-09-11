@@ -9,4 +9,4 @@ class PersonAdmin(admin.ModelAdmin):
         django.db.models.TextField: {'widget': widgets.TextInput},
     }
 
-admin.site.register(models.Person, PersonAdmin)
+admin.site.register(models.Identity, PersonAdmin)

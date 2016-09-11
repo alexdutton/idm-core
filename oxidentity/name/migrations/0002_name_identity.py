@@ -2,19 +2,19 @@
 from __future__ import unicode_literals
 
 from django.db import migrations, models
-import django_fsm
 
 
 class Migration(migrations.Migration):
 
     dependencies = [
+        ('name', '0001_initial'),
         ('oxidentity', '0001_initial'),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='person',
-            name='state',
-            field=django_fsm.FSMField(default='new', max_length=50),
+            model_name='name',
+            name='identity',
+            field=models.ForeignKey(to='oxidentity.Identity', related_name='names'),
         ),
     ]

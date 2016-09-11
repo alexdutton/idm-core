@@ -8,7 +8,7 @@ from . import models
 class CountrySerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = models.Country
-        exclude = ('people',)
+        exclude = ('identities',)
 
 
 class NationalitySerializer(Attestable, serializers.HyperlinkedModelSerializer):
@@ -16,7 +16,7 @@ class NationalitySerializer(Attestable, serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = models.Nationality
-        exclude = ('person',)
+        exclude = ('identity',)
 
     def to_internal_value(self, data):
         try:
@@ -37,3 +37,8 @@ class NationalitySerializer(Attestable, serializers.HyperlinkedModelSerializer):
         except models.Country.DoesNotExist as e:
             raise ValidationError("No such country") from e
         return {'country': country}
+
+
+class EmbeddedNationalitySerializer(NationalitySerializer):
+    class Meta(NationalitySerializer.Meta):
+        exclude = ('attestations',)

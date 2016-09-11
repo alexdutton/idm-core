@@ -7,18 +7,18 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('oxidentity', '0002_person_state'),
+        ('oxidentity', '0001_initial'),
     ]
 
     operations = [
         migrations.CreateModel(
             name='Country',
             fields=[
-                ('id', models.AutoField(serialize=False, auto_created=True, primary_key=True, verbose_name='ID')),
+                ('id', models.AutoField(primary_key=True, verbose_name='ID', auto_created=True, serialize=False)),
                 ('label', models.TextField()),
-                ('alpha_2', models.CharField(null=True, max_length=2, db_index=True, unique=True)),
-                ('alpha_3', models.CharField(null=True, max_length=3, db_index=True, unique=True)),
-                ('numeric', models.CharField(null=True, max_length=3, db_index=True, unique=True)),
+                ('alpha_2', models.CharField(unique=True, max_length=2, db_index=True, null=True)),
+                ('alpha_3', models.CharField(unique=True, max_length=3, db_index=True, null=True)),
+                ('numeric', models.CharField(unique=True, max_length=3, db_index=True, null=True)),
             ],
             options={
                 'ordering': ('label',),
@@ -27,9 +27,9 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Nationality',
             fields=[
-                ('id', models.AutoField(serialize=False, auto_created=True, primary_key=True, verbose_name='ID')),
+                ('id', models.AutoField(primary_key=True, verbose_name='ID', auto_created=True, serialize=False)),
                 ('country', models.ForeignKey(to='nationality.Country')),
-                ('person', models.ForeignKey(to='oxidentity.Person')),
+                ('identity', models.ForeignKey(to='oxidentity.Identity')),
             ],
             options={
                 'abstract': False,
@@ -37,7 +37,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name='country',
-            name='people',
-            field=models.ManyToManyField(to='oxidentity.Person', related_name='nationalities', through='nationality.Nationality'),
+            name='identities',
+            field=models.ManyToManyField(through='nationality.Nationality', related_name='nationalities', to='oxidentity.Identity'),
         ),
     ]

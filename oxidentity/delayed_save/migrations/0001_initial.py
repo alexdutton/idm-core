@@ -14,7 +14,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='DelayedSave',
             fields=[
-                ('id', models.AutoField(auto_created=True, serialize=False, verbose_name='ID', primary_key=True)),
+                ('id', models.AutoField(primary_key=True, verbose_name='ID', auto_created=True, serialize=False)),
                 ('object_id', models.PositiveIntegerField()),
                 ('when', models.DateTimeField()),
                 ('content_type', models.ForeignKey(to='contenttypes.ContentType')),

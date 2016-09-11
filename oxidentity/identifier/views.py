@@ -1,6 +1,6 @@
 from rest_framework import viewsets
 
-from oxidentity.views import SubPersonMixin
+from oxidentity.views import IdentitySubViewMixin
 from . import models, serializers
 
 
@@ -9,6 +9,6 @@ class IdentifierTypeViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = models.IdentifierType.objects.all()
 
 
-class IdentifierViewSet(SubPersonMixin, viewsets.ModelViewSet):
+class IdentifierViewSet(IdentitySubViewMixin, viewsets.ModelViewSet):
     serializer_class = serializers.IdentifierSerializer
     queryset = models.Identifier.objects.all()

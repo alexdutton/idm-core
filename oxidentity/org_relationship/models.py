@@ -5,7 +5,7 @@ from django.utils import timezone
 from django_fsm import FSMField, transition, RETURN_VALUE, FSMFieldMixin
 
 from oxidentity.delayed_save.models import DelayedSave
-from oxidentity.models import Person
+from oxidentity.models import Identity
 
 
 class FSMBooleanField(FSMFieldMixin, models.BooleanField):
@@ -23,6 +23,10 @@ STATE_CHOICES = (
     ('historic', 'Historic'),
     ('suspended', 'Suspended'),
 )
+
+
+def is_owning_identity(instance, user):
+    return user.identity == instance.identity
 
 
 class Unit(models.Model):
@@ -45,7 +49,7 @@ class RelationshipType(models.Model):
 
 
 class Relationship(models.Model):
-    person = models.ForeignKey(Person)
+    identity = models.ForeignKey(Identity)
     unit = models.ForeignKey(Unit)
 #    type = models.ForeignKey(RelationshipType)
 
@@ -117,11 +121,13 @@ class Relationship(models.Model):
     def _suspend_state(self):
         pass
 
-    @transition(field=state, source='offered', target=RETURN_VALUE())
+    @transition(field=state, source='offered', target=RETURN_VALUE(),
+                permission=is_owning_identity)
     def accept(self):
         return self._time_has_passed(now_active=True)
 
-    @transition(field=state, source='offered', target='rejected')
+    @transition(field=state, source='offered', target='rejected',
+                permission=is_owning_identity)
     def reject(self):
         pass
 

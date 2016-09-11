@@ -2,6 +2,7 @@ import uuid
 
 import reversion
 from dirtyfields import DirtyFieldsMixin
+from django.contrib.auth.models import AbstractBaseUser
 from django.db import models
 from django_fsm import FSMField, transition
 
@@ -12,7 +13,12 @@ def get_uuid():
     return uuid.uuid4().hex
 
 
-class Person(DirtyFieldsMixin, models.Model):
+class User(AbstractBaseUser):
+    uuid = models.UUIDField(primary_key=True, default=get_uuid, editable=False)
+    identity = models.ForeignKey('Identity', null=True, blank=True)
+
+
+class Identity(DirtyFieldsMixin, models.Model):
     uuid = models.UUIDField(primary_key=True, default=get_uuid, editable=False)
 
     gender = models.ForeignKey(Gender, null=True, blank=True, related_name='people')
@@ -42,7 +48,7 @@ class Person(DirtyFieldsMixin, models.Model):
         try:
             return self.primary_name.plain
         except Exception:
-            return super(Person, self).__str__()
+            return super(Identity, self).__str__()
 
     @transition(field=state, source='new', target='pending_claim',
                 conditions=[lambda self: self.primary_email is not None])
@@ -63,4 +69,4 @@ class Person(DirtyFieldsMixin, models.Model):
 
 
 
-reversion.register(Person)
+reversion.register(Identity)

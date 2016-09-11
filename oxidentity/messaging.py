@@ -12,13 +12,13 @@ from oxidentity.gender.models import Gender
 from oxidentity.gender.serializers import GenderSerializer
 from oxidentity.identifier.models import IdentifierType
 from oxidentity.identifier.serializers import IdentifierTypeSerializer
-from oxidentity.models import Person
+from oxidentity.models import Identity
 from oxidentity.nationality.models import Country
 from oxidentity.nationality.serializers import CountrySerializer
 from oxidentity.org_relationship.models import Affiliation, Role, AffiliationType, RoleType, Unit
 from oxidentity.org_relationship.serializers import AffiliationSerializer, RoleSerializer, RoleTypeSerializer, \
     AffiliationTypeSerializer, UnitSerializer
-from oxidentity.serializers import PersonSerializer
+from oxidentity.serializers import IdentitySerializer
 
 INITIAL_FIELD_VALUES = '_initial_field_values'
 NEEDS_PUBLISH = '_needs_publish'
@@ -28,15 +28,15 @@ _ModelConfig = collections.namedtuple('_ModelConfig', 'serializer exchange natur
 reference_exchange = kombu.Exchange('iam.idm.reference', 'topic', durable=True)
 
 _model_config = {
-    Person: _ModelConfig(PersonSerializer,
-                         kombu.Exchange('iam.idm.person', 'topic', durable=True),
-                         lambda instance: instance.uuid),
+    Identity: _ModelConfig(IdentitySerializer,
+                           kombu.Exchange('iam.idm.identity', 'topic', durable=True),
+                           lambda instance: instance.uuid),
     Affiliation: _ModelConfig(AffiliationSerializer,
                               kombu.Exchange('iam.idm.affiliation', 'topic', durable=True),
-                              lambda instance: instance.person_id),
+                              lambda instance: instance.identity_id),
     Role: _ModelConfig(RoleSerializer,
                        kombu.Exchange('iam.idm.role', 'topic', durable=True),
-                       lambda instance: instance.person_id),
+                       lambda instance: instance.identity_id),
 }
 
 reference_models = [
@@ -115,10 +115,10 @@ pre_delete.connect(instance_deleted)
 
 
 def publish_merge_to_amqb(merge_these, into_this):
-    model_config = _model_config[Person]
+    model_config = _model_config[Identity]
     with kombu.Connection(settings.BROKER_URL) as conn:
         producer = conn.Producer(serializer='json')
-        producer.publish({'mergedIdentities': [person.id for person in merge_these],
+        producer.publish({'mergedIdentities': [identity.id for identity in merge_these],
                           'targetIdentity': into_this.id},
                          exchange=model_config.exchange,
                          routing_key='{}.{}'.format('merged',

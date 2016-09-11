@@ -4,11 +4,11 @@ from drf_fsm_transitions.viewset_mixins import get_viewset_transition_action_mix
 from rest_framework import viewsets
 from rest_framework.exceptions import ValidationError
 
-from ..views import SubPersonMixin
+from ..views import IdentitySubViewMixin
 from . import models, serializers
 
 
-class RelationshipViewSet(SubPersonMixin,
+class RelationshipViewSet(IdentitySubViewMixin,
                           get_viewset_transition_action_mixin(models.Affiliation, 'state'),
                           get_viewset_transition_action_mixin(models.Affiliation, 'suspended'),
                           viewsets.ModelViewSet):
@@ -35,7 +35,7 @@ class RoleViewSet(RelationshipViewSet):
     serializer_class = serializers.RoleSerializer
 
 
-class UnitViewSet(SubPersonMixin, viewsets.ModelViewSet):
+class UnitViewSet(IdentitySubViewMixin, viewsets.ModelViewSet):
     queryset = models.Unit.objects.all()
     serializer_class = serializers.UnitSerializer
 

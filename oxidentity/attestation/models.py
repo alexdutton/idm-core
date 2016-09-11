@@ -2,7 +2,7 @@ from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelatio
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 
-from oxidentity.models import Person
+from oxidentity.models import Identity
 
 SOURCE_DOCUMENT_TYPE = (
     ('driving-license', 'Driving license'),
@@ -15,10 +15,10 @@ SOURCE_DOCUMENT_TYPE = (
 
 
 class SourceDocument(models.Model):
-    person = models.ForeignKey(Person, related_name='source_documents')
+    identity = models.ForeignKey(Identity, related_name='source_documents')
     type = models.CharField(max_length=32, choices=SOURCE_DOCUMENT_TYPE)
     uploaded_date = models.DateTimeField(auto_now_add=True)
-    validated_by = models.ForeignKey(Person, related_name='validated_source_documents')
+    validated_by = models.ForeignKey(Identity, related_name='validated_source_documents')
     active = models.BooleanField(default=False)
     complete = models.BooleanField(default=False)
     label = models.CharField(max_length=256, blank=True)

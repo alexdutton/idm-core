@@ -11,7 +11,7 @@ import oxidentity.org_relationship.views
 import oxidentity.nationality.views
 
 router = routers.DefaultRouter()
-router.register('person', oxidentity.views.PersonViewSet)
+router.register('identity', oxidentity.views.IdentityViewSet)
 router.register('gender', oxidentity.gender.views.GenderViewSet)
 router.register('country', oxidentity.nationality.views.CountryViewSet)
 router.register('affiliation-type', oxidentity.org_relationship.views.AffiliationTypeViewSet)
@@ -19,11 +19,12 @@ router.register('role-type', oxidentity.org_relationship.views.RoleTypeViewSet)
 router.register('identifier-type', oxidentity.identifier.views.IdentifierTypeViewSet)
 router.register('unit', oxidentity.org_relationship.views.UnitViewSet)
 
-person_router = routers.NestedSimpleRouter(router, r'person', lookup='person')
-person_router.register('nationality', oxidentity.nationality.views.NationalityViewSet, base_name='person-nationality')
-person_router.register('affiliation', oxidentity.org_relationship.views.AffiliationViewSet, base_name='person-affiliation')
-person_router.register('role', oxidentity.org_relationship.views.RoleViewSet, base_name='person-role')
-person_router.register('source-document', oxidentity.attestation.views.SourceDocumentViewSet, base_name='person-source-document')
+identity_router = routers.NestedSimpleRouter(router, r'identity', lookup='identity')
+identity_router.register('nationality', oxidentity.nationality.views.NationalityViewSet, base_name='identity-nationality')
+identity_router.register('affiliation', oxidentity.org_relationship.views.AffiliationViewSet, base_name='identity-affiliation')
+identity_router.register('role', oxidentity.org_relationship.views.RoleViewSet, base_name='identity-role')
+identity_router.register('source-document', oxidentity.attestation.views.SourceDocumentViewSet, base_name='identity-source-document')
+identity_router.register('name', oxidentity.name.views.NameViewSet, base_name='identity-name')
 
 
 router.register('name', oxidentity.name.views.NameViewSet)
@@ -37,7 +38,7 @@ admin.autodiscover()
 
 urlpatterns = [
     url(r'^', include(router.urls)),
-    url(r'^', include(person_router.urls)),
+    url(r'^', include(identity_router.urls)),
     url(r'^admin/', admin.site.urls),
 
 ]
