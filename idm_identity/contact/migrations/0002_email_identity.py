@@ -12,13 +12,13 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('idm_identity', '0001_initial'),
-        ('name', '0001_initial'),
+        ('contact', '0001_initial'),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='identity',
-            name='primary_name',
-            field=models.OneToOneField(blank=True, default=None, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='primary_name_of', to='name.Name'),
+            model_name='email',
+            name='identity',
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='emails', to='idm_identity.Identity'),
         ),
     ]

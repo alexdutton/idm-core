@@ -8,6 +8,9 @@ from django.conf import settings
 from django.db import connection
 from django.db.models.signals import post_save, post_delete, pre_delete
 
+import django
+django.setup()
+
 from idm_identity.gender.models import Gender
 from idm_identity.gender.serializers import GenderSerializer
 from idm_identity.identifier.models import IdentifierType
@@ -31,7 +34,7 @@ reference_exchange = kombu.Exchange('iam.idm.reference', 'topic', durable=True)
 _model_config = {
     Identity: _ModelConfig(IdentitySerializer,
                            kombu.Exchange('iam.idm.identity', 'topic', durable=True),
-                           lambda instance: instance.uuid),
+                           lambda instance: instance.id),
     Affiliation: _ModelConfig(AffiliationSerializer,
                               kombu.Exchange('iam.idm.affiliation', 'topic', durable=True),
                               lambda instance: instance.identity_id),

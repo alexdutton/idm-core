@@ -1,11 +1,13 @@
 import collections
 from xml.sax.saxutils import escape
 
+from django.contrib.postgres.fields import JSONField
 from django.db import models
 from django.db.models.signals import post_save, post_delete
 
 from idm_identity.attestation.models import Attestable
 from idm_identity.models import Identity
+from idm_identity.name.fields import JSONSchemaField
 
 NAME_COMPONENT_TYPE_CHOICES = (
     ('title', 'Title'),
@@ -15,6 +17,30 @@ NAME_COMPONENT_TYPE_CHOICES = (
     ('suffix', 'Suffix'),
     ('name', 'Name'),
 )
+
+
+components_schema = {
+    "type": "array",
+    "items": {
+        "oneOf": [{
+            "type": "string",
+            "pattern": r"^\w+$",
+        }, {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "string",
+                    "enum": [choice[0] for choice in NAME_COMPONENT_TYPE_CHOICES],
+                },
+                "value": {
+                    "type": "string",
+                },
+            },
+            "required": ["type", "value"],
+            "additionalProperties": False,
+        }]
+    }
+}
 
 
 class NameContext(models.Model):
@@ -37,31 +63,34 @@ class Name(Attestable, models.Model):
     last = models.TextField(blank=True)
 
     active = models.BooleanField(default=True)
+
+    #components = JSONSchemaField(schema=components_schema)
+    components = JSONField()
     contexts = models.ManyToManyField(NameContext)
 
     def __str__(self):
         return self.plain_full
 
     def save(self, *args, **kwargs):
-        components = list(self.components.all())
+        components = self.components
         components_by_type = collections.defaultdict(list)
         for component in components:
-            components_by_type[component.type].append(component.value)
+            components_by_type[component['type']].append(component['value'])
 
-        self.plain = ' '.join(c.value for c in components if c.type in ('given', 'family', 'name'))
-        self.plain_full = ' '.join(c.value for c in components)
+        self.plain = ' '.join(c['value'] for c in components if c['type'] in ('given', 'family', 'name'))
+        self.plain_full = ' '.join(c['value'] for c in components)
         self.marked_up = '<name>{}</name>'.format(
-            ' '.join('<{type}>{value}</{type}>'.format(type=c.type, value=escape(c.value))
+            ' '.join('<{type}>{value}</{type}>'.format(type=c['type'], value=escape(c['value']))
                      for c in components))
         self.familiar = ''
         for component in components:
-            if component.type == 'given':
-                self.familiar = component.value
+            if component['type'] == 'given':
+                self.familiar = component['value']
                 break
         else:
             for component in components:
-                if component.type == 'name':
-                    self.familiar = component.value
+                if component['type'] == 'name':
+                    self.familiar = component['value']
                     break
 
         if 'family' in components_by_type:
@@ -75,30 +104,13 @@ class Name(Attestable, models.Model):
 
         self.first, self.last = '', ''
         for component in components:
-            if component.type in ('given', 'family'):
+            if component['type'] in ('given', 'family'):
                 if not self.first and 'given' in components_by_type:
-                    self.first = component.value
+                    self.first = component['value']
                 elif not self.last:
-                    self.last = component.value
+                    self.last = component['value']
 
         super(Name, self).save()
-
-
-class NameComponent(models.Model):
-    name = models.ForeignKey(Name, related_name='components')
-    order = models.PositiveSmallIntegerField()
-    type = models.CharField(max_length=20, choices=NAME_COMPONENT_TYPE_CHOICES)
-    value = models.TextField()
-
-    class Meta:
-        ordering = ('order',)
-
-
-def name_component_changed(instance, **kwargs):
-    instance.name.save()
-
-post_save.connect(name_component_changed, sender=NameComponent)
-post_delete.connect(name_component_changed, sender=NameComponent)
 
 
 def name_changed(instance, **kwargs):

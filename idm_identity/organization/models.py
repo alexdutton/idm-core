@@ -17,7 +17,7 @@ class Organization(models.Model):
     realm = models.CharField(max_length=255, blank=True)
     tags = models.ManyToManyField(OrganizationTag, blank=True)
 
-    relationships = models.ManyToManyField(to='self', through='OrganizationRelationship')
+    relationships = models.ManyToManyField(to='self', through='OrganizationRelationship', symmetrical=False)
 
     def __str__(self):
         return self.label
@@ -25,6 +25,6 @@ class Organization(models.Model):
 
 class OrganizationRelationship(models.Model):
     type = models.ForeignKey(OrganizationRelationshipType)
-    active = models.ForeignKey(Organization)
-    passive = models.ForeignKey(Organization)
+    subject = models.ForeignKey(Organization, related_name='relationship')
+    object = models.ForeignKey(Organization, related_name='incoming_relationship')
 

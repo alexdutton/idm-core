@@ -1,6 +1,8 @@
 from rest_framework import serializers
 from rest_framework.serializers import HyperlinkedModelSerializer, ModelSerializer
 
+from idm_identity.contact.serializers import EmbeddedEmailSerializer
+
 
 class TypeMixin(object):
     def to_representation(self, instance):
@@ -18,6 +20,7 @@ from idm_identity.nationality.serializers import CountrySerializer, NationalityS
 
 class IdentitySerializer(TypeMixin, HyperlinkedModelSerializer):
     #url = serializers.HyperlinkedIdentityField(view_name='identity-detail', lookup_field='uuid')
+    id = serializers.UUIDField(read_only=True)
     names = EmbeddedNameSerializer(many=True, default=())
     # gender = GenderSerializer(read_only=True)
     # legal_gender = GenderSerializer(read_only=True)
@@ -25,6 +28,7 @@ class IdentitySerializer(TypeMixin, HyperlinkedModelSerializer):
     # legal_gender_id = serializers.CharField(allow_null=True, default=None)
     pronouns = PronounField(default={})
     nationalities = EmbeddedNationalitySerializer(many=True, default=(), source='nationality_set')
+    emails = EmbeddedEmailSerializer(many=True, default=())
 
     class Meta:
         model = Identity
@@ -35,12 +39,16 @@ class IdentitySerializer(TypeMixin, HyperlinkedModelSerializer):
 
     def create(self, validated_data):
         names = validated_data.pop('names', ())
+        emails = validated_data.pop('emails', ())
         nationalities = validated_data.pop('nationality_set', ())
         identity = super(IdentitySerializer, self).create(validated_data)
         for name in names:
             name['identity'] = identity
+        for email in emails:
+            email['identity'] = identity
         for nationality in nationalities:
             nationality['identity'] = identity
         self.fields['names'].create(names)
+        self.fields['emails'].create(emails)
         self.fields['nationalities'].create(nationalities)
         return identity

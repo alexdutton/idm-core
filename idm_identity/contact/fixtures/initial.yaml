@@ -1,0 +1,16 @@
+- model: contact.ContactContext
+  pk: home
+  fields:
+    label: 'home'
+- model: contact.ContactContext
+  pk: termtime
+  fields:
+    label: 'term-time'
+- model: contact.ContactContext
+  pk: work
+  fields:
+    label: 'work'
+- model: contact.ContactContext
+  pk: mobile
+  fields:
+    label: 'mobile'

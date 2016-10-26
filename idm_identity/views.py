@@ -1,5 +1,6 @@
 from rest_framework.viewsets import ModelViewSet
 
+from drf_fsm_transitions.viewset_mixins import get_viewset_transition_action_mixin
 from idm_identity.models import Identity
 from idm_identity.serializers import IdentitySerializer
 
@@ -15,7 +16,8 @@ class IdentitySubViewMixin(object):
         return queryset
 
 
-class IdentityViewSet(ModelViewSet):
+class IdentityViewSet(get_viewset_transition_action_mixin(Identity, 'state'),
+                      ModelViewSet):
     queryset = Identity.objects.select_related('gender').all()
     serializer_class = IdentitySerializer
     #lookup_field = 'uuid'

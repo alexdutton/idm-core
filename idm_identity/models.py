@@ -19,11 +19,11 @@ class User(AbstractBaseUser):
 
 
 class Identity(DirtyFieldsMixin, models.Model):
-    uuid = models.UUIDField(primary_key=True, default=get_uuid, editable=False)
+    id = models.UUIDField(primary_key=True, default=get_uuid, editable=False)
 
     gender = models.ForeignKey(Gender, null=True, blank=True, related_name='people')
     legal_gender = models.ForeignKey(Gender, null=True, blank=True, related_name='people_legally',
-                                     limit_choices_to=['male', 'female'])
+                                     limit_choices_to={'id__in': ('male', 'female')})
     pronouns = models.TextField(blank=True,
                                 help_text='subject[ object[ possessive-determiner[ possessive-pronoun[ reflexive]]]]')
     primary_name = models.OneToOneField('name.Name', related_name='primary_name_of', null=True, blank=True, default=None)
@@ -51,7 +51,7 @@ class Identity(DirtyFieldsMixin, models.Model):
             return super(Identity, self).__str__()
 
     @transition(field=state, source='new', target='pending_claim',
-                conditions=[lambda self: self.primary_email is not None])
+                conditions=[lambda self: self.emails.exists()])
     def ready_for_claim(self):
         pass
 

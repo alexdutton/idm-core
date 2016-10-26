@@ -21,7 +21,11 @@
     }],
     "legal_gender_id": "http://localhost:8000/gender/male/",
     "gender_id": "male",
-    "nationalities": [{"country": "GBR"}]
+    "nationalities": [{"country": "GBR"}],
+    "emails": [{
+        "value": "lewis@carroll.uk",
+        "context": "home"
+    }]
 }
             
 

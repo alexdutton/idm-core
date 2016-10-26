@@ -1,0 +1,16 @@
+- model: organization.OrganizationRelationshipType
+  pk: subOrganization
+  fields:
+    label: 'sub-organization'
+- model: organization.OrganizationRelationshipType
+  pk: college
+  fields:
+    label: 'college'
+- model: organization.OrganizationRelationshipType
+  pk: pph
+  fields:
+    label: 'PPH'
+- model: organization.OrganizationRelationshipType
+  pk: ric
+  fields:
+    label: 'recognized independent centre'
