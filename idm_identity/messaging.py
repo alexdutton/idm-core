@@ -11,8 +11,6 @@ from django.db.models.signals import post_save, post_delete, pre_delete
 import django
 django.setup()
 
-from idm_identity.gender.models import Gender
-from idm_identity.gender.serializers import GenderSerializer
 from idm_identity.identifier.models import IdentifierType
 from idm_identity.identifier.serializers import IdentifierTypeSerializer
 from idm_identity.models import Identity
@@ -52,7 +50,6 @@ reference_models = [
     (AffiliationType, AffiliationTypeSerializer),
     (RoleType, RoleTypeSerializer),
     (IdentifierType, IdentifierTypeSerializer),
-    (Gender, GenderSerializer),
     (Country, CountrySerializer),
     (Organization, OrganizationSerializer),
 ]

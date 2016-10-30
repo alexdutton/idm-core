@@ -15,5 +15,5 @@ class Identifier(Attestable, models.Model):
     value = models.CharField(max_length=64)
 
     class Meta:
-        unique_together = (('type', 'identity'), ('type', 'value'))
+        unique_together = (('type', 'value'),)
         index_together = (('type', 'identity'), ('type', 'value'))

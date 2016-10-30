@@ -6,12 +6,21 @@ from django.conf import settings
 from django.contrib.auth.models import AbstractBaseUser
 from django.db import models
 from django_fsm import FSMField, transition
+from templated_email import send_templated_mail
+
 # ISO/IEC 5218
 SEX_CHOICES = (
     ('0', 'not known'),
     ('1', 'male'),
     ('2', 'female'),
     ('9', 'not applicable'),
+)
+
+STATE_CHOICES = (
+    ('new', 'new'),
+    ('pending_claim', 'pending claim'),
+    ('active', 'active'),
+    ('dormant', 'dormant'),
 )
 
 def get_uuid():
@@ -37,9 +46,11 @@ class Identity(DirtyFieldsMixin, models.Model):
     date_of_death = models.DateField(null=True, blank=True)
     deceased = models.BooleanField(default=False)
 
-    state = FSMField(default='new')
+    state = FSMField(choices=STATE_CHOICES, default='new')
     # matriculation_date
     # photo
+
+    claim_code = models.UUIDField(null=True, blank=True)
 
     def natural_key(self):
         return self.uuid
@@ -54,8 +65,15 @@ class Identity(DirtyFieldsMixin, models.Model):
 
     @transition(field=state, source='new', target='pending_claim',
                 conditions=[lambda self: self.emails.exists()])
-    def ready_for_claim(self):
-        pass
+    def ready_for_claim(self, email=None):
+        if not email:
+            email = self.emails.sort('priority').first().value
+        self.claim_code = get_uuid()
+        send_templated_mail(template_name='claim-identity',
+                            from_email=settings.DEFAULT_FROM_EMAIL,
+                            to_email=email,
+                            context={'identity': self,
+                                     'claim_url': settings.CLAIM_URL.format(self.claim_code)})
 
     @transition(field=state, source='pending_claim', target='active')
     def claimed(self):
@@ -69,6 +87,11 @@ class Identity(DirtyFieldsMixin, models.Model):
     def unset_dormant(self):
         pass
 
-
-
 reversion.register(Identity)
+
+
+class ClaimIdentity(models.Model):
+    id = models.UUIDField(primary_key=True, default=get_uuid, editable=False)
+    identity = models.ForeignKey(Identity)
+    email = models.EmailField()
+

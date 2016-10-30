@@ -1,9 +1,8 @@
-from rest_framework.viewsets import ModelViewSet
+from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 
 from drf_fsm_transitions.viewset_mixins import get_viewset_transition_action_mixin
-from idm_identity.models import Identity
-from idm_identity.serializers import IdentitySerializer
 
+from . import models, serializers
 
 class IdentitySubViewMixin(object):
     """
@@ -16,11 +15,16 @@ class IdentitySubViewMixin(object):
         return queryset
 
 
-class IdentityViewSet(get_viewset_transition_action_mixin(Identity, 'state'),
+class IdentityViewSet(get_viewset_transition_action_mixin(models.Identity, 'state'),
                       ModelViewSet):
-    queryset = Identity.objects.select_related('gender').all()
-    serializer_class = IdentitySerializer
-    #lookup_field = 'uuid'
+    queryset = models.Identity.objects.all()
+    serializer_class = serializers.IdentitySerializer
 
     def create(self, request, *args, **kwargs):
         return super(IdentityViewSet, self).create(request, *args, **kwargs)
+
+
+class ClaimIdentityViewSet(get_viewset_transition_action_mixin(models.ClaimIdentity, 'state'),
+                           ReadOnlyModelViewSet):
+    queryset = models.ClaimIdentity.objects.all()
+    serializer_class = serializers.ClaimIdentitySerializer

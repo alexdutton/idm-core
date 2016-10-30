@@ -40,7 +40,6 @@ INSTALLED_APPS = [
     'idm_identity.contact',
     'idm_identity.org_relationship',
     'idm_identity.attestation',
-    'idm_identity.gender',
     'idm_identity.identifier',
     'idm_identity.name',
     'idm_identity.nationality',

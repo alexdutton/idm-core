@@ -8,7 +8,7 @@ from .models import Identity
 from .attestation.models import SourceDocument
 from .name.models import Name
 
-_fields_to_copy = {'gender', 'legal_gender', 'pronouns', 'primary_email', 'primary_username', 'date_of_birth',
+_fields_to_copy = {'sex', 'primary_email', 'primary_username', 'date_of_birth',
                    'date_of_death'}
 
 def merge_people(merge_these, into_this, trigger=None, reason=None):
