@@ -2,12 +2,17 @@ import uuid
 
 import reversion
 from dirtyfields import DirtyFieldsMixin
+from django.conf import settings
 from django.contrib.auth.models import AbstractBaseUser
 from django.db import models
 from django_fsm import FSMField, transition
-
-from .gender.models import Gender
-
+# ISO/IEC 5218
+SEX_CHOICES = (
+    ('0', 'not known'),
+    ('1', 'male'),
+    ('2', 'female'),
+    ('9', 'not applicable'),
+)
 
 def get_uuid():
     return uuid.uuid4().hex
@@ -21,11 +26,8 @@ class User(AbstractBaseUser):
 class Identity(DirtyFieldsMixin, models.Model):
     id = models.UUIDField(primary_key=True, default=get_uuid, editable=False)
 
-    gender = models.ForeignKey(Gender, null=True, blank=True, related_name='people')
-    legal_gender = models.ForeignKey(Gender, null=True, blank=True, related_name='people_legally',
-                                     limit_choices_to={'id__in': ('male', 'female')})
-    pronouns = models.TextField(blank=True,
-                                help_text='subject[ object[ possessive-determiner[ possessive-pronoun[ reflexive]]]]')
+    sex = models.CharField(max_length=1, choices=SEX_CHOICES, default='0')
+
     primary_name = models.OneToOneField('name.Name', related_name='primary_name_of', null=True, blank=True, default=None)
 
     primary_email = models.EmailField(blank=True)
