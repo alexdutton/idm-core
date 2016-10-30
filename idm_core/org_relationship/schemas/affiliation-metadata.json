@@ -1,0 +1,6 @@
+{
+  "properties": {
+    "jobTitle": {"type": "string"},
+    "course"
+  }
+}
