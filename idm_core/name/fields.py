@@ -1,6 +1,6 @@
+from django.contrib.postgres.fields import JSONField
 from django.core import exceptions
 import jsonschema
-from rest_framework.fields import JSONField
 
 
 class JSONSchemaField(JSONField):

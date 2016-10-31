@@ -64,8 +64,7 @@ class Name(Attestable, models.Model):
 
     active = models.BooleanField(default=True)
 
-    #components = JSONSchemaField(schema=components_schema)
-    components = JSONField()
+    components = JSONSchemaField(schema=components_schema)
     contexts = models.ManyToManyField(NameContext)
 
     def __str__(self):

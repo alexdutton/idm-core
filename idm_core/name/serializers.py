@@ -25,6 +25,7 @@ class NameSerializer(Attestable, serializers.HyperlinkedModelSerializer):
             'familiar',
         )
 
+
 class EmbeddedNameSerializer(NameSerializer):
     identity = serializers.CharField(required=False, source='identity_id', write_only=True)
 
