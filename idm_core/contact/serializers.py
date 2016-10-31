@@ -4,21 +4,22 @@ from . import models
 
 
 class ContactSerializer(serializers.ModelSerializer):
-    pass
+    class Meta:
+        exclude = ('order',)
 
 
 class EmailSerializer(ContactSerializer):
-    class Meta:
+    class Meta(ContactSerializer.Meta):
         model = models.Email
 
 
 class TelephoneSerializer(ContactSerializer):
-    class Meta:
+    class Meta(ContactSerializer.Meta):
         model = models.Email
 
 
 class AddressSerializer(ContactSerializer):
-    class Meta:
+    class Meta(ContactSerializer.Meta):
         model = models.Address
 
 
