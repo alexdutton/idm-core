@@ -7,7 +7,7 @@ django-fsm
 django-haystack
 django-reversion
 django-templated-email
-drf-fsm-transitions
+-e git://github.com/alexsdutton/drf-fsm-transitions.git#egg=drf-fsm-transitions
 drf-haystack
 drf-nested-routers
 jsonschema
