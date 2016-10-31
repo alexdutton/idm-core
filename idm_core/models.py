@@ -6,7 +6,7 @@ from django.conf import settings
 from django.contrib.auth.models import AbstractBaseUser
 from django.db import models
 from django_fsm import FSMField, transition
-from templated_email import send_templated_mail
+import templated_email
 
 # ISO/IEC 5218
 SEX_CHOICES = (
@@ -67,13 +67,13 @@ class Identity(DirtyFieldsMixin, models.Model):
                 conditions=[lambda self: self.emails.exists()])
     def ready_for_claim(self, email=None):
         if not email:
-            email = self.emails.sort('priority').first().value
+            email = self.emails.order_by('order').first().value
         self.claim_code = get_uuid()
-        send_templated_mail(template_name='claim-identity',
-                            from_email=settings.DEFAULT_FROM_EMAIL,
-                            to_email=email,
-                            context={'identity': self,
-                                     'claim_url': settings.CLAIM_URL.format(self.claim_code)})
+        templated_email.send_templated_mail(template_name='claim-identity',
+                                            from_email=settings.DEFAULT_FROM_EMAIL,
+                                            to_email=email,
+                                            context={'identity': self,
+                                                     'claim_url': settings.CLAIM_URL.format(self.claim_code)})
 
     @transition(field=state, source='pending_claim', target='active')
     def claimed(self):
@@ -88,10 +88,3 @@ class Identity(DirtyFieldsMixin, models.Model):
         pass
 
 reversion.register(Identity)
-
-
-class ClaimIdentity(models.Model):
-    id = models.UUIDField(primary_key=True, default=get_uuid, editable=False)
-    identity = models.ForeignKey(Identity)
-    email = models.EmailField()
-

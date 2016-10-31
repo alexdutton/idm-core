@@ -22,9 +22,3 @@ class IdentityViewSet(get_viewset_transition_action_mixin(models.Identity, 'stat
 
     def create(self, request, *args, **kwargs):
         return super(IdentityViewSet, self).create(request, *args, **kwargs)
-
-
-class ClaimIdentityViewSet(get_viewset_transition_action_mixin(models.ClaimIdentity, 'state'),
-                           ReadOnlyModelViewSet):
-    queryset = models.ClaimIdentity.objects.all()
-    serializer_class = serializers.ClaimIdentitySerializer

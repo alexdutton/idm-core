@@ -47,8 +47,3 @@ class IdentitySerializer(TypeMixin, HyperlinkedModelSerializer):
         self.fields['emails'].create(emails)
         self.fields['nationalities'].create(nationalities)
         return identity
-
-
-class ClaimIdentitySerializer(TypeMixin, HyperlinkedModelSerializer):
-    class Meta:
-        model = models.ClaimIdentity

@@ -24,19 +24,19 @@ class Contact(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.order:
-            c = self.objects.filter(identity=self.identity).aggregate(Max('order')).get('order__max')
+            c = type(self).objects.filter(identity=self.identity).aggregate(Max('order')).get('order__max')
             self.order = 0 if c is None else c + 1
         return super().save(*args, **kwargs)
 
 
-class Email(models.Model):
+class Email(Contact):
     identity = models.ForeignKey(Identity, db_index=True, related_name='emails')
     value = models.EmailField()
 
 
-class Telephone(models.Model):
+class Telephone(Contact):
     value = models.EmailField()
 
 
-class Address(models.Model):
+class Address(Contact):
     pass
