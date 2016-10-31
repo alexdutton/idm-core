@@ -6,6 +6,7 @@ from django_fsm import TransitionNotAllowed
 
 from idm_core.contact.models import Email, ContactContext
 from idm_core.models import Identity
+from idm_core.name.models import NameContext
 
 
 class CreationTestCase(TestCase):
@@ -34,3 +35,23 @@ class CreationTestCase(TestCase):
         email = identity.emails.get()
         self.assertEqual(email.context, ContactContext.objects.get(pk='home'))
         self.assertEqual(email.value, 'user@example.org')
+
+    def testCreateWithNames(self):
+        name_components = [{'type': 'given', 'value': 'Charles'},
+                           {'type': 'middle', 'value': 'Robert'},
+                           {'type': 'family', 'value': 'Darwin'}]
+        response = self.client.post('/identity/', json.dumps({
+            'names': [{
+                'contexts': ['legal'],
+                'components': name_components,
+            }]
+        }), content_type='application/json')
+        print(response.json())
+        self.assertEqual(response.status_code, http.client.CREATED)
+        data = response.json()
+        identity_id = data['id']
+        identity = Identity.objects.get(id=identity_id)
+        self.assertEqual(identity.names.count(), 1)
+        name = identity.names.get()
+        self.assertEqual(list(name.contexts.all()), [NameContext.objects.get(pk='legal')])
+        self.assertEqual(name.components, name_components)
