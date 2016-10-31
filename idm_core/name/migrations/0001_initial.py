@@ -6,6 +6,9 @@ import django.contrib.postgres.fields.jsonb
 from django.db import migrations, models
 import django.db.models.deletion
 
+from idm_core.name.fields import JSONSchemaField
+from idm_core.name.models import components_schema
+
 
 class Migration(migrations.Migration):
 
@@ -28,7 +31,8 @@ class Migration(migrations.Migration):
                 ('first', models.TextField(blank=True)),
                 ('last', models.TextField(blank=True)),
                 ('active', models.BooleanField(default=True)),
-                ('components', django.contrib.postgres.fields.jsonb.JSONField()),
+                ('space_delimited', models.BooleanField(default=True)),
+                ('components', JSONSchemaField(schema=components_schema)),
             ],
             options={
                 'abstract': False,

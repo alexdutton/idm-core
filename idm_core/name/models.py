@@ -2,6 +2,7 @@ import collections
 from xml.sax.saxutils import escape
 
 from django.contrib.postgres.fields import JSONField
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models.signals import post_save, post_delete
 
@@ -22,24 +23,19 @@ NAME_COMPONENT_TYPE_CHOICES = (
 components_schema = {
     "type": "array",
     "items": {
-        "oneOf": [{
-            "type": "string",
-            "pattern": r"^\w+$",
-        }, {
-            "type": "object",
-            "properties": {
-                "type": {
-                    "type": "string",
-                    "enum": [choice[0] for choice in NAME_COMPONENT_TYPE_CHOICES],
-                },
-                "value": {
-                    "type": "string",
-                },
+        "type": "object",
+        "properties": {
+            "type": {
+                "type": "string",
+                "enum": [choice[0] for choice in NAME_COMPONENT_TYPE_CHOICES],
             },
-            "required": ["type", "value"],
-            "additionalProperties": False,
-        }]
-    }
+            "value": {
+                "type": "string",
+            },
+        },
+        "required": ["type", "value"],
+        "additionalProperties": False,
+    },
 }
 
 
@@ -64,6 +60,7 @@ class Name(Attestable, models.Model):
 
     active = models.BooleanField(default=True)
 
+    space_delimited = models.BooleanField(default=True)
     components = JSONSchemaField(schema=components_schema)
     contexts = models.ManyToManyField(NameContext)
 
@@ -76,10 +73,12 @@ class Name(Attestable, models.Model):
         for component in components:
             components_by_type[component['type']].append(component['value'])
 
-        self.plain = ' '.join(c['value'] for c in components if c['type'] in ('given', 'family', 'mononym'))
-        self.plain_full = ' '.join(c['value'] for c in components)
+        delimiter = ' ' if self.space_delimited else ''
+
+        self.plain = delimiter.join(c['value'] for c in components if c['type'] in ('given', 'family', 'mononym'))
+        self.plain_full = delimiter.join(c['value'] for c in components)
         self.marked_up = '<name>{}</name>'.format(
-            ' '.join('<{type}>{value}</{type}>'.format(type=c['type'], value=escape(c['value']))
+            delimiter.join('<{type}>{value}</{type}>'.format(type=c['type'], value=escape(c['value']))
                      for c in components))
         self.familiar = ''
         for component in components:
@@ -93,11 +92,21 @@ class Name(Attestable, models.Model):
                     break
 
         if 'family' in components_by_type:
-            self.sort = ' '.join(components_by_type['family'])
+            self.sort = delimiter.join(components_by_type['family'])
             if 'given' in components_by_type:
-                self.sort += ', ' + ' '.join(components_by_type['given'])
-        elif 'name' in components_by_type:
-            self.sort = ' '.join(components_by_type['name'])
+                for component in components:
+                    # If a given name precedes a family name, we've reversed their order, so add a ', '.
+                    # If the family name comes first, stop looking for a given name.
+                    if component['type'] == 'given':
+                        self.sort += ', '
+                        break
+                    elif component['type'] == 'family':
+                        break
+                self.sort += delimiter.join(components_by_type['given'] + components_by_type['middle'])
+        elif 'mononym' in components_by_type:
+            if len(components) != 1:
+                raise ValidationError("If there's a mononym, there must be only one component")
+            self.sort = delimiter.join(components_by_type['mononym'])
         else:
             self.sort = self.plain
 

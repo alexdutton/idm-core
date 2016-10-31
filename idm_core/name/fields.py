@@ -18,3 +18,8 @@ class JSONSchemaField(JSONField):
                 code='invalid',
                 params={'value': value},
             ) from e
+
+    def deconstruct(self):
+        name, path, args, kwargs = super().deconstruct()
+        kwargs['schema'] = {} # Don't need the actual schema for migrations
+        return name, "idm_core.name.fields.JSONSchemaField", args, kwargs
