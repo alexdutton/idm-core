@@ -29,4 +29,4 @@ Make rabbitmq available on localhost with a `guest:guest` administrator account.
     django-admin.py runserver
 
     # Create a new identity
-    curl http://localhost:8000/identity/ -d@examples/lewis-carroll.json -v
+    curl http://localhost:8000/identity/ -d@examples/lewis-carroll.json -H"Content-type: application/json" -v
