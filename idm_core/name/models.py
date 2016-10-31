@@ -15,7 +15,7 @@ NAME_COMPONENT_TYPE_CHOICES = (
     ('middle', 'Middle name'),
     ('family', 'Family name'),
     ('suffix', 'Suffix'),
-    ('name', 'Name'),
+    ('mononym', 'Name'),
 )
 
 
@@ -76,7 +76,7 @@ class Name(Attestable, models.Model):
         for component in components:
             components_by_type[component['type']].append(component['value'])
 
-        self.plain = ' '.join(c['value'] for c in components if c['type'] in ('given', 'family', 'name'))
+        self.plain = ' '.join(c['value'] for c in components if c['type'] in ('given', 'family', 'mononym'))
         self.plain_full = ' '.join(c['value'] for c in components)
         self.marked_up = '<name>{}</name>'.format(
             ' '.join('<{type}>{value}</{type}>'.format(type=c['type'], value=escape(c['value']))
@@ -88,7 +88,7 @@ class Name(Attestable, models.Model):
                 break
         else:
             for component in components:
-                if component['type'] == 'name':
+                if component['type'] == 'mononym':
                     self.familiar = component['value']
                     break
 
