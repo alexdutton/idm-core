@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from rest_framework.serializers import HyperlinkedModelSerializer, ModelSerializer
+from rest_framework.serializers import HyperlinkedModelSerializer, ModelSerializer, ValidationError
 
 from idm_core import models
 from idm_core.contact.serializers import EmbeddedEmailSerializer
@@ -38,6 +38,8 @@ class IdentitySerializer(TypeMixin, HyperlinkedModelSerializer):
         )
 
     def create(self, validated_data):
+        if 'state' in validated_data and validated_data['state'] not in ('new', 'active'):
+            raise ValidationError("Can only create identities in states 'new' or 'active'.")
         names = validated_data.pop('names', ())
         emails = validated_data.pop('emails', ())
         nationalities = validated_data.pop('nationality_set', ())

@@ -46,7 +46,6 @@ class CreationTestCase(TestCase):
                 'components': name_components,
             }]
         }), content_type='application/json')
-        print(response.json())
         self.assertEqual(response.status_code, http.client.CREATED)
         data = response.json()
         identity_id = data['id']
@@ -55,3 +54,8 @@ class CreationTestCase(TestCase):
         name = identity.names.get()
         self.assertEqual(list(name.contexts.all()), [NameContext.objects.get(pk='legal')])
         self.assertEqual(name.components, name_components)
+
+    def testCreatePendingClaim(self):
+        # This shouldn't be possible. Either create as active, or create as new and set as pending_claim
+        response = self.client.post('/identity/', json.dumps({'state': 'pending_claim'}), content_type='application/json')
+        self.assertEqual(response.status_code, http.client.BAD_REQUEST)
