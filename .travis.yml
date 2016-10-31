@@ -10,10 +10,7 @@ install:
   - pip install coveralls
   - python -c "import enum" 2&>1 > /dev/null || pip install enum34
 env:
-  global:
-    - DJANGO_SETTINGS_MODULE=idm_core.settings
-    - DJANGO_ALLOWED_HOSTS=localhost
-    - DJANGO_SECRET_KEY=secret-key-for-travis
+  - DJANGO_SETTINGS_MODULE=idm_core.settings DJANGO_ALLOWED_HOSTS=localhost DJANGO_SECRET_KEY=secret-key-for-travis
 script: PYTHONPATH=. coverage run --source=. `which django-admin.py` test halld.test
 after_script:
   - coveralls
