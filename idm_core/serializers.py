@@ -28,6 +28,11 @@ class IdentitySerializer(TypeMixin, HyperlinkedModelSerializer):
     class Meta:
         model = Identity
 
+        fields = (
+            'id', 'sex', 'date_of_birth', 'date_of_death', 'deceased', 'state',
+            'primary_email', 'primary_username', 'names', 'nationalities', 'emails',
+        )
+
         read_only_fields = (
             'merged_into',
         )
