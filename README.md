@@ -1,5 +1,7 @@
 # Identity API
 
+[![Build Status](https://travis-ci.org/alexsdutton/idm-core.svg?branch=master)](https://travis-ci.org/alexsdutton/idm-core)
+
 A prototypical identity API supporting:
 
 * Names (and not just first/last)
