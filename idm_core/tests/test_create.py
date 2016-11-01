@@ -56,7 +56,7 @@ class CreationTestCase(TestCase):
         self.assertEqual(name.components, name_components)
 
     def testCreateWithNationalities(self):
-        nationalities = [{'country': 'GBR'}, {'country': 'US'}, {'country': '535'}]
+        nationalities = [{'country': 'GBR'}, {'country': 'US'}, {'country': '535'}, {'country': 800}]
         response = self.client.post('/identity/', json.dumps({
             'nationalities': nationalities,
         }), content_type='application/json')
@@ -64,9 +64,23 @@ class CreationTestCase(TestCase):
         data = response.json()
         identity_id = data['id']
         identity = Identity.objects.get(id=identity_id)
-        self.assertEqual(identity.nationalities.count(), 3)
+        self.assertEqual(identity.nationalities.count(), 4)
         nationalities = identity.nationality_set.all()
-        self.assertEqual(set(n.country.id for n in nationalities), {826, 840, 535})
+        self.assertEqual(set(n.country.id for n in nationalities), {826, 840, 535, 800})
+
+    def testCreateWithUnknownNationality(self):
+        nationalities = [{'country': 'XYZ'}]
+        response = self.client.post('/identity/', json.dumps({
+            'nationalities': nationalities,
+        }), content_type='application/json')
+        self.assertEqual(response.status_code, http.client.BAD_REQUEST)
+
+    def testCreateWithMalformedNationality(self):
+        nationalities = [{'country': 'ABCD'}]
+        response = self.client.post('/identity/', json.dumps({
+            'nationalities': nationalities,
+        }), content_type='application/json')
+        self.assertEqual(response.status_code, http.client.BAD_REQUEST)
 
     def testCreatePendingClaim(self):
         # This shouldn't be possible. Either create as active, or create as new and set as pending_claim
