@@ -87,14 +87,6 @@ class Relationship(models.Model):
         elif self.delayed_save.exists():
             self.delayed_save.get().delete()
 
-    @property
-    def extant(self):
-        now = timezone.now()
-        return (not (self.effective_start_date or self.start_date) or \
-                (self.effective_start_date or self.start_date) < now) and \
-               (not (self.effective_end_date or self.end_date) or \
-                (self.effective_end_date or self.end_date) > now)
-
     @transition(field=suspended, source=True, target=False)
     def unsuspend(self):
         self.suspended_until = None
