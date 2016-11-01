@@ -69,6 +69,23 @@ class CreationTestCase(TestCase):
         affiliation.suspend()
         self.assertEqual(affiliation.state, 'suspended')
         self.assertEqual(affiliation.suspended, True)
+        affiliation.unsuspend()
+        self.assertEqual(affiliation.state, 'active')
+        self.assertEqual(affiliation.suspended, False)
+
+    @mock.patch('django.utils.timezone.now')
+    def testSuspendUntil(self, now):
+        now.return_value = datetime.datetime(1970, 1, 1).replace(tzinfo=timezone.utc)
+        identity = Identity.objects.create()
+        affiliation = Affiliation(identity=identity,
+                                  organization=self.organization,
+                                  type=self.affiliation_type)
+        affiliation.save()
+        affiliation.suspend(until=datetime.datetime(1970, 1, 2).replace(tzinfo=timezone.utc))
+        self.assertEqual(affiliation.state, 'suspended')
+        now.return_value = datetime.datetime(1970, 1, 3).replace(tzinfo=timezone.utc)
+        affiliation._time_has_passed()
+        self.assertEqual(affiliation.state, 'active')
 
     @mock.patch('django.utils.timezone.now')
     def testTimePassing(self, now):

@@ -135,7 +135,7 @@ class Relationship(models.Model):
             self.unsuspend()
 
         if now_active or self.state in {'forthcoming', 'active', 'historic', ''}:
-            if start_date < now and (not end_date or now < end_date):
+            if start_date <= now and (not end_date or now <= end_date):
                 return 'active' if not self.suspended else 'suspended'
             elif now < start_date:
                 return 'forthcoming'
