@@ -82,6 +82,13 @@ class CreationTestCase(TestCase):
         }), content_type='application/json')
         self.assertEqual(response.status_code, http.client.BAD_REQUEST)
 
+    def testCreateWithMissingNationality(self):
+        nationalities = [{}]
+        response = self.client.post('/identity/', json.dumps({
+            'nationalities': nationalities,
+        }), content_type='application/json')
+        self.assertEqual(response.status_code, http.client.BAD_REQUEST)
+
     def testCreatePendingClaim(self):
         # This shouldn't be possible. Either create as active, or create as new and set as pending_claim
         response = self.client.post('/identity/', json.dumps({'state': 'pending_claim'}), content_type='application/json')
