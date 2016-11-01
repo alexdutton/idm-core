@@ -1,4 +1,5 @@
 import datetime
+from unittest import mock
 
 from django.utils import timezone
 from django.test import TestCase
@@ -43,3 +44,46 @@ class CreationTestCase(TestCase):
         affiliation.save()
         self.assertEqual(affiliation.state, 'historic')
 
+    def testSuspendForthcomingAffiliation(self):
+        # Suspending a non-active affiliation shouldn't result in a state of suspended
+        identity = Identity.objects.create()
+        affiliation = Affiliation(identity=identity,
+                                  organization=self.organization,
+                                  start_date=timezone.now() + datetime.timedelta(1),
+                                  type=self.affiliation_type)
+        affiliation.save()
+        self.assertEqual(affiliation.state, 'forthcoming')
+        self.assertEqual(affiliation.suspended, False)
+        affiliation.suspend()
+        self.assertEqual(affiliation.state, 'forthcoming')
+        self.assertEqual(affiliation.suspended, True)
+
+    def testSuspendActiveAffiliation(self):
+        identity = Identity.objects.create()
+        affiliation = Affiliation(identity=identity,
+                                  organization=self.organization,
+                                  type=self.affiliation_type)
+        affiliation.save()
+        self.assertEqual(affiliation.state, 'active')
+        self.assertEqual(affiliation.suspended, False)
+        affiliation.suspend()
+        self.assertEqual(affiliation.state, 'suspended')
+        self.assertEqual(affiliation.suspended, True)
+
+    @mock.patch('django.utils.timezone.now')
+    def testTimePassing(self, now):
+        now.return_value = datetime.datetime(1970, 1, 1).replace(tzinfo=timezone.utc)
+        identity = Identity.objects.create()
+        affiliation = Affiliation(identity=identity,
+                                  organization=self.organization,
+                                  start_date=datetime.datetime(1970, 1, 2).replace(tzinfo=timezone.utc),
+                                  end_date=datetime.datetime(1970, 1, 4).replace(tzinfo=timezone.utc),
+                                  type=self.affiliation_type)
+        affiliation.save()
+        self.assertEqual(affiliation.state, 'forthcoming')
+        now.return_value = datetime.datetime(1970, 1, 3).replace(tzinfo=timezone.utc)
+        affiliation._time_has_passed()
+        self.assertEqual(affiliation.state, 'active')
+        now.return_value = datetime.datetime(1970, 1, 5).replace(tzinfo=timezone.utc)
+        affiliation._time_has_passed()
+        self.assertEqual(affiliation.state, 'historic')
