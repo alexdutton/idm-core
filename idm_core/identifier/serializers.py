@@ -10,5 +10,14 @@ class IdentifierTypeSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class IdentifierSerializer(Attestable, serializers.HyperlinkedModelSerializer):
+    type = serializers.PrimaryKeyRelatedField(queryset=models.IdentifierType.objects.all())
+
     class Meta:
         model = models.Identifier
+
+
+class EmbeddedIdentifierSerializer(IdentifierSerializer):
+    identity = serializers.CharField(required=False, source='identity_id', write_only=True)
+
+    class Meta(IdentifierSerializer.Meta):
+        exclude = ('attestations',)

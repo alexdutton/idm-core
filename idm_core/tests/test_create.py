@@ -5,6 +5,7 @@ from django.test import TestCase
 from django_fsm import TransitionNotAllowed
 
 from idm_core.contact.models import Email, ContactContext
+from idm_core.identifier.models import IdentifierType
 from idm_core.models import Identity
 from idm_core.name.models import NameContext
 
@@ -67,6 +68,21 @@ class CreationTestCase(TestCase):
         self.assertEqual(identity.nationalities.count(), 4)
         nationalities = identity.nationality_set.all()
         self.assertEqual(set(n.country.id for n in nationalities), {826, 840, 535, 800})
+
+    def testCreateWithIdentifier(self):
+        response = self.client.post('/identity/', json.dumps({
+            'identifiers': [{
+                'type': 'sits-mst',
+                'value': '123456',
+            }],
+        }), content_type='application/json')
+        self.assertEqual(response.status_code, http.client.CREATED)
+        data = response.json()
+        identity_id = data['id']
+        identity = Identity.objects.get(id=identity_id)
+        identifier = identity.identifiers.get()
+        self.assertEqual(identifier.type, IdentifierType.objects.get(pk='sits-mst'))
+        self.assertEqual(identifier.value, '123456')
 
     def testCreateWithUnknownNationality(self):
         nationalities = [{'country': 'XYZ'}]

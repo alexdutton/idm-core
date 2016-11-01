@@ -11,7 +11,7 @@ class IdentifierType(models.Model):
 
 class Identifier(Attestable, models.Model):
     type = models.ForeignKey(IdentifierType)
-    identity = models.ForeignKey(Identity, db_index=True)
+    identity = models.ForeignKey(Identity, db_index=True, related_name='identifiers')
     value = models.CharField(max_length=64)
 
     class Meta:

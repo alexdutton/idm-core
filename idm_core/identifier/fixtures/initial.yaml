@@ -10,3 +10,7 @@
   pk: card-number
   fields:
     label: 'card number'
+- model: identifier.IdentifierType
+  pk: sits-mst
+  fields:
+    label: 'SITS MST code'

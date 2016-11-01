@@ -23,6 +23,7 @@ identity_router.register('affiliation', idm_core.org_relationship.views.Affiliat
 identity_router.register('role', idm_core.org_relationship.views.RoleViewSet, base_name='identity-role')
 identity_router.register('source-document', idm_core.attestation.views.SourceDocumentViewSet, base_name='identity-source-document')
 identity_router.register('name', idm_core.name.views.NameViewSet, base_name='identity-name')
+identity_router.register('identifier', idm_core.identifier.views.IdentifierViewSet, base_name='identity-identifier')
 
 
 router.register('name', idm_core.name.views.NameViewSet)
@@ -31,6 +32,7 @@ router.register('source-document', idm_core.attestation.views.SourceDocumentView
 router.register('attestation', idm_core.attestation.views.AttestationViewSet)
 router.register('affiliation', idm_core.org_relationship.views.AffiliationViewSet)
 router.register('role', idm_core.org_relationship.views.RoleViewSet)
+router.register('identifier', idm_core.identifier.views.IdentifierViewSet)
 
 admin.autodiscover()
 

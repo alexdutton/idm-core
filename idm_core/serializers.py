@@ -3,6 +3,7 @@ from rest_framework.serializers import HyperlinkedModelSerializer, ModelSerializ
 
 from idm_core import models
 from idm_core.contact.serializers import EmbeddedEmailSerializer
+from idm_core.identifier.serializers import EmbeddedIdentifierSerializer
 
 
 class TypeMixin(object):
@@ -24,12 +25,13 @@ class IdentitySerializer(TypeMixin, HyperlinkedModelSerializer):
     names = EmbeddedNameSerializer(many=True, default=())
     nationalities = EmbeddedNationalitySerializer(many=True, default=(), source='nationality_set')
     emails = EmbeddedEmailSerializer(many=True, default=())
+    identifiers = EmbeddedIdentifierSerializer(many=True, default=())
 
     class Meta:
         model = Identity
 
         fields = (
-            'id', 'sex', 'date_of_birth', 'date_of_death', 'deceased', 'state',
+            'id', 'sex', 'date_of_birth', 'date_of_death', 'deceased', 'state', 'identifiers',
             'primary_email', 'primary_username', 'names', 'nationalities', 'emails',
         )
 
@@ -43,6 +45,7 @@ class IdentitySerializer(TypeMixin, HyperlinkedModelSerializer):
         names = validated_data.pop('names', ())
         emails = validated_data.pop('emails', ())
         nationalities = validated_data.pop('nationality_set', ())
+        identifiers = validated_data.pop('identifiers', ())
         identity = super(IdentitySerializer, self).create(validated_data)
         for name in names:
             name['identity'] = identity
@@ -50,7 +53,10 @@ class IdentitySerializer(TypeMixin, HyperlinkedModelSerializer):
             email['identity'] = identity
         for nationality in nationalities:
             nationality['identity'] = identity
+        for identifier in identifiers:
+            identifier['identity'] = identity
         self.fields['names'].create(names)
         self.fields['emails'].create(emails)
         self.fields['nationalities'].create(nationalities)
+        self.fields['identifiers'].create(identifiers)
         return identity
