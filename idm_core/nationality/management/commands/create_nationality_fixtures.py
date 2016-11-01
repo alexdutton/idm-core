@@ -16,7 +16,6 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         filename = os.path.join(os.path.dirname(__file__), '..', '..', 'fixtures', 'initial.yaml')
-        print(filename)
         os.makedirs(os.path.dirname(filename), exist_ok=True)
 
         data = []
