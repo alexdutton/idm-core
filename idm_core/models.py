@@ -52,10 +52,14 @@ class Identity(DirtyFieldsMixin, models.Model):
 
     claim_code = models.UUIDField(null=True, blank=True)
 
+    merged_into = models.ForeignKey('self', null=True, blank=True)
+
+    class Meta:
+        verbose_name = 'identity'
+        verbose_name_plural = 'identities'
+
     def natural_key(self):
         return self.uuid
-
-    merged_into = models.ForeignKey('self', null=True, blank=True)
 
     def __str__(self):
         try:

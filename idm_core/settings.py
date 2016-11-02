@@ -38,7 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'idm_core',
     'idm_core.contact',
-    'idm_core.org_relationship',
+    'idm_core.org_relationship.apps.OrgRelationshipConfig',
     'idm_core.attestation',
     'idm_core.identifier',
     'idm_core.name',
