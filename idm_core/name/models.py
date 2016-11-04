@@ -129,7 +129,7 @@ def name_changed(instance, **kwargs):
         for context in name.contexts.all():
             names_by_context[context.pk].append(name)
 
-    for context in ('presentational', 'formal', 'informal'):
+    for context in ('presentational', 'legal', 'informal'):
         if context in names_by_context:
             identity.primary_name = names_by_context[context][0]
             break

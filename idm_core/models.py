@@ -21,6 +21,7 @@ STATE_CHOICES = (
     ('pending_claim', 'pending claim'),
     ('active', 'active'),
     ('dormant', 'dormant'),
+    ('merged', 'merged'),
 )
 
 def get_uuid():
@@ -65,7 +66,7 @@ class Identity(DirtyFieldsMixin, models.Model):
         try:
             return self.primary_name.plain
         except Exception:
-            return super(Identity, self).__str__()
+            return self.primary_email or self.id
 
     @transition(field=state, source='new', target='pending_claim',
                 conditions=[lambda self: self.emails.exists()])
@@ -90,5 +91,9 @@ class Identity(DirtyFieldsMixin, models.Model):
     @transition(field=state, source='dormant', target='active')
     def unset_dormant(self):
         pass
+
+    @transition(field=state, source='*', target='merged')
+    def merge_into(self, other):
+        self.merged_into = other
 
 reversion.register(Identity)

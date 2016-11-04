@@ -50,7 +50,7 @@ def merge_people(merge_these, into_this, trigger=None, reason=None):
             for field_name in _fields_to_copy:
                 if getattr(identity, field_name) and not getattr(into_this, field_name):
                     setattr(into_this, field_name, getattr(identity, field_name))
-            identity.merged_into = into_this
+            identity.merge_into(into_this)
             identity.save()
 
         into_this.save()
