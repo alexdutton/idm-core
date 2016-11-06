@@ -88,7 +88,13 @@ API_BASE = os.environ.get('API_BASE', 'http://localhost:8000/')
 CLAIM_URL = os.environ.get('CLAIM_URL', 'http://localhost:8001/claim/{}/')
 
 # AMQP
-BROKER_URL = os.environ.get('AMQP_BROKER_URL', 'amqp://guest:guest@localhost/')
+BROKER_ENABLED = bool(os.environ.get('AMQP_BROKER_ENABLED'))
+BROKER_TRANSPORT = os.environ.get('AMQP_BROKER_TRANSPORT', 'amqp')
+BROKER_HOSTNAME= os.environ.get('AMQP_BROKER_HOSTNAME', 'localhost')
+BROKER_VHOST= os.environ.get('AMQP_BROKER_VHOST', '/')
+BROKER_USERNAME = os.environ.get('AMQP_BROKER_USERNAME', 'guest')
+BROKER_PASSWORD = os.environ.get('AMQP_BROKER_PASSWORD', 'guest')
+BROKER_PREFIX = os.environ.get('AMQP_BROKER_PREFIX', 'idm.core.')
 
 CELERYBEAT_SCHEDULE = {
     'delayed-save': {
