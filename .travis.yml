@@ -11,7 +11,7 @@ install:
   - pip install codecov
   - python -c "import enum" 2&>1 > /dev/null || pip install enum34
 env:
-  - DJANGO_SETTINGS_MODULE=idm_core.settings DJANGO_ALLOWED_HOSTS=localhost DJANGO_SECRET_KEY=secret-key-for-travis
+  - DJANGO_SETTINGS_MODULE=idm_core.tests.settings DJANGO_ALLOWED_HOSTS=localhost DJANGO_SECRET_KEY=secret-key-for-travis
 script: PYTHONPATH=. coverage run --source=. `which django-admin.py` test
 after_success:
   - codecov
