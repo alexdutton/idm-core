@@ -10,6 +10,7 @@ SOURCE_DOCUMENT_TYPE = (
     ('national-identity-document', 'National identity document'),
     ('bill', 'Bill'),
     ('visa', 'Visa'),
+    ('deed-poll', 'Deed poll'),
     ('other', 'Other'),
 )
 
