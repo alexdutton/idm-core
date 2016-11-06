@@ -7,7 +7,7 @@ from django.db import models
 from django.db.models.signals import post_save, post_delete
 
 from idm_core.attestation.models import Attestable
-from idm_core.models import Identity
+from idm_core.models import Person
 from idm_core.name.fields import JSONSchemaField
 
 NAME_COMPONENT_TYPE_CHOICES = (
@@ -48,7 +48,7 @@ class NameContext(models.Model):
 
 
 class Name(Attestable, models.Model):
-    identity = models.ForeignKey(Identity, related_name='names')
+    person = models.ForeignKey(Person, related_name='names')
 
     plain = models.TextField(blank=True)
     plain_full = models.TextField(blank=True)
@@ -122,8 +122,8 @@ class Name(Attestable, models.Model):
 
 
 def name_changed(instance, **kwargs):
-    identity = instance.identity
-    names = list(identity.names.filter(active=True).order_by('id'))
+    person = instance.person
+    names = list(person.names.filter(active=True).order_by('id'))
     names_by_context = collections.defaultdict(list)
     for name in names:
         for context in name.contexts.all():
@@ -131,12 +131,12 @@ def name_changed(instance, **kwargs):
 
     for context in ('presentational', 'legal', 'informal'):
         if context in names_by_context:
-            identity.primary_name = names_by_context[context][0]
+            person.primary_name = names_by_context[context][0]
             break
     else:
-        identity.primary_name = None
+        person.primary_name = None
 
-    identity.save()
+    person.save()
 
 post_save.connect(name_changed, sender=Name)
 post_delete.connect(name_changed, sender=Name)

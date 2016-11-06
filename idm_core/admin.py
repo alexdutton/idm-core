@@ -23,7 +23,7 @@ class AffiliationInlineModelAdmin(TabularInline):
     readonly_fields = ('state',)
 
 
-@admin.register(models.Identity)
+@admin.register(models.Person)
 class PersonAdmin(VersionAdmin):
     formfield_overrides = {
         django.db.models.TextField: {'widget': widgets.TextInput},

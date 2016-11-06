@@ -30,10 +30,10 @@ def get_uuid():
 
 class User(AbstractBaseUser):
     uuid = models.UUIDField(primary_key=True, default=get_uuid, editable=False)
-    identity = models.ForeignKey('Identity', null=True, blank=True)
+    person = models.ForeignKey('Person', null=True, blank=True)
 
 
-class Identity(DirtyFieldsMixin, models.Model):
+class Person(DirtyFieldsMixin, models.Model):
     id = models.UUIDField(primary_key=True, default=get_uuid, editable=False)
 
     sex = models.CharField(max_length=1, choices=SEX_CHOICES, default='0')
@@ -56,7 +56,7 @@ class Identity(DirtyFieldsMixin, models.Model):
     merged_into = models.ForeignKey('self', null=True, blank=True)
 
     class Meta:
-        verbose_name = 'identity'
+        verbose_name = 'person'
         verbose_name_plural = 'identities'
 
     def natural_key(self):
@@ -74,10 +74,10 @@ class Identity(DirtyFieldsMixin, models.Model):
         if not email:
             email = self.emails.order_by('order').first().value
         self.claim_code = get_uuid()
-        templated_email.send_templated_mail(template_name='claim-identity',
+        templated_email.send_templated_mail(template_name='claim-person',
                                             from_email=settings.DEFAULT_FROM_EMAIL,
                                             to_email=email,
-                                            context={'identity': self,
+                                            context={'person': self,
                                                      'claim_url': settings.CLAIM_URL.format(self.claim_code)})
 
     @transition(field=state, source='pending_claim', target='active')
@@ -96,4 +96,4 @@ class Identity(DirtyFieldsMixin, models.Model):
     def merge_into(self, other):
         self.merged_into = other
 
-reversion.register(Identity)
+reversion.register(Person)

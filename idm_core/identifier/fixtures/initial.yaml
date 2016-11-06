@@ -3,9 +3,9 @@
   fields:
     label: 'SSO username'
 - model: identifier.IdentifierType
-  pk: identity
+  pk: person
   fields:
-    label: 'identity ID'
+    label: 'person ID'
 - model: identifier.IdentifierType
   pk: card-number
   fields:

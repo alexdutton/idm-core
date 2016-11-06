@@ -16,7 +16,7 @@ class NationalitySerializer(Attestable, serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = models.Nationality
-        exclude = ('identity',)
+        exclude = ('person',)
 
     def to_internal_value(self, data):
         try:

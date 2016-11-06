@@ -1,7 +1,7 @@
 {% block subject %}Set up your University of Oxford account{% endblock %}
 
 {% block plain %}
-Dear {{ identity.names.first.plain }},
+Dear {{ person.names.first.plain }},
 
 You've recently
 {% endblock %}

@@ -13,14 +13,14 @@ django.setup()
 
 from idm_core.identifier.models import IdentifierType
 from idm_core.identifier.serializers import IdentifierTypeSerializer
-from idm_core.models import Identity
+from idm_core.models import Person
 from idm_core.nationality.models import Country
 from idm_core.nationality.serializers import CountrySerializer
 from idm_core.org_relationship.models import Affiliation, Role, AffiliationType, RoleType, Organization
 from idm_core.org_relationship.serializers import AffiliationSerializer, RoleSerializer, RoleTypeSerializer, \
     AffiliationTypeSerializer, OrganizationSerializer
 from idm_core.organization.models import OrganizationTag
-from idm_core.serializers import IdentitySerializer
+from idm_core.serializers import PersonSerializer
 
 INITIAL_FIELD_VALUES = '_initial_field_values'
 NEEDS_PUBLISH = '_needs_publish'
@@ -30,15 +30,15 @@ _ModelConfig = collections.namedtuple('_ModelConfig', 'serializer exchange natur
 reference_exchange = kombu.Exchange('iam.idm.reference', 'topic', durable=True)
 
 _model_config = {
-    Identity: _ModelConfig(IdentitySerializer,
-                           kombu.Exchange('iam.idm.identity', 'topic', durable=True),
+    Person: _ModelConfig(PersonSerializer,
+                           kombu.Exchange('iam.idm.person', 'topic', durable=True),
                            lambda instance: instance.id),
     Affiliation: _ModelConfig(AffiliationSerializer,
                               kombu.Exchange('iam.idm.affiliation', 'topic', durable=True),
-                              lambda instance: instance.identity_id),
+                              lambda instance: instance.person_id),
     Role: _ModelConfig(RoleSerializer,
                        kombu.Exchange('iam.idm.role', 'topic', durable=True),
-                       lambda instance: instance.identity_id),
+                       lambda instance: instance.person_id),
 }
 
 publish_related = {
@@ -121,11 +121,11 @@ pre_delete.connect(instance_deleted)
 
 
 def publish_merge_to_amqp(merge_these, into_this):
-    model_config = _model_config[Identity]
+    model_config = _model_config[Person]
     with kombu.Connection(settings.BROKER_URL) as conn:
         producer = conn.Producer(serializer='json')
-        producer.publish({'mergedIdentities': [identity.id for identity in merge_these],
-                          'targetIdentity': into_this.id},
+        producer.publish({'mergedIdentities': [person.id for person in merge_these],
+                          'targetPerson': into_this.id},
                          exchange=model_config.exchange,
                          routing_key='{}.{}'.format('merged',
                                                     getattr(into_this, model_config.natural_key)))

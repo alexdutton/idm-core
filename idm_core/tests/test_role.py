@@ -1,6 +1,6 @@
 from django.test import TestCase
 
-from idm_core.models import Identity
+from idm_core.models import Person
 from idm_core.org_relationship.models import Role, RoleType, OrganizationRole
 from idm_core.organization.models import Organization
 
@@ -13,8 +13,8 @@ class RoleTestCase(TestCase):
         self.role_type = RoleType.objects.get(pk='head')
 
     def testCreateRole(self):
-        identity = Identity.objects.create()
-        role = Role(identity=identity,
+        person = Person.objects.create()
+        role = Role(person=person,
                     organization=self.organization,
                     type=self.role_type)
         role.save()

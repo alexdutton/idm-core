@@ -13,14 +13,14 @@ class TypeMixin(object):
         return data
 
 
-from idm_core.models import Identity
+from idm_core.models import Person
 from idm_core.name.serializers import NameSerializer, EmbeddedNameSerializer
 from idm_core.nationality.models import Country, Nationality
 from idm_core.nationality.serializers import CountrySerializer, NationalitySerializer, EmbeddedNationalitySerializer
 
 
-class IdentitySerializer(TypeMixin, HyperlinkedModelSerializer):
-    #url = serializers.HyperlinkedIdentityField(view_name='identity-detail', lookup_field='uuid')
+class PersonSerializer(TypeMixin, HyperlinkedModelSerializer):
+    #url = serializers.HyperlinkedPersonField(view_name='person-detail', lookup_field='uuid')
     id = serializers.UUIDField(read_only=True)
     names = EmbeddedNameSerializer(many=True, default=())
     nationalities = EmbeddedNationalitySerializer(many=True, default=(), source='nationality_set')
@@ -28,7 +28,7 @@ class IdentitySerializer(TypeMixin, HyperlinkedModelSerializer):
     identifiers = EmbeddedIdentifierSerializer(many=True, default=())
 
     class Meta:
-        model = Identity
+        model = Person
 
         fields = (
             'id', 'sex', 'date_of_birth', 'date_of_death', 'deceased', 'state', 'identifiers',
@@ -46,17 +46,17 @@ class IdentitySerializer(TypeMixin, HyperlinkedModelSerializer):
         emails = validated_data.pop('emails', ())
         nationalities = validated_data.pop('nationality_set', ())
         identifiers = validated_data.pop('identifiers', ())
-        identity = super(IdentitySerializer, self).create(validated_data)
+        person = super(PersonSerializer, self).create(validated_data)
         for name in names:
-            name['identity'] = identity
+            name['person'] = person
         for email in emails:
-            email['identity'] = identity
+            email['person'] = person
         for nationality in nationalities:
-            nationality['identity'] = identity
+            nationality['person'] = person
         for identifier in identifiers:
-            identifier['identity'] = identity
+            identifier['person'] = person
         self.fields['names'].create(names)
         self.fields['emails'].create(emails)
         self.fields['nationalities'].create(nationalities)
         self.fields['identifiers'].create(identifiers)
-        return identity
+        return person

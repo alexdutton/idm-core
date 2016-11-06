@@ -6,7 +6,7 @@ from . import models
 class OrgRelationshipAdmin(admin.ModelAdmin):
     list_filter = ('state', 'organization', 'type', 'suspended')
     readonly_fields = ('state', 'suspended')
-    list_display = ('identity', 'organization', 'type', 'state', 'suspended')
+    list_display = ('person', 'organization', 'type', 'state', 'suspended')
 
 
 @admin.register(models.Affiliation)

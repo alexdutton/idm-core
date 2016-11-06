@@ -4,7 +4,7 @@ from unittest import mock
 from django.utils import timezone
 from django.test import TestCase
 
-from idm_core.models import Identity
+from idm_core.models import Person
 from idm_core.org_relationship.models import AffiliationType, Affiliation
 from idm_core.organization.models import Organization
 
@@ -17,8 +17,8 @@ class CreationTestCase(TestCase):
         self.affiliation_type = AffiliationType.objects.get(pk='staff')
 
     def testForthcomingAffiliation(self):
-        identity = Identity.objects.create()
-        affiliation = Affiliation(identity=identity,
+        person = Person.objects.create()
+        affiliation = Affiliation(person=person,
                                   organization=self.organization,
                                   start_date=timezone.now() + datetime.timedelta(1),
                                   type=self.affiliation_type)
@@ -26,8 +26,8 @@ class CreationTestCase(TestCase):
         self.assertEqual(affiliation.state, 'forthcoming')
 
     def testActiveAffiliation(self):
-        identity = Identity.objects.create()
-        affiliation = Affiliation(identity=identity,
+        person = Person.objects.create()
+        affiliation = Affiliation(person=person,
                                   organization=self.organization,
                                   start_date=timezone.now() - datetime.timedelta(1),
                                   type=self.affiliation_type)
@@ -35,8 +35,8 @@ class CreationTestCase(TestCase):
         self.assertEqual(affiliation.state, 'active')
 
     def testHistoricAffiliation(self):
-        identity = Identity.objects.create()
-        affiliation = Affiliation(identity=identity,
+        person = Person.objects.create()
+        affiliation = Affiliation(person=person,
                                   organization=self.organization,
                                   start_date=timezone.now() - datetime.timedelta(2),
                                   end_date=timezone.now() - datetime.timedelta(1),
@@ -46,8 +46,8 @@ class CreationTestCase(TestCase):
 
     def testSuspendForthcomingAffiliation(self):
         # Suspending a non-active affiliation shouldn't result in a state of suspended
-        identity = Identity.objects.create()
-        affiliation = Affiliation(identity=identity,
+        person = Person.objects.create()
+        affiliation = Affiliation(person=person,
                                   organization=self.organization,
                                   start_date=timezone.now() + datetime.timedelta(1),
                                   type=self.affiliation_type)
@@ -59,8 +59,8 @@ class CreationTestCase(TestCase):
         self.assertEqual(affiliation.suspended, True)
 
     def testSuspendActiveAffiliation(self):
-        identity = Identity.objects.create()
-        affiliation = Affiliation(identity=identity,
+        person = Person.objects.create()
+        affiliation = Affiliation(person=person,
                                   organization=self.organization,
                                   type=self.affiliation_type)
         affiliation.save()
@@ -76,8 +76,8 @@ class CreationTestCase(TestCase):
     @mock.patch('django.utils.timezone.now')
     def testSuspendUntil(self, now):
         now.return_value = datetime.datetime(1970, 1, 1).replace(tzinfo=timezone.utc)
-        identity = Identity.objects.create()
-        affiliation = Affiliation(identity=identity,
+        person = Person.objects.create()
+        affiliation = Affiliation(person=person,
                                   organization=self.organization,
                                   type=self.affiliation_type)
         affiliation.save()
@@ -90,8 +90,8 @@ class CreationTestCase(TestCase):
     @mock.patch('django.utils.timezone.now')
     def testTimePassing(self, now):
         now.return_value = datetime.datetime(1970, 1, 1).replace(tzinfo=timezone.utc)
-        identity = Identity.objects.create()
-        affiliation = Affiliation(identity=identity,
+        person = Person.objects.create()
+        affiliation = Affiliation(person=person,
                                   organization=self.organization,
                                   start_date=datetime.datetime(1970, 1, 2).replace(tzinfo=timezone.utc),
                                   end_date=datetime.datetime(1970, 1, 4).replace(tzinfo=timezone.utc),

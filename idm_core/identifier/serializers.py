@@ -17,7 +17,7 @@ class IdentifierSerializer(Attestable, serializers.HyperlinkedModelSerializer):
 
 
 class EmbeddedIdentifierSerializer(IdentifierSerializer):
-    identity = serializers.CharField(required=False, source='identity_id', write_only=True)
+    person = serializers.CharField(required=False, source='person_id', write_only=True)
 
     class Meta(IdentifierSerializer.Meta):
         exclude = ('attestations',)

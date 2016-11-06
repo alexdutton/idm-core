@@ -1,7 +1,7 @@
 from django.db import models
 
 from idm_core.attestation.models import Attestable
-from idm_core.models import Identity
+from idm_core.models import Person
 
 
 class IdentifierType(models.Model):
@@ -11,9 +11,9 @@ class IdentifierType(models.Model):
 
 class Identifier(Attestable, models.Model):
     type = models.ForeignKey(IdentifierType)
-    identity = models.ForeignKey(Identity, db_index=True, related_name='identifiers')
+    person = models.ForeignKey(Person, db_index=True, related_name='identifiers')
     value = models.CharField(max_length=64)
 
     class Meta:
         unique_together = (('type', 'value'),)
-        index_together = (('type', 'identity'), ('type', 'value'))
+        index_together = (('type', 'person'), ('type', 'value'))

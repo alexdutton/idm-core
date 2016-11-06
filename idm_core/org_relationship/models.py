@@ -6,7 +6,7 @@ from django.utils.functional import cached_property
 from django_fsm import FSMField, transition, RETURN_VALUE, FSMFieldMixin
 
 from idm_core.delayed_save.models import DelayedSave
-from idm_core.models import Identity
+from idm_core.models import Person
 from idm_core.organization.models import Organization
 
 
@@ -27,8 +27,8 @@ STATE_CHOICES = (
 )
 
 
-def is_owning_identity(instance, user):
-    return user.identity == instance.identity
+def is_owning_person(instance, user):
+    return user.person == instance.person
 
 
 class RelationshipType(models.Model):
@@ -43,7 +43,7 @@ class RelationshipType(models.Model):
 
 
 class Relationship(models.Model):
-    identity = models.ForeignKey(Identity)
+    person = models.ForeignKey(Person)
     organization = models.ForeignKey(Organization)
 #    type = models.ForeignKey(RelationshipType)
 
@@ -108,12 +108,12 @@ class Relationship(models.Model):
         pass
 
     @transition(field=state, source='offered', target=RETURN_VALUE(),
-                permission=is_owning_identity)
+                permission=is_owning_person)
     def accept(self):
         return self._time_has_passed(now_active=True)
 
     @transition(field=state, source='offered', target='rejected',
-                permission=is_owning_identity)
+                permission=is_owning_person)
     def reject(self):
         pass
 
