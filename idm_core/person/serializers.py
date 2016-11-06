@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from rest_framework.serializers import HyperlinkedModelSerializer, ValidationError
+from rest_framework.serializers import HyperlinkedModelSerializer, ValidationError, ModelSerializer
 
 from idm_core.contact.serializers import EmbeddedEmailSerializer
 from idm_core.identifier.serializers import EmbeddedIdentifierSerializer
@@ -17,25 +17,32 @@ from idm_core.name.serializers import EmbeddedNameSerializer
 from idm_core.nationality.serializers import EmbeddedNationalitySerializer
 
 
-class PersonSerializer(TypeMixin, HyperlinkedModelSerializer):
-    #url = serializers.HyperlinkedPersonField(view_name='person-detail', lookup_field='uuid')
+class PlainPersonSerializer(TypeMixin, ModelSerializer):
+    url = serializers.HyperlinkedIdentityField(view_name='person-detail')
+    id = serializers.UUIDField(read_only=True)
+
+    class Meta:
+        model = Person
+
+        fields = (
+            'url', 'id', 'sex', 'date_of_birth', 'date_of_death', 'deceased', 'state', 'identifiers',
+            'primary_email', 'primary_username',
+        )
+
+        read_only_fields = (
+            'merged_into',
+        )
+
+
+class PersonSerializer(HyperlinkedModelSerializer, PlainPersonSerializer):
     id = serializers.UUIDField(read_only=True)
     names = EmbeddedNameSerializer(many=True, default=())
     nationalities = EmbeddedNationalitySerializer(many=True, default=(), source='nationality_set')
     emails = EmbeddedEmailSerializer(many=True, default=())
     identifiers = EmbeddedIdentifierSerializer(many=True, default=())
 
-    class Meta:
-        model = Person
-
-        fields = (
-            'id', 'sex', 'date_of_birth', 'date_of_death', 'deceased', 'state', 'identifiers',
-            'primary_email', 'primary_username', 'names', 'nationalities', 'emails',
-        )
-
-        read_only_fields = (
-            'merged_into',
-        )
+    class Meta(PlainPersonSerializer.Meta):
+        fields = PlainPersonSerializer.Meta.fields + ('names', 'nationalities', 'emails')
 
     def create(self, validated_data):
         if 'state' in validated_data and validated_data['state'] not in ('new', 'active'):

@@ -1,8 +1,8 @@
 import abc
 from django.db import transaction, connection
 
+from idm_core import broker
 from idm_core.nationality.models import Nationality
-from idm_core.notification import messaging
 from idm_core.org_relationship.models import Affiliation, Role
 from .attestation.models import SourceDocument
 from .name.models import Name
@@ -54,4 +54,13 @@ def merge_people(merge_these, into_this, trigger=None, reason=None):
 
         into_this.save()
 
-    connection.on_commit(lambda : messaging.publish_merge_to_amqb(merge_these, into_this))
+    connection.on_commit(lambda : publish_merge_to_amqp(merge_these, into_this))
+
+
+def publish_merge_to_amqp(merge_these, into_this):
+    with broker.connection.acquire(block=True) as conn:
+        producer = conn.Producer(serializer='json')
+        producer.publish({'mergedPeople': [person.id for person in merge_these],
+                          'targetPerson': into_this.id},
+                         exchange=model_config.exchange,
+                         routing_key='{}.{}'.format('merged', into_this.pk))
