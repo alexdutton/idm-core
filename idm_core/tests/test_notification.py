@@ -36,5 +36,4 @@ class NotificationTestCase(TransactionTestCase):
                 person.save()
                 person.delete()
             message = queue.get()
-            while queue.get():
             self.assertIsNone(message)
