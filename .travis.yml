@@ -1,7 +1,6 @@
 language: python
 services:
   - postgresql
-  - rabbitmq
 addons:
   postgresql: "9.4"
 python:
