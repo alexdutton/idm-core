@@ -1,12 +1,12 @@
 import datetime
 from unittest import mock
 
-from django.utils import timezone
 from django.test import TestCase
+from django.utils import timezone
 
-from idm_core.models import Person
 from idm_core.org_relationship.models import AffiliationType, Affiliation
 from idm_core.organization.models import Organization
+from idm_core.person.models import Person
 
 
 class CreationTestCase(TestCase):

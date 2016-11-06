@@ -1,8 +1,8 @@
 from django.core.exceptions import ValidationError
 from django.test import TestCase
 
-from idm_core.models import Person
 from idm_core.name.models import Name
+from idm_core.person.models import Person
 
 
 class NamesTestCase(TestCase):

@@ -1,4 +1,3 @@
-import celery.app.control
 from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 from django.utils import timezone
@@ -6,8 +5,8 @@ from django.utils.functional import cached_property
 from django_fsm import FSMField, transition, RETURN_VALUE, FSMFieldMixin
 
 from idm_core.delayed_save.models import DelayedSave
-from idm_core.models import Person
 from idm_core.organization.models import Organization
+from idm_core.person.models import Person
 
 
 class FSMBooleanField(FSMFieldMixin, models.BooleanField):

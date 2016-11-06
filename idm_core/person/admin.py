@@ -1,12 +1,12 @@
-from django.contrib import admin
 import django.db.models
-from django.contrib.admin.options import InlineModelAdmin, TabularInline
+from django.contrib import admin
+from django.contrib.admin.options import TabularInline
 from django.forms import widgets
 from reversion.admin import VersionAdmin
 
 from idm_core.name.models import Name
 from idm_core.org_relationship.models import Affiliation
-from . import models
+from idm_core.person import models
 
 
 class NameInlineModelAdmin(TabularInline):

@@ -2,15 +2,15 @@ from django.conf.urls import include, url
 from django.contrib import admin
 from rest_framework_nested import routers
 
-import idm_core.views
-import idm_core.name.views
-import idm_core.identifier.views
 import idm_core.attestation.views
-import idm_core.org_relationship.views
+import idm_core.identifier.views
+import idm_core.name.views
 import idm_core.nationality.views
+import idm_core.org_relationship.views
+import idm_core.person.views
 
 router = routers.DefaultRouter()
-router.register('person', idm_core.views.PersonViewSet)
+router.register('person', idm_core.person.views.PersonViewSet)
 router.register('country', idm_core.nationality.views.CountryViewSet)
 router.register('affiliation-type', idm_core.org_relationship.views.AffiliationTypeViewSet)
 router.register('role-type', idm_core.org_relationship.views.RoleTypeViewSet)

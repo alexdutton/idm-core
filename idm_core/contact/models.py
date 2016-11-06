@@ -1,8 +1,8 @@
 from django.db import models
 from django.db.models import Max
 
-from idm_core.models import Person
 from idm_core.org_relationship.models import Affiliation
+from idm_core.person.models import Person
 
 
 class ContactContext(models.Model):

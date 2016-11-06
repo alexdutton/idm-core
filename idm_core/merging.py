@@ -1,10 +1,9 @@
 import abc
 from django.db import transaction, connection
 
-from idm_core import messaging
 from idm_core.nationality.models import Nationality
+from idm_core.notification import messaging
 from idm_core.org_relationship.models import Affiliation, Role
-from .models import Person
 from .attestation.models import SourceDocument
 from .name.models import Name
 

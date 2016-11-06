@@ -2,7 +2,7 @@ from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelatio
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 
-from idm_core.models import Person
+from idm_core.person.models import Person
 
 SOURCE_DOCUMENT_TYPE = (
     ('driving-license', 'Driving license'),

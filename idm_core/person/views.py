@@ -1,8 +1,8 @@
-from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
+from rest_framework.viewsets import ModelViewSet
 
 from drf_fsm_transitions.viewset_mixins import get_viewset_transition_action_mixin
-
 from . import models, serializers
+
 
 class PersonSubViewMixin(object):
     """

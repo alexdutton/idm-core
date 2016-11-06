@@ -1,26 +1,21 @@
 from urllib.parse import urljoin
 
 import collections
-import enum
 import kombu
 from django.conf import settings
-
 from django.db import connection
-from django.db.models.signals import post_save, post_delete, pre_delete
-
-import django
-django.setup()
+from django.db.models.signals import post_save, pre_delete
 
 from idm_core.identifier.models import IdentifierType
 from idm_core.identifier.serializers import IdentifierTypeSerializer
-from idm_core.models import Person
 from idm_core.nationality.models import Country
 from idm_core.nationality.serializers import CountrySerializer
 from idm_core.org_relationship.models import Affiliation, Role, AffiliationType, RoleType, Organization
 from idm_core.org_relationship.serializers import AffiliationSerializer, RoleSerializer, RoleTypeSerializer, \
     AffiliationTypeSerializer, OrganizationSerializer
 from idm_core.organization.models import OrganizationTag
-from idm_core.serializers import PersonSerializer
+from idm_core.person.models import Person
+from idm_core.person.serializers import PersonSerializer
 
 INITIAL_FIELD_VALUES = '_initial_field_values'
 NEEDS_PUBLISH = '_needs_publish'

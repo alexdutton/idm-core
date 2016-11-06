@@ -1,6 +1,6 @@
 from rest_framework import viewsets
 
-from idm_core.views import PersonSubViewMixin
+from idm_core.person.views import PersonSubViewMixin
 from . import models, serializers
 
 

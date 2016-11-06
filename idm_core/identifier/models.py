@@ -1,7 +1,7 @@
 from django.db import models
 
 from idm_core.attestation.models import Attestable
-from idm_core.models import Person
+from idm_core.person.models import Person
 
 
 class IdentifierType(models.Model):

@@ -1,14 +1,13 @@
-import collections
 from xml.sax.saxutils import escape
 
-from django.contrib.postgres.fields import JSONField
+import collections
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models.signals import post_save, post_delete
 
 from idm_core.attestation.models import Attestable
-from idm_core.models import Person
 from idm_core.name.fields import JSONSchemaField
+from idm_core.person.models import Person
 
 NAME_COMPONENT_TYPE_CHOICES = (
     ('title', 'Title'),

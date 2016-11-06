@@ -1,13 +1,12 @@
 import http.client
 import json
-from unittest import mock
-from django.test import TestCase
-from django_fsm import TransitionNotAllowed
 
-from idm_core.contact.models import Email, ContactContext
+from django.test import TestCase
+
+from idm_core.contact.models import ContactContext
 from idm_core.identifier.models import IdentifierType
-from idm_core.models import Person
 from idm_core.name.models import NameContext
+from idm_core.person.models import Person
 
 
 class CreationTestCase(TestCase):

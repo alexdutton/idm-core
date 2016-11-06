@@ -1,9 +1,10 @@
 from unittest import mock
+
 from django.test import TestCase
 from django_fsm import TransitionNotAllowed
 
 from idm_core.contact.models import Email, ContactContext
-from idm_core.models import Person
+from idm_core.person.models import Person
 
 
 class ClaimTestCase(TestCase):

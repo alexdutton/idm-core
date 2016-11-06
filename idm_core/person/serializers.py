@@ -1,7 +1,6 @@
 from rest_framework import serializers
-from rest_framework.serializers import HyperlinkedModelSerializer, ModelSerializer, ValidationError
+from rest_framework.serializers import HyperlinkedModelSerializer, ValidationError
 
-from idm_core import models
 from idm_core.contact.serializers import EmbeddedEmailSerializer
 from idm_core.identifier.serializers import EmbeddedIdentifierSerializer
 
@@ -13,10 +12,9 @@ class TypeMixin(object):
         return data
 
 
-from idm_core.models import Person
-from idm_core.name.serializers import NameSerializer, EmbeddedNameSerializer
-from idm_core.nationality.models import Country, Nationality
-from idm_core.nationality.serializers import CountrySerializer, NationalitySerializer, EmbeddedNationalitySerializer
+from idm_core.person.models import Person
+from idm_core.name.serializers import EmbeddedNameSerializer
+from idm_core.nationality.serializers import EmbeddedNationalitySerializer
 
 
 class PersonSerializer(TypeMixin, HyperlinkedModelSerializer):

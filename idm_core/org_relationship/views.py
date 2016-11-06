@@ -1,10 +1,10 @@
 import dateutil.parser
 from django.utils import timezone
-from drf_fsm_transitions.viewset_mixins import get_viewset_transition_action_mixin
 from rest_framework import viewsets
 from rest_framework.exceptions import ValidationError
 
-from ..views import PersonSubViewMixin
+from drf_fsm_transitions.viewset_mixins import get_viewset_transition_action_mixin
+from idm_core.person.views import PersonSubViewMixin
 from . import models, serializers
 
 
