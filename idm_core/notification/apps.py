@@ -61,8 +61,9 @@ class NotificationConfig(AppConfig):
             exchange = exchange(connection)
             exchange.publish(exchange.Message(json.dumps(serializer.to_representation(instance)),
                                               content_type='application/json'),
-                             routing_key='{}.{}'.format(publish_type,
-                                                        instance.pk))
+                             routing_key='{}.{}.{}'.format(type(instance).__name__,
+                                                           publish_type,
+                                                           instance.pk))
 
     def _needs_publish(self, instance, publish_type):
         sender = type(instance)

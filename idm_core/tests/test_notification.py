@@ -21,7 +21,7 @@ class NotificationTestCase(TransactionTestCase):
             message = queue.get()
             self.assertIsInstance(message, Message)
             self.assertEqual(message.delivery_info['routing_key'],
-                             'created.{}'.format(str(person.id)))
+                             'Person.created.{}'.format(str(person.id)))
             self.assertEqual(message.content_type, 'application/json')
             self.assertEqual(json.loads(message.body.decode())['@type'], 'Person')
 
