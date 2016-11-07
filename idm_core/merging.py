@@ -1,4 +1,5 @@
-import abc
+import collections.abc
+from django.conf import settings
 from django.db import transaction, connection
 
 from idm_core import broker
@@ -10,17 +11,17 @@ from .name.models import Name
 _fields_to_copy = {'sex', 'primary_email', 'primary_username', 'date_of_birth',
                    'date_of_death'}
 
-def merge_people(merge_these, into_this, trigger=None, reason=None):
+def merge(merge_these, into_this, trigger=None, reason=None):
     with transaction.atomic():
-        if not isinstance(merge_these, abc.Collection):
+        if not isinstance(merge_these, collections.abc.Iterable):
             merge_these = (merge_these,)
 
-        for source_document in SourceDocument.filter(person__in=merge_these):
+        for source_document in SourceDocument.objects.filter(person__in=merge_these):
             source_document.person = into_this
             source_document.save()
 
         names = set(name.marked_up for name in into_this.names.all())
-        for name in Name.filter(person__in=merge_these):
+        for name in Name.objects.filter(person__in=merge_these):
             if name.marked_up in names:
                 name.attestations.all().delete()
                 name.delete()
@@ -62,5 +63,7 @@ def publish_merge_to_amqp(merge_these, into_this):
         producer = conn.Producer(serializer='json')
         producer.publish({'mergedPeople': [person.id for person in merge_these],
                           'targetPerson': into_this.id},
-                         exchange=model_config.exchange,
-                         routing_key='{}.{}'.format('merged', into_this.pk))
+                         exchange=settings.BROKER_PREFIX + 'person',
+                         routing_key='{}.{}.{}'.format(type(into_this).__name__,
+                                                       'merged',
+                                                       into_this.pk))
