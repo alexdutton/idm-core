@@ -2,6 +2,7 @@ import json
 from urllib.parse import urljoin
 
 import kombu
+from dirtyfields import DirtyFieldsMixin
 from django.apps import AppConfig
 from django.conf import settings
 from django.db import connection
@@ -72,6 +73,8 @@ class NotificationConfig(AppConfig):
     def _instance_changed(self, sender, instance, created, **kwargs):
         if sender in self._notification_registry:
             publish_type = 'created' if created else 'changed'
+            if not created and isinstance(instance, DirtyFieldsMixin) and not instance.is_dirty():
+                return
             self._needs_publish(instance, publish_type)
 
     def _instance_deleted(self, sender, instance, **kwargs):
