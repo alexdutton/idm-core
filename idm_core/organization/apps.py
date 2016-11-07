@@ -9,4 +9,4 @@ class OrganizationConfig(AppConfig):
         from . import models, serializers
         apps.get_app_config('notification').register(models.Organization,
                                                      serializers.OrganizationSerializer,
-                                                     'organization')
+                                                     'reference')

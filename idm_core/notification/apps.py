@@ -34,6 +34,10 @@ class NotificationConfig(AppConfig):
             exchange(conn).declare()
         self._notification_registry[model] = (serializer, exchange)
 
+    def register_many(self, registrations):
+        for registration in registrations:
+            self.register(*registration)
+
     def _publish_change(self, sender, instance, **kwargs):
         serializer, exchange = self._notification_registry[sender]
 
