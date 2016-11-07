@@ -1,7 +1,6 @@
 import json
 
 import kombu
-import mock
 from django.db import transaction
 from django.test import TransactionTestCase
 from kombu.message import Message

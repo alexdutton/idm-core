@@ -35,7 +35,6 @@ class NotificationConfig(AppConfig):
         self._notification_registry[model] = (serializer, exchange)
 
     def _publish_change(self, sender, instance, **kwargs):
-        print("PUBLISHING", sender, instance.pk, repr(instance._needs_publish))
         serializer, exchange = self._notification_registry[sender]
 
         needs_publish = instance._needs_publish
