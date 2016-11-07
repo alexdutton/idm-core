@@ -66,7 +66,7 @@ class Person(DirtyFieldsMixin, models.Model):
         try:
             return self.primary_name.plain
         except Exception:
-            return self.primary_email or self.id
+            return self.primary_email or str(self.id)
 
     @transition(field=state, source='new', target='pending_claim',
                 conditions=[lambda self: self.emails.exists()])
