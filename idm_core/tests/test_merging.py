@@ -10,3 +10,6 @@ class MergingTestCase(TransactionTestCase):
         secondary = Person.objects.create()
 
         merging.merge(secondary, primary)
+
+        self.assertEqual(secondary.merged_into, primary)
+        self.assertEqual(secondary.state, 'merged')
