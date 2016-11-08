@@ -15,9 +15,12 @@ class IdentifierSerializer(Attestable, serializers.HyperlinkedModelSerializer):
     class Meta:
         model = models.Identifier
 
+        fields = ('type', 'value', 'person', 'attestations')
+        read_only_fields = ('person', 'type')
+
 
 class EmbeddedIdentifierSerializer(IdentifierSerializer):
     person = serializers.CharField(required=False, source='person_id', write_only=True)
 
     class Meta(IdentifierSerializer.Meta):
-        exclude = ('attestations',)
+        fields = ('type', 'value', 'person')

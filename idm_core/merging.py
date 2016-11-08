@@ -3,6 +3,7 @@ from django.conf import settings
 from django.db import transaction, connection
 
 from idm_core import broker
+from idm_core.identifier.models import Identifier
 from idm_core.nationality.models import Nationality
 from idm_core.org_relationship.models import Affiliation, Role
 from .attestation.models import SourceDocument
@@ -45,6 +46,10 @@ def merge(merge_these, into_this, trigger=None, reason=None):
         for role in Role.objects.filter(person__in=merge_these):
             role.person = into_this
             role.save()
+
+        for identifier in Identifier.objects.filter(person__in=merge_these):
+            identifier.person = into_this
+            identifier.save()
 
         for person in merge_these:
             for field_name in _fields_to_copy:
