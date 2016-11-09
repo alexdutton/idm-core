@@ -41,4 +41,3 @@ class AffiliationTypeSerializer(serializers.HyperlinkedModelSerializer):
 class RoleTypeSerializer(serializers.HyperlinkedModelSerializer):
     class Meta(RelationshipTypeSerializer.Meta):
         model = models.RoleType
-
