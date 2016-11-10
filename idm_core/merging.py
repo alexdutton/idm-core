@@ -9,7 +9,7 @@ from idm_core.org_relationship.models import Affiliation, Role
 from .attestation.models import SourceDocument
 from .name.models import Name
 
-_fields_to_copy = {'sex', 'primary_email', 'primary_username', 'date_of_birth',
+_fields_to_copy = {'primary_email', 'primary_username', 'date_of_birth',
                    'date_of_death'}
 
 def merge(merge_these, into_this, trigger=None, reason=None):
@@ -32,7 +32,8 @@ def merge(merge_these, into_this, trigger=None, reason=None):
 
         nationalities = into_this.nationalities.all()
         for nationality in Nationality.objects.filter(person__in=merge_these):
-            if nationality.nationality not in nationalities:
+            if nationality.country in nationalities:
+
                 nationality.attestations.all().delete()
                 nationality.delete()
             else:
@@ -55,6 +56,8 @@ def merge(merge_these, into_this, trigger=None, reason=None):
             for field_name in _fields_to_copy:
                 if getattr(person, field_name) and not getattr(into_this, field_name):
                     setattr(into_this, field_name, getattr(person, field_name))
+            if person.sex != '0' and into_this.sex == '0':
+                into_this.sex = person.sex
             person.merge_into(into_this)
             person.save()
 

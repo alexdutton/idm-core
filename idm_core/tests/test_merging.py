@@ -1,3 +1,5 @@
+import datetime
+
 from django.test import TransactionTestCase
 
 from idm_core import merging
@@ -42,6 +44,9 @@ class MergingTestCase(TransactionTestCase):
                 "type": "username",
                 "value": "abcd0002",
             }],
+            'sex': '2',
+            'date_of_birth': '1970-01-02',
+            'date_of_death': '1970-01-03',
         })
 
         merging.merge(secondary, primary)
@@ -51,3 +56,32 @@ class MergingTestCase(TransactionTestCase):
 
         self.assertEqual(primary.identifiers.count(), 2)
         self.assertEqual(secondary.identifiers.count(), 0)
+
+        self.assertEqual(primary.sex, '2')
+        self.assertEqual(primary.date_of_birth, datetime.date(1970, 1, 2))
+        self.assertEqual(primary.date_of_death, datetime.date(1970, 1, 3))
+
+    def testDontDuplicateNationalities(self):
+        primary = self.create_person_from_json({
+            'names': [{
+                "contexts": ["legal"],
+                "components": [{"type": "given", "value": "Alice"}],
+            }],
+            'nationalities': [{
+                "country": "GBR",
+            }],
+        })
+        secondary = self.create_person_from_json({
+            'names': [{
+                "contexts": ["presentational"],
+                "components": [{"type": "given", "value": "Bob"}],
+            }],
+            'nationalities': [{
+                "country": "GBR",
+            }],
+        })
+
+        merging.merge(secondary, primary)
+
+        self.assertEqual(primary.nationalities.count(), 1)
+        self.assertEqual(secondary.nationalities.count(), 0)
