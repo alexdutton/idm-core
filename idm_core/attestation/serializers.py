@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from rest_framework.reverse import reverse
 
 from . import models
 
@@ -28,3 +29,15 @@ class SourceDocumentSerializer(serializers.HyperlinkedModelSerializer):
 
 class Attestable(serializers.Serializer):
     attestations = AttestationSerializer(many=True, required=False)
+
+
+class AttestableSerializer(serializers.Serializer):
+    def to_representation(self, instance):
+        return {
+            '@type': type(instance).__name__,
+            'id': instance.pk,
+            'url': reverse('{}-detail'.format(instance._meta.object_name.lower()),
+                           kwargs={'pk': instance.pk},
+                           request=self.context['request']),
+            'label': str(instance),
+        }

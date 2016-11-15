@@ -4,6 +4,7 @@ import collections
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models.signals import post_save, post_delete
+from rest_framework.reverse import reverse
 
 from idm_core.attestation.models import Attestable
 from idm_core.name.fields import JSONSchemaField

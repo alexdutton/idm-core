@@ -1,6 +1,7 @@
 from django.db import models
 from django.db.models import Max
 
+from idm_core.attestation.models import Attestable
 from idm_core.org_relationship.models import Affiliation
 from idm_core.person.models import Person
 
@@ -10,7 +11,7 @@ class ContactContext(models.Model):
     label = models.CharField(max_length=255)
 
 
-class Contact(models.Model):
+class Contact(Attestable, models.Model):
     person = models.ForeignKey(Person, db_index=True)
     validated = models.BooleanField(default=False)
     affiliation = models.ForeignKey(Affiliation, null=True, blank=True)
