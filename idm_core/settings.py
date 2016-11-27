@@ -42,10 +42,10 @@ INSTALLED_APPS = [
     'idm_core.org_relationship.apps.OrgRelationshipConfig',
     'idm_core.identifier',
     'idm_core.name',
-    'idm_core.notification.apps.NotificationConfig',
     'idm_core.nationality.apps.NationalityConfig',
     'idm_core.delayed_save',
     'idm_core.organization.apps.OrganizationConfig',
+    'idm_notification.apps.NotificationConfig',
     'rest_framework',
     'reversion',
 ]

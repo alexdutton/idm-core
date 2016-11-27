@@ -40,8 +40,6 @@ router.register('email', idm_core.contact.views.EmailViewSet)
 router.register('telephone', idm_core.contact.views.TelephoneViewSet)
 router.register('address', idm_core.contact.views.AddressViewSet)
 
-print(router.get_urls())
-
 admin.autodiscover()
 
 urlpatterns = [

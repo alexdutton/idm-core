@@ -5,8 +5,8 @@ from django.db import transaction
 from django.test import TransactionTestCase
 from kombu.message import Message
 
-from idm_core import broker
 from idm_core.person.models import Person
+from idm_notification import broker
 
 
 class NotificationTestCase(TransactionTestCase):

@@ -2,10 +2,10 @@ import collections.abc
 from django.conf import settings
 from django.db import transaction, connection
 
-from idm_core import broker
 from idm_core.identifier.models import Identifier
 from idm_core.nationality.models import Nationality
 from idm_core.org_relationship.models import Affiliation, Role
+from idm_notification import broker
 from .attestation.models import SourceDocument
 from .name.models import Name
 

@@ -7,4 +7,6 @@ class PersonConfig(AppConfig):
 
     def ready(self):
         from . import models, serializers
-        apps.get_app_config('notification').register(models.Person, serializers.PlainPersonSerializer, 'person')
+        apps.get_app_config('idm_notification').register(models.Person,
+                                                         serializers.PlainPersonSerializer,
+                                                         'person')

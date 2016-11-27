@@ -7,7 +7,7 @@ class OrgRelationshipConfig(AppConfig):
 
     def ready(self):
         from . import models, serializers
-        apps.get_app_config('notification').register_many([
+        apps.get_app_config('idm_notification').register_many([
             (models.Affiliation, serializers.AffiliationSerializer, 'affiliation'),
             (models.Role, serializers.RoleSerializer, 'role'),
             (models.AffiliationType, serializers.AffiliationTypeSerializer, 'reference'),
