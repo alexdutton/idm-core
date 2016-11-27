@@ -9,3 +9,8 @@ class OrganizationSerializer(TypeMixin, HyperlinkedModelSerializer):
     class Meta:
         model = models.Organization
         fields = ('id', 'label', 'tags')
+
+
+class TerseOrganizationSerializer(OrganizationSerializer):
+    pass
+

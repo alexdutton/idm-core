@@ -8,6 +8,7 @@ import idm_core.identifier.views
 import idm_core.name.views
 import idm_core.nationality.views
 import idm_core.org_relationship.views
+import idm_core.organization.views
 import idm_core.person.views
 
 router = routers.DefaultRouter()
@@ -16,7 +17,7 @@ router.register('country', idm_core.nationality.views.CountryViewSet)
 router.register('affiliation-type', idm_core.org_relationship.views.AffiliationTypeViewSet)
 router.register('role-type', idm_core.org_relationship.views.RoleTypeViewSet)
 router.register('identifier-type', idm_core.identifier.views.IdentifierTypeViewSet)
-router.register('unit', idm_core.org_relationship.views.UnitViewSet)
+router.register('organization', idm_core.organization.views.OrganizationViewSet)
 
 person_router = routers.NestedSimpleRouter(router, r'person', lookup='person')
 person_router.register('nationality', idm_core.nationality.views.NationalityViewSet, base_name='person-nationality')

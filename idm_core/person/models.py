@@ -25,7 +25,7 @@ STATE_CHOICES = (
 )
 
 def get_uuid():
-    return uuid.uuid4().hex
+    return uuid.uuid4()
 
 
 class User(AbstractBaseUser):

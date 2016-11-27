@@ -35,11 +35,6 @@ class RoleViewSet(RelationshipViewSet):
     serializer_class = serializers.RoleSerializer
 
 
-class UnitViewSet(PersonSubViewMixin, viewsets.ModelViewSet):
-    queryset = models.Organization.objects.all()
-    serializer_class = serializers.OrganizationSerializer
-
-
 class AffiliationTypeViewSet(viewsets.ModelViewSet):
     queryset = models.AffiliationType.objects.all()
     serializer_class = serializers.AffiliationTypeSerializer

@@ -11,14 +11,16 @@ class PersonSubViewMixin(object):
     def get_queryset(self):
         queryset = super().get_queryset()
         if 'person_pk' in self.kwargs:
-            queryset = queryset.filter(person_pk=self.kwargs['person_pk'])
+            queryset = queryset.filter(person_id=self.kwargs['person_pk'])
         return queryset
 
 
 class PersonViewSet(get_viewset_transition_action_mixin(models.Person, 'state'),
-                      ModelViewSet):
+                    ModelViewSet):
     queryset = models.Person.objects.all()
     serializer_class = serializers.PersonSerializer
+
+    lookup_value_regex = r'[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}'
 
     def create(self, request, *args, **kwargs):
         return super(PersonViewSet, self).create(request, *args, **kwargs)
