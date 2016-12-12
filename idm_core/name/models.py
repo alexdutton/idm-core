@@ -8,7 +8,7 @@ from rest_framework.reverse import reverse
 
 from idm_core.attestation.models import Attestable
 from idm_core.name.fields import JSONSchemaField
-from idm_core.person.models import Person
+from idm_core.identity.models import Identity
 
 NAME_COMPONENT_TYPE_CHOICES = (
     ('title', 'Title'),
@@ -48,7 +48,7 @@ class NameContext(models.Model):
 
 
 class Name(Attestable, models.Model):
-    person = models.ForeignKey(Person, related_name='names')
+    identity = models.ForeignKey(Identity, related_name='names')
 
     plain = models.TextField(blank=True)
     plain_full = models.TextField(blank=True)
@@ -122,8 +122,8 @@ class Name(Attestable, models.Model):
 
 
 def name_changed(instance, **kwargs):
-    person = instance.person
-    names = list(person.names.filter(active=True).order_by('id'))
+    identity = instance.identity
+    names = list(identity.names.filter(active=True).order_by('id'))
     names_by_context = collections.defaultdict(list)
     for name in names:
         for context in name.contexts.all():
@@ -131,12 +131,12 @@ def name_changed(instance, **kwargs):
 
     for context in ('presentational', 'legal', 'informal'):
         if context in names_by_context:
-            person.primary_name = names_by_context[context][0]
+            identity.primary_name = names_by_context[context][0]
             break
     else:
-        person.primary_name = None
+        identity.primary_name = None
 
-    person.save()
+    identity.save()
 
 post_save.connect(name_changed, sender=Name)
 post_delete.connect(name_changed, sender=Name)

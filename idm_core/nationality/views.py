@@ -1,6 +1,6 @@
 from rest_framework import viewsets
 
-from idm_core.person.views import PersonSubViewMixin
+from idm_core.identity.views import IdentitySubViewMixin
 from . import models, serializers
 
 
@@ -9,6 +9,6 @@ class CountryViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = models.Country.objects.all()
 
 
-class NationalityViewSet(PersonSubViewMixin, viewsets.ModelViewSet):
+class NationalityViewSet(IdentitySubViewMixin, viewsets.ModelViewSet):
     serializer_class = serializers.NationalitySerializer
     queryset = models.Nationality.objects.all()

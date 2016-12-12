@@ -36,10 +36,11 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.staticfiles',
+    'idm_core', #.apps.IDMCoreConfig',
     'idm_core.attestation.apps.AttestationConfig',
-    'idm_core.person.apps.PersonConfig',
+    'idm_core.identity.apps.IdentityConfig',
     'idm_core.contact',
-    'idm_core.org_relationship.apps.OrgRelationshipConfig',
+    'idm_core.relationship.apps.OrgRelationshipConfig',
     'idm_core.identifier',
     'idm_core.name',
     'idm_core.nationality.apps.NationalityConfig',
@@ -103,3 +104,9 @@ CELERYBEAT_SCHEDULE = {
         'schedule': crontab(),
     }
 }
+
+import logging
+
+l = logging.getLogger('django.db.backends')
+l.setLevel(logging.DEBUG)
+l.addHandler(logging.StreamHandler())

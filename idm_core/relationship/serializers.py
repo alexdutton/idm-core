@@ -25,9 +25,9 @@ class RelationshipSerializer(serializers.HyperlinkedModelSerializer):
     organization = TerseOrganizationSerializer(read_only=True)
 
     class Meta:
-        fields = ('person', 'organization', 'organization_id', 'start_date', 'end_date', 'effective_start_date', 'effective_end_date',
+        fields = ('identity', 'organization', 'organization_id', 'start_date', 'end_date', 'effective_start_date', 'effective_end_date',
                   'review_date', 'suspended_until', 'comment', 'dependent_on', 'state', 'suspended', 'type', 'type_id')
-        read_only_fields = ('person', 'organization', 'state', 'suspended')
+        read_only_fields = ('identity', 'organization', 'state', 'suspended')
 
 
 class AffiliationSerializer(RelationshipSerializer):

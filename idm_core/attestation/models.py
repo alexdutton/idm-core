@@ -6,7 +6,7 @@ from django.contrib.postgres.fields import ArrayField
 from django.core.exceptions import ValidationError
 from django.db import models
 
-from idm_core.person.models import Person
+from idm_core.identity.models import Identity
 
 SOURCE_DOCUMENT_TYPE = (
     ('driving-license', 'Driving license'),
@@ -19,7 +19,7 @@ SOURCE_DOCUMENT_TYPE = (
 )
 
 class SourceDocument(models.Model):
-    person = models.ForeignKey(Person, related_name='source_documents')
+    identity = models.ForeignKey(Identity, related_name='source_documents')
     type = models.CharField(max_length=32, choices=SOURCE_DOCUMENT_TYPE)
     uploaded_date = models.DateTimeField(auto_now_add=True)
     validated_by = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='validated_source_documents')

@@ -12,30 +12,61 @@ class TypeMixin(object):
         return data
 
 
-from idm_core.person.models import Person
+class IdentityTypeMixin(object):
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        data['@type'] = instance.type_id.title()
+        return data
+
+
+from idm_core.identity import models
 from idm_core.name.serializers import EmbeddedNameSerializer
 from idm_core.nationality.serializers import EmbeddedNationalitySerializer
 
 
-class PlainPersonSerializer(TypeMixin, ModelSerializer):
-    url = serializers.HyperlinkedIdentityField(view_name='person-detail')
-    id = serializers.UUIDField(read_only=True)
+class InvertedBooleanField(serializers.BooleanField):
+    def to_internal_value(self, data):
+        return not super().to_internal_value(data)
 
+    def to_representation(self, value):
+        return not super().to_representation(value)
+
+
+class IdentityTypeSerializer(TypeMixin, ModelSerializer):
     class Meta:
-        model = Person
+        model = models.IdentityType
 
-        fields = (
-            'url', 'id', 'sex', 'date_of_birth', 'date_of_death', 'deceased', 'state', 'identifiers',
-            'primary_email', 'primary_username',
-        )
+        fields = ('id', 'label')
+
+
+class IdentitySerializer(IdentityTypeMixin, HyperlinkedModelSerializer):
+    class Meta:
+        model = models.Identity
+
+        fields = ('url', 'id', 'label', 'type_id')
 
         read_only_fields = (
             'merged_into',
         )
 
 
-class PersonSerializer(HyperlinkedModelSerializer, PlainPersonSerializer):
+class PlainPersonSerializer(IdentitySerializer):
+    url = serializers.HyperlinkedIdentityField(view_name='identity-detail')
     id = serializers.UUIDField(read_only=True)
+    date_of_birth = serializers.DateField(source='begin_date', required=False)
+    date_of_death = serializers.DateField(source='end_date', required=False)
+    deceased = InvertedBooleanField(source='extant', required=False)
+
+    class Meta(IdentitySerializer.Meta):
+        fields = IdentitySerializer.Meta.fields + (
+            'sex', 'date_of_birth', 'date_of_death', 'deceased', 'state', 'identifiers',
+            'primary_email', 'primary_username',
+        )
+
+
+class PersonSerializer(PlainPersonSerializer):
+    id = serializers.UUIDField(read_only=True)
+    type_id = serializers.ReadOnlyField(default='person')
     names = EmbeddedNameSerializer(many=True, default=())
     nationalities = EmbeddedNationalitySerializer(many=True, default=(), source='nationality_set')
     emails = EmbeddedEmailSerializer(many=True, default=())
@@ -53,13 +84,13 @@ class PersonSerializer(HyperlinkedModelSerializer, PlainPersonSerializer):
         identifiers = validated_data.pop('identifiers', ())
         person = super(PersonSerializer, self).create(validated_data)
         for name in names:
-            name['person'] = person
+            name['identity'] = person
         for email in emails:
-            email['person'] = person
+            email['identity'] = person
         for nationality in nationalities:
-            nationality['person'] = person
+            nationality['identity'] = person
         for identifier in identifiers:
-            identifier['person'] = person
+            identifier['identity'] = person
         self.fields['names'].create(names)
         self.fields['emails'].create(emails)
         self.fields['nationalities'].create(nationalities)

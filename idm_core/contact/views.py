@@ -1,19 +1,19 @@
 from rest_framework import viewsets
 
-from idm_core.person.views import PersonSubViewMixin
+from idm_core.identity.views import IdentitySubViewMixin
 from . import models, serializers
 
 
-class EmailViewSet(PersonSubViewMixin, viewsets.ModelViewSet):
+class EmailViewSet(IdentitySubViewMixin, viewsets.ModelViewSet):
     serializer_class = serializers.EmailSerializer
     queryset = models.Email.objects.all()
 
 
-class TelephoneViewSet(PersonSubViewMixin, viewsets.ModelViewSet):
+class TelephoneViewSet(IdentitySubViewMixin, viewsets.ModelViewSet):
     serializer_class = serializers.TelephoneSerializer
     queryset = models.Telephone.objects.all()
 
 
-class AddressViewSet(PersonSubViewMixin, viewsets.ModelViewSet):
+class AddressViewSet(IdentitySubViewMixin, viewsets.ModelViewSet):
     serializer_class = serializers.AddressSerializer
     queryset = models.Address.objects.all()

@@ -1,22 +1,24 @@
 from django.test import TestCase
 
-from idm_core.org_relationship.models import Role, RoleType, OrganizationRole
+from idm_core.relationship.models import Role, RoleType
 from idm_core.organization.models import Organization
-from idm_core.person.models import Person
+from idm_core.identity.models import Identity
 
 
 class RoleTestCase(TestCase):
     fixtures = ['initial']
 
     def setUp(self):
-        self.organization = Organization.objects.create(label='Department of Metaphysics')
+        self.organization = Identity.objects.create(type_id='organization',
+                                                    label='Department of Metaphysics')
         self.role_type = RoleType.objects.get(pk='head')
 
     def testCreateRole(self):
-        person = Person.objects.create()
-        role = Role(person=person,
-                    organization=self.organization,
+        person = Identity.objects.create(type_id='person')
+        role = Role(identity=person,
+                    target=self.organization,
                     type=self.role_type)
         role.save()
-        self.assertEqual(OrganizationRole.objects.filter(organization=self.organization,
-                                                         type=self.role_type).count(), 1)
+        self.assertEqual(Identity.objects.filter(type_id='organization-role',
+                                                 organization=self.organization,
+                                                 role_type=self.role_type).count(), 1)

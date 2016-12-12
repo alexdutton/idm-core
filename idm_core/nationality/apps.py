@@ -8,6 +8,6 @@ class NationalityConfig(AppConfig):
     def ready(self):
         from . import models, serializers
         apps.get_app_config('idm_notification').register_many([
-            (models.Country, serializers.CountrySerializer, 'reference'),
-            (models.Nationality, serializers.NationalitySerializer, 'nationality'),
+            {'serializer': serializers.CountrySerializer, 'exchange': 'reference'},
+            {'serializer': serializers.NationalitySerializer, 'exchange': 'nationality'},
         ])

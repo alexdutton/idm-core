@@ -24,7 +24,7 @@ class AddressSerializer(ContactSerializer):
 
 
 class EmbeddedEmailSerializer(EmailSerializer):
-    person = serializers.CharField(required=False, source='person_id', write_only=True)
+    identity = serializers.CharField(required=False, source='identity_id', write_only=True)
 
     class Meta(EmailSerializer.Meta):
         pass

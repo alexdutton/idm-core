@@ -11,6 +11,7 @@ class AttestationConfig(AppConfig):
         pre_delete.connect(self.update_attested_by, sender=models.Attestation)
 
     def update_attested_by(self, sender, instance, created=None, **kwargs):
+        """"""
         attested = instance.attests
         attested.attested_by = sorted(set(a.source_document.type
                                           for a in attested.attestations.select_related('source_document').all()))

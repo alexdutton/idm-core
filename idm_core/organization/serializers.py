@@ -1,6 +1,6 @@
 from rest_framework.serializers import HyperlinkedModelSerializer
 
-from idm_core.person.serializers import TypeMixin
+from idm_core.identity.serializers import TypeMixin
 
 from . import models
 

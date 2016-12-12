@@ -2,8 +2,8 @@ from django.db import models
 from django.db.models import Max
 
 from idm_core.attestation.models import Attestable
-from idm_core.org_relationship.models import Affiliation
-from idm_core.person.models import Person
+from idm_core.relationship.models import Affiliation
+from idm_core.identity.models import Identity
 
 
 class ContactContext(models.Model):
@@ -12,7 +12,7 @@ class ContactContext(models.Model):
 
 
 class Contact(Attestable, models.Model):
-    person = models.ForeignKey(Person, db_index=True)
+    identity = models.ForeignKey(Identity, db_index=True)
     validated = models.BooleanField(default=False)
     affiliation = models.ForeignKey(Affiliation, null=True, blank=True)
     context = models.ForeignKey(ContactContext)
@@ -20,18 +20,18 @@ class Contact(Attestable, models.Model):
 
     class Meta:
         abstract = True
-        unique_together = (('person', 'order'),)
-        ordering = ('person', 'order')
+        unique_together = (('identity', 'order'),)
+        ordering = ('identity', 'order')
 
     def save(self, *args, **kwargs):
         if not self.order:
-            c = type(self).objects.filter(person=self.person).aggregate(Max('order')).get('order__max')
+            c = type(self).objects.filter(identity=self.identity).aggregate(Max('order')).get('order__max')
             self.order = 0 if c is None else c + 1
         return super().save(*args, **kwargs)
 
 
 class Email(Contact):
-    person = models.ForeignKey(Person, db_index=True, related_name='emails')
+    identity = models.ForeignKey(Identity, db_index=True, related_name='emails')
     value = models.EmailField()
 
 

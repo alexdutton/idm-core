@@ -1,1 +1,1 @@
-default_app_config = 'idm_core.person.apps.IDMCoreConfig'
+#default_app_config = 'idm_core.identity.apps.IDMCoreConfig'

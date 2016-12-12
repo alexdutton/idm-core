@@ -5,8 +5,8 @@ from django.forms import widgets
 from reversion.admin import VersionAdmin
 
 from idm_core.name.models import Name
-from idm_core.org_relationship.models import Affiliation
-from idm_core.person import models
+from idm_core.relationship.models import Affiliation
+from idm_core.identity import models
 
 
 class NameInlineModelAdmin(TabularInline):
@@ -19,11 +19,12 @@ class NameInlineModelAdmin(TabularInline):
 
 class AffiliationInlineModelAdmin(TabularInline):
     model = Affiliation
-    fields = ('organization', 'type', 'state', 'start_date', 'end_date', 'effective_end_date')
+    fields = ('target', 'type', 'state', 'start_date', 'end_date', 'effective_end_date')
     readonly_fields = ('state',)
+    fk_name = 'identity'
 
 
-@admin.register(models.Person)
+@admin.register(models.Identity)
 class PersonAdmin(VersionAdmin):
     formfield_overrides = {
         django.db.models.TextField: {'widget': widgets.TextInput},

@@ -2,7 +2,7 @@ from django.apps import apps
 from rest_framework import mixins
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
 
-from idm_core.person.views import PersonSubViewMixin
+from idm_core.identity.views import IdentitySubViewMixin
 from . import models, serializers
 
 
@@ -16,7 +16,7 @@ class AttestationViewSet(ModelViewSet):
     serializer_class = serializers.AttestationSerializer
 
 
-class AttestableViewSet(PersonSubViewMixin,
+class AttestableViewSet(IdentitySubViewMixin,
                         mixins.ListModelMixin,
                         GenericViewSet):
     serializer_class = serializers.AttestableSerializer
@@ -25,5 +25,5 @@ class AttestableViewSet(PersonSubViewMixin,
         attestables = []
         for model in apps.get_models():
             if issubclass(model, models.Attestable):
-                attestables.extend(model.objects.filter(person_id=self.kwargs['person_pk']))
+                attestables.extend(model.objects.filter(identity_id=self.kwargs['person_pk']))
         return attestables

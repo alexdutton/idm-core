@@ -7,6 +7,5 @@ class OrganizationConfig(AppConfig):
 
     def ready(self):
         from . import models, serializers
-        apps.get_app_config('idm_notification').register(models.Organization,
-                                                         serializers.OrganizationSerializer,
-                                                         'reference')
+        apps.get_app_config('idm_notification').register(serializer=serializers.OrganizationSerializer,
+                                                         exchange='reference')

@@ -1,0 +1,17 @@
+- model: identity.IdentityType
+  pk: person
+  fields:
+    label: 'person'
+- model: identity.IdentityType
+  pk: organization
+  fields:
+    label: 'organization'
+- model: identity.IdentityType
+  pk: application
+  fields:
+    label: 'application'
+
+- model: identity.IdentityType
+  pk: organization-role
+  fields:
+    label: 'organization-role'

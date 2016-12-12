@@ -1,7 +1,7 @@
 from django.db import models
 
 from idm_core.attestation.models import Attestable
-from idm_core.person.models import Person
+from idm_core.identity.models import Identity
 
 
 class Country(models.Model):
@@ -10,7 +10,7 @@ class Country(models.Model):
     alpha_3 = models.CharField(max_length=3, null=True, unique=True, db_index=True)
     numeric = models.CharField(max_length=3, null=True, unique=True, db_index=True)
 
-    identities = models.ManyToManyField(Person, through='nationality.Nationality', related_name='nationalities')
+    identities = models.ManyToManyField(Identity, through='nationality.Nationality', related_name='nationalities')
 
     def __str__(self):
         return self.label
@@ -20,5 +20,5 @@ class Country(models.Model):
 
 
 class Nationality(Attestable, models.Model):
-    person = models.ForeignKey(Person)
+    identity = models.ForeignKey(Identity)
     country = models.ForeignKey(Country)
