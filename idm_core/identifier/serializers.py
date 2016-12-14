@@ -14,7 +14,6 @@ class IdentifierSerializer(Attestable, serializers.HyperlinkedModelSerializer):
     type = serializers.PrimaryKeyRelatedField(queryset=models.IdentifierType.objects.all())
 
     def create(self, validated_data):
-        print(validated_data)
         if validated_data['identity'].type not in validated_data['type'].applicable_to.all():
             raise ValidationError("Identifier type '{}' not applicable to identity type '{}'".format(
                 validated_data['type'].id,

@@ -3,6 +3,7 @@ from django.test import TestCase
 
 from idm_core.name.models import Name
 from idm_core.identity.models import Identity
+from idm_core.name.serializers import ParseNameField
 
 
 class NamesTestCase(TestCase):
@@ -59,3 +60,15 @@ class NamesTestCase(TestCase):
         self.assertEqual(name.familiar, '徽')
         self.assertEqual(name.sort, '夏侯徽')
         self.assertEqual(name.marked_up, '<name><family>夏侯</family><given>徽</given></name>')
+
+    def testParsingStringMononym(self):
+        components = ParseNameField().to_internal_value('Socrates')
+        self.assertEqual(components, [{'type': 'mononym', 'value': 'Socrates'}])
+
+    def testParsingStringHyphenMononym(self):
+        components = ParseNameField().to_internal_value('- Socrates')
+        self.assertEqual(components, [{'type': 'mononym', 'value': 'Socrates'}])
+
+    def testParsingDictHyphenMononym(self):
+        components = ParseNameField().to_internal_value({'first': '-', 'last': 'Socrates'})
+        self.assertEqual(components, [{'type': 'mononym', 'value': 'Socrates'}])
