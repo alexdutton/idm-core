@@ -105,6 +105,10 @@ CELERYBEAT_SCHEDULE = {
     }
 }
 
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'idm_core.pagination.StandardResultsSetPagination'
+}
+
 import logging
 
 l = logging.getLogger('django.db.backends')

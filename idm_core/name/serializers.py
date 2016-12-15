@@ -30,8 +30,14 @@ class ParseNameField(fields.Field):
             for k in list(data):
                 if data[k] in blanks:
                     del data[k]
-            if len(data) is 1:
+            if 'title' in data:
+                components.append({'type': 'title', 'value': data.pop('title')})
+            if len(data) == 1:
                 components.append({'type': 'mononym', 'value': data.popitem()[1]})
+            if len(data) > 1 and 'first' in data:
+                components.append({'type': 'given', 'value': data['first']})
+            if len(data) > 1 and 'last' in data:
+                components.append({'type': 'family', 'value': data['last']})
 
         return components or None
 

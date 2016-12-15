@@ -22,7 +22,13 @@ class IdentityViewSet(get_viewset_transition_action_mixin(models.Identity, 'stat
 
     lookup_value_regex = r'[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}'
 
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        if 'state' in self.request.GET:
+            queryset = queryset.filter(state__in=set(self.request.GET.getlist('state')))
+        return queryset
 
-class PersonViewSet(ModelViewSet):
+
+class PersonViewSet(IdentityViewSet, ModelViewSet):
     queryset = models.Identity.people.all()
     serializer_class = serializers.PersonSerializer

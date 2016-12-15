@@ -44,5 +44,5 @@ class AttestationViewTestCase(TestCase):
         self.assertEqual(response.status_code, http.client.OK)
         data = response.json()
 
-        self.assertEqual(len(data), 2)
-        self.assertEqual({d['@type'] for d in data}, {'Name', 'Address'})
+        self.assertEqual(len(data['results']), 2)
+        self.assertEqual({d['@type'] for d in data['results']}, {'Name', 'Address'})

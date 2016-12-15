@@ -65,6 +65,10 @@ class NamesTestCase(TestCase):
         components = ParseNameField().to_internal_value('Socrates')
         self.assertEqual(components, [{'type': 'mononym', 'value': 'Socrates'}])
 
+    def testParsingDictMononym(self):
+        components = ParseNameField().to_internal_value({'last': 'Socrates'})
+        self.assertEqual(components, [{'type': 'mononym', 'value': 'Socrates'}])
+
     def testParsingStringHyphenMononym(self):
         components = ParseNameField().to_internal_value('- Socrates')
         self.assertEqual(components, [{'type': 'mononym', 'value': 'Socrates'}])
@@ -72,3 +76,13 @@ class NamesTestCase(TestCase):
     def testParsingDictHyphenMononym(self):
         components = ParseNameField().to_internal_value({'first': '-', 'last': 'Socrates'})
         self.assertEqual(components, [{'type': 'mononym', 'value': 'Socrates'}])
+
+    def testParsingStringFirstLast(self):
+        components = ParseNameField().to_internal_value('Grace Hopper')
+        self.assertEqual(components, [{'type': 'given', 'value': 'Grace'},
+                                      {'type': 'family', 'value': 'Hopper'}])
+
+    def testParsingDictFirstLast(self):
+        components = ParseNameField().to_internal_value({'first': 'Grace', 'last': 'Hopper'})
+        self.assertEqual(components, [{'type': 'given', 'value': 'Grace'},
+                                      {'type': 'family', 'value': 'Hopper'}])
