@@ -7,7 +7,7 @@ class NationalityConfig(AppConfig):
 
     def ready(self):
         from . import models, serializers
-        apps.get_app_config('idm_notification').register_many([
+        apps.get_app_config('idm_broker').register_notifications([
             {'serializer': serializers.CountrySerializer, 'exchange': 'reference'},
             {'serializer': serializers.NationalitySerializer, 'exchange': 'nationality'},
         ])

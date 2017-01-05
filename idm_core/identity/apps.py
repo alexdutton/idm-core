@@ -7,7 +7,7 @@ class IdentityConfig(AppConfig):
 
     def ready(self):
         from . import models, serializers
-        apps.get_app_config('idm_notification').register_many([
+        apps.get_app_config('idm_broker').register_notifications([
             {'serializer': serializers.PlainPersonSerializer, 'exchange': 'identity'},
             {'serializer': serializers.IdentityTypeSerializer, 'exchange': 'reference'},
         ])

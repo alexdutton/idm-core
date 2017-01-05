@@ -1,11 +1,11 @@
 import collections.abc
+from django.apps import apps
 from django.conf import settings
 from django.db import transaction, connection
 
 from idm_core.identifier.models import Identifier
 from idm_core.nationality.models import Nationality
 from idm_core.relationship.models import Affiliation, Role
-from idm_notification import broker
 from idm_core.attestation.models import SourceDocument
 from idm_core.name.models import Name
 
@@ -77,7 +77,8 @@ def merge(merge_these, into_this, trigger=None, reason=None):
 
 
 def publish_merge_to_amqp(merge_these, into_this):
-    with broker.connection.acquire(block=True) as conn:
+    broker_app_config = apps.get_app_config('idm_broker')
+    with broker_app_config.broker.acquire(block=True) as conn:
         producer = conn.Producer(serializer='json')
         producer.publish({'mergedIdentities': [identity.id for identity in merge_these],
                           'targetIdentity': into_this.id},

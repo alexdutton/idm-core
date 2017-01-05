@@ -40,10 +40,11 @@ class IdentityTypeSerializer(TypeMixin, ModelSerializer):
 
 
 class IdentitySerializer(IdentityTypeMixin, HyperlinkedModelSerializer):
+    id = serializers.UUIDField(read_only=True)
     class Meta:
         model = models.Identity
 
-        fields = ('url', 'id', 'label', 'type_id')
+        fields = ('url', 'id', 'label', 'state', 'type_id')
 
         read_only_fields = (
             'merged_into',
@@ -51,8 +52,9 @@ class IdentitySerializer(IdentityTypeMixin, HyperlinkedModelSerializer):
 
 
 class PlainPersonSerializer(IdentitySerializer):
-    url = serializers.HyperlinkedIdentityField(view_name='identity-detail')
-    id = serializers.UUIDField(read_only=True)
+    url = serializers.HyperlinkedIdentityField(view_name='person-detail')
+    type_id = serializers.ReadOnlyField(default='person')
+
     date_of_birth = serializers.DateField(source='begin_date', required=False)
     date_of_death = serializers.DateField(source='end_date', required=False)
     deceased = InvertedBooleanField(source='extant', required=False)
@@ -65,8 +67,6 @@ class PlainPersonSerializer(IdentitySerializer):
 
 
 class PersonSerializer(PlainPersonSerializer):
-    id = serializers.UUIDField(read_only=True)
-    type_id = serializers.ReadOnlyField(default='person')
     names = EmbeddedNameSerializer(many=True, default=())
     nationalities = EmbeddedNationalitySerializer(many=True, default=(), source='nationality_set')
     emails = EmbeddedEmailSerializer(many=True, default=())
@@ -96,3 +96,8 @@ class PersonSerializer(PlainPersonSerializer):
         self.fields['nationalities'].create(nationalities)
         self.fields['identifiers'].create(identifiers)
         return person
+
+
+class OrganizationSerializer(IdentitySerializer):
+    url = serializers.HyperlinkedIdentityField(view_name='person-detail')
+    type_id = serializers.ReadOnlyField(default='organization')

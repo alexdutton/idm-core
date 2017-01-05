@@ -10,10 +10,12 @@ import idm_core.nationality.views
 import idm_core.relationship.views
 import idm_core.organization.views
 import idm_core.identity.views
+import idm_core.statistics.views
 
 router = routers.DefaultRouter()
 router.register('identity', idm_core.identity.views.IdentityViewSet, 'identity')
-router.register('person', idm_core.identity.views.PersonViewSet)
+router.register('person', idm_core.identity.views.PersonViewSet, base_name='person')
+router.register('organization', idm_core.identity.views.OrganizationViewSet, base_name='organization')
 router.register('country', idm_core.nationality.views.CountryViewSet)
 router.register('affiliation-type', idm_core.relationship.views.AffiliationTypeViewSet)
 router.register('role-type', idm_core.relationship.views.RoleTypeViewSet)
@@ -46,6 +48,7 @@ admin.autodiscover()
 urlpatterns = [
     url(r'^', include(router.urls)),
     url(r'^', include(person_router.urls)),
+    url(r'^statistics/$', idm_core.statistics.views.StatisticsView.as_view()),
     url(r'^admin/', admin.site.urls),
 
 ]

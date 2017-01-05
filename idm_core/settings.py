@@ -46,7 +46,7 @@ INSTALLED_APPS = [
     'idm_core.nationality.apps.NationalityConfig',
     'idm_core.delayed_save',
     'idm_core.organization.apps.OrganizationConfig',
-    'idm_notification.apps.NotificationConfig',
+    'idm_broker.apps.IDMBrokerConfig',
     'rest_framework',
     'reversion',
 ]

@@ -11,7 +11,7 @@ class IdentitySubViewMixin(object):
     def get_queryset(self):
         queryset = super().get_queryset()
         if 'person_pk' in self.kwargs:
-            queryset = queryset.filter(person_id=self.kwargs['person_pk'])
+            queryset = queryset.filter(identity_id=self.kwargs['person_pk'])
         return queryset
 
 
@@ -32,3 +32,8 @@ class IdentityViewSet(get_viewset_transition_action_mixin(models.Identity, 'stat
 class PersonViewSet(IdentityViewSet, ModelViewSet):
     queryset = models.Identity.people.all()
     serializer_class = serializers.PersonSerializer
+
+
+class OrganizationViewSet(IdentityViewSet, ModelViewSet):
+    queryset = models.Identity.organizations.all()
+    serializer_class = serializers.OrganizationSerializer

@@ -1,19 +1,22 @@
 import json
 
 import kombu
+from django.apps import apps
 from django.db import transaction
 from django.test import TransactionTestCase
 from kombu.message import Message
 
 from idm_core.identity.models import Identity
-from idm_notification import broker
 
 
 class NotificationTestCase(TransactionTestCase):
     fixtures = ['initial']
 
+    def setUp(self):
+        self.broker = apps.get_app_config('idm_broker').broker
+
     def testPersonCreate(self):
-        with broker.connection.acquire(block=True) as conn:
+        with self.broker.acquire(block=True) as conn:
             queue = kombu.Queue(exclusive=True).bind(conn)
             queue.declare()
             queue.bind_to(exchange=kombu.Exchange('idm.core.identity'), routing_key='#')
@@ -28,7 +31,7 @@ class NotificationTestCase(TransactionTestCase):
             self.assertEqual(json.loads(message.body.decode())['@type'], 'Person')
 
     def testPersonCreateDelete(self):
-        with broker.connection.acquire(block=True) as conn:
+        with self.broker.acquire(block=True) as conn:
             queue = kombu.Queue(exclusive=True).bind(conn)
             queue.declare()
             queue.bind_to(exchange=kombu.Exchange('idm.core.identity'), routing_key='#')
@@ -40,7 +43,7 @@ class NotificationTestCase(TransactionTestCase):
             self.assertIsNone(message)
 
     def testNoNotifcationWhenNotChanged(self):
-        with broker.connection.acquire(block=True) as conn:
+        with self.broker.acquire(block=True) as conn:
             with transaction.atomic():
                 person = Identity(type_id='person')
                 person.save()
@@ -53,7 +56,7 @@ class NotificationTestCase(TransactionTestCase):
             self.assertIsNone(message)
 
     def testNotifcationWhenChanged(self):
-        with broker.connection.acquire(block=True) as conn:
+        with self.broker.acquire(block=True) as conn:
             with transaction.atomic():
                 person = Identity(type_id='person')
                 person.save()
