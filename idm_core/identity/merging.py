@@ -9,7 +9,7 @@ from idm_core.relationship.models import Affiliation, Role
 from idm_core.attestation.models import SourceDocument
 from idm_core.name.models import Name
 
-_fields_to_copy = {'primary_email', 'primary_username', 'begin_date', 'end_date', 'extant'}
+_fields_to_copy = {'primary_email', 'primary_username', 'begin_date', 'end_date', 'date_of_birth', 'date_of_death', 'extant'}
 
 
 class MergeTypeDisparity(Exception):
@@ -21,18 +21,20 @@ def merge(merge_these, into_this, trigger=None, reason=None):
         if not isinstance(merge_these, collections.abc.Iterable):
             merge_these = (merge_these,)
 
+        merge_ids = {i.id for i in merge_these}
+
         for identity in merge_these:
-            if identity.type_id != into_this.type_id:
+            if type(identity) != type(into_this):
                 raise MergeTypeDisparity("Type of {} ({}) does not match that of {} ({})".format(
-                    identity.id, identity.type_id, into_this.id, into_this.type_id
+                    identity.id, type(identity).__name__, into_this.id, type(into_this).__name__
                 ))
 
-        for source_document in SourceDocument.objects.filter(identity__in=merge_these):
+        for source_document in SourceDocument.objects.filter(identity_id__in=merge_ids):
             source_document.person = into_this
             source_document.save()
 
         names = set(name.marked_up for name in into_this.names.all())
-        for name in Name.objects.filter(identity__in=merge_these):
+        for name in Name.objects.filter(identity_id__in=merge_ids):
             if name.marked_up in names:
                 name.attestations.all().delete()
                 name.delete()
@@ -41,7 +43,7 @@ def merge(merge_these, into_this, trigger=None, reason=None):
                 name.save()
 
         nationalities = into_this.nationalities.all()
-        for nationality in Nationality.objects.filter(identity__in=merge_these):
+        for nationality in Nationality.objects.filter(identity_id__in=merge_ids):
             if nationality.country in nationalities:
 
                 nationality.attestations.all().delete()
@@ -50,20 +52,22 @@ def merge(merge_these, into_this, trigger=None, reason=None):
                 nationality.identity = into_this
                 nationality.save()
 
-        for affiliation in Affiliation.objects.filter(identity__in=merge_these):
+        for affiliation in Affiliation.objects.filter(identity_id__in=merge_ids):
             affiliation.identity = into_this
             affiliation.save()
 
-        for role in Role.objects.filter(identity__in=merge_these):
+        for role in Role.objects.filter(identity_id__in=merge_ids):
             role.identity = into_this
             role.save()
 
-        for identifier in Identifier.objects.filter(identity__in=merge_these):
+        for identifier in Identifier.objects.filter(identity_id__in=merge_ids):
             identifier.identity = into_this
             identifier.save()
 
         for identity in merge_these:
             for field_name in _fields_to_copy:
+                if not hasattr(identity, field_name):
+                    continue
                 if getattr(identity, field_name) and not getattr(into_this, field_name):
                     setattr(into_this, field_name, getattr(identity, field_name))
             if identity.sex != '0' and into_this.sex == '0':

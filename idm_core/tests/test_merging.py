@@ -5,7 +5,9 @@ from django.test import TransactionTestCase
 from idm_core.identity import merging
 from idm_core.identity.merging import MergeTypeDisparity
 from idm_core.identity.models import Identity
-from idm_core.identity.serializers import PersonSerializer
+from idm_core.organization.models import Organization
+from idm_core.person.models import Person
+from idm_core.person.serializers import PersonSerializer
 
 
 class MergingTestCase(TransactionTestCase):
@@ -17,8 +19,8 @@ class MergingTestCase(TransactionTestCase):
         return serializer.save()
 
     def testSimpleMerge(self):
-        primary = Identity.objects.create(type_id='person')
-        secondary = Identity.objects.create(type_id='person')
+        primary = Person.objects.create()
+        secondary = Person.objects.create()
 
         merging.merge(secondary, primary)
 
@@ -26,8 +28,8 @@ class MergingTestCase(TransactionTestCase):
         self.assertEqual(secondary.state, 'merged')
 
     def testCantMergeDifferentTypes(self):
-        primary = Identity.objects.create(type_id='person')
-        secondary = Identity.objects.create(type_id='organization')
+        primary = Person.objects.create()
+        secondary = Organization.objects.create()
 
         with self.assertRaises(MergeTypeDisparity):
             merging.merge(secondary, primary)
@@ -67,8 +69,8 @@ class MergingTestCase(TransactionTestCase):
         self.assertEqual(secondary.identifiers.count(), 0)
 
         self.assertEqual(primary.sex, '2')
-        self.assertEqual(primary.begin_date, datetime.date(1970, 1, 2))
-        self.assertEqual(primary.end_date, datetime.date(1970, 1, 3))
+        self.assertEqual(primary.date_of_birth, datetime.date(1970, 1, 2))
+        self.assertEqual(primary.date_of_death, datetime.date(1970, 1, 3))
 
     def testDontDuplicateNationalities(self):
         primary = self.create_person_from_json({

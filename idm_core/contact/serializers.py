@@ -5,7 +5,14 @@ from . import models
 
 class ContactSerializer(serializers.ModelSerializer):
     class Meta:
-        exclude = ('order',)
+        fields = ('context', 'affiliation', 'identity')
+
+
+class EmbeddedContactSerializer(ContactSerializer):
+    identity = serializers.Field(required=False, write_only=True)
+
+    class Meta:
+        fields = ('identity', 'context')
 
 
 class EmailSerializer(ContactSerializer):
@@ -23,8 +30,6 @@ class AddressSerializer(ContactSerializer):
         model = models.Address
 
 
-class EmbeddedEmailSerializer(EmailSerializer):
-    identity = serializers.CharField(required=False, source='identity_id', write_only=True)
-
-    class Meta(EmailSerializer.Meta):
-        pass
+class EmbeddedEmailSerializer(EmailSerializer, EmbeddedContactSerializer):
+    class Meta(EmailSerializer.Meta, EmbeddedContactSerializer.Meta):
+        fields = ('value', 'identity', 'context')

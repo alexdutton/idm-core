@@ -6,7 +6,8 @@ from django_fsm import FSMField, transition, RETURN_VALUE, FSMFieldMixin
 
 from idm_core.delayed_save.models import DelayedSave
 from idm_core.organization.models import Organization
-from idm_core.identity.models import Identity
+from idm_core.identity.models import Identity, IdentityBase
+from idm_core.person.models import Person
 
 
 class FSMBooleanField(FSMFieldMixin, models.BooleanField):
@@ -42,10 +43,6 @@ class RelationshipType(models.Model):
 
 
 class Relationship(models.Model):
-    identity = models.ForeignKey(Identity)
-    target = models.ForeignKey(Identity)
-#    type = models.ForeignKey(RelationshipType)
-
     start_date = models.DateTimeField()
     end_date = models.DateTimeField(null=True, blank=True)
     effective_start_date = models.DateTimeField(null=True, blank=True)
@@ -151,24 +148,26 @@ class RoleType(RelationshipType):
     pass
 
 
+class OrganizationRole(IdentityBase):
+    organization = models.ForeignKey(Organization)
+    role_type = models.ForeignKey(RoleType)
+
+
 class Role(Relationship):
-    # Membership, in w3c org ontology terms
-    identity = models.ForeignKey(Identity, related_name='roles')
-    target = models.ForeignKey(Identity, related_name='role_holders')
+    identity = models.ForeignKey(Person)
+    organization = models.ForeignKey(Organization)
     type = models.ForeignKey(RoleType)
 
     @cached_property
-    def role_identity(self):
+    def organization_role(self):
         try:
-            return Identity.objects.get(type_id='organization-role',
-                                        organization=self.target, role_type=self.type)
-        except Identity.DoesNotExist:
-            return Identity.objects.create(type_id='organization-role',
-                                           organization=self.target,
-                                           role_type=self.type)
+            return OrganizationRole.objects.get(organization=self.organization, role_type=self.type)
+        except OrganizationRole.DoesNotExist:
+            return OrganizationRole.objects.create(organization=self.organization,
+                                                   role_type=self.type)
 
     def save(self, *args, **kwargs):
-        self.role_identity
+        self.organization_role
         return super().save(*args, **kwargs)
 
 
@@ -177,8 +176,8 @@ class AffiliationType(RelationshipType):
 
 
 class Affiliation(Relationship):
-    identity = models.ForeignKey(Identity, related_name='affiliations')
-    target = models.ForeignKey(Identity, related_name='affiliation_holders')
+    identity = models.ForeignKey(Person)
+    organization = models.ForeignKey(Organization)
     type = models.ForeignKey(AffiliationType)
 
     #metadata = JSONField(default={})

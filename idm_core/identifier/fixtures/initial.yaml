@@ -2,19 +2,22 @@
   pk: username
   fields:
     label: 'SSO username'
-    applicable_to: ['person']
+    applicable_to:
+    - ['person', 'person']
 - model: identifier.IdentifierType
   pk: identity
   fields:
     label: 'identity ID'
-    applicable_to: ['person', 'organization', 'organization-role', 'application']
+    applicable_to_all: true
 - model: identifier.IdentifierType
   pk: card-number
   fields:
     label: 'card number'
-    applicable_to: ['person']
+    applicable_to:
+    - ['person', 'person']
 - model: identifier.IdentifierType
   pk: sits-mst
   fields:
     label: 'SITS MST code'
-    applicable_to: ['person']
+    applicable_to:
+    - ['person', 'person']

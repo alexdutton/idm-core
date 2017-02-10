@@ -37,12 +37,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.staticfiles',
     'idm_core', #.apps.IDMCoreConfig',
+    'idm_core.application.apps.ApplicationConfig',
     'idm_core.attestation.apps.AttestationConfig',
     'idm_core.identity.apps.IdentityConfig',
     'idm_core.contact',
     'idm_core.relationship.apps.OrgRelationshipConfig',
     'idm_core.identifier',
     'idm_core.name',
+    'idm_core.person.apps.PersonConfig',
     'idm_core.nationality.apps.NationalityConfig',
     'idm_core.delayed_save',
     'idm_core.organization.apps.OrganizationConfig',
@@ -89,14 +91,14 @@ API_BASE = os.environ.get('API_BASE', 'http://localhost:8000/')
 CLAIM_URL = os.environ.get('CLAIM_URL', 'http://localhost:8001/claim/{}/')
 
 # AMQP
-BROKER_ENABLED = bool(os.environ.get('AMQP_BROKER_ENABLED'))
-BROKER_TRANSPORT = os.environ.get('AMQP_BROKER_TRANSPORT', 'amqp')
-BROKER_HOSTNAME= os.environ.get('AMQP_BROKER_HOSTNAME', 'localhost')
-BROKER_SSL = os.environ.get('AMQP_BROKER_SSL', 'yes').lower() not in ('no', '0', 'off', 'false')
-BROKER_VHOST= os.environ.get('AMQP_BROKER_VHOST', '/')
-BROKER_USERNAME = os.environ.get('AMQP_BROKER_USERNAME', 'guest')
-BROKER_PASSWORD = os.environ.get('AMQP_BROKER_PASSWORD', 'guest')
-BROKER_PREFIX = os.environ.get('AMQP_BROKER_PREFIX', 'idm.core.')
+BROKER_ENABLED = bool(os.environ.get('BROKER_ENABLED'))
+BROKER_TRANSPORT = os.environ.get('BROKER_TRANSPORT', 'amqp')
+BROKER_HOSTNAME= os.environ.get('BROKER_HOSTNAME', 'localhost')
+BROKER_SSL = os.environ.get('BROKER_SSL', 'yes').lower() not in ('no', '0', 'off', 'false')
+BROKER_VHOST= os.environ.get('BROKER_VHOST', '/')
+BROKER_USERNAME = os.environ.get('BROKER_USERNAME', 'guest')
+BROKER_PASSWORD = os.environ.get('BROKER_PASSWORD', 'guest')
+BROKER_PREFIX = os.environ.get('BROKER_PREFIX', 'idm.core.')
 
 CELERYBEAT_SCHEDULE = {
     'delayed-save': {

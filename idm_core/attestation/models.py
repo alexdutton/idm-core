@@ -8,19 +8,18 @@ from django.db import models
 
 from idm_core.identity.models import Identity
 
-SOURCE_DOCUMENT_TYPE = (
-    ('driving-license', 'Driving license'),
-    ('passport', 'Passport'),
-    ('national-identity-document', 'National identity document'),
-    ('bill', 'Bill'),
-    ('visa', 'Visa'),
-    ('deed-poll', 'Deed poll'),
-    ('other', 'Other'),
-)
+
+class SourceDocumentType(models.Model):
+    id = models.SlugField(primary_key=True)
+    label = models.CharField(max_length=255)
+
 
 class SourceDocument(models.Model):
-    identity = models.ForeignKey(Identity, related_name='source_documents')
-    type = models.CharField(max_length=32, choices=SOURCE_DOCUMENT_TYPE)
+    identity_content_type = models.ForeignKey(ContentType)
+    identity_id = models.UUIDField()
+    identity = GenericForeignKey('identity_content_type', 'identity_id')
+
+    type = models.ForeignKey(SourceDocumentType)
     uploaded_date = models.DateTimeField(auto_now_add=True)
     validated_by = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='validated_source_documents')
     active = models.BooleanField(default=False)
@@ -43,19 +42,3 @@ class Attestation(models.Model):
 
     attests = GenericForeignKey('attests_content_type', 'attests_object_id')
 
-
-class Attestable(DirtyFieldsMixin, models.Model):
-    attestations = GenericRelation(Attestation,
-                                   content_type_field='attests_content_type',
-                                   object_id_field='attests_object_id')
-    attested_by = ArrayField(models.CharField(max_length=32, choices=SOURCE_DOCUMENT_TYPE), default=[])
-
-    changeable_when_attested = frozenset({'attested_by'})
-
-    def save(self, *args, **kwargs):
-        if self.attested_by and set(self.get_dirty_fields()) - self.changeable_when_attested:
-            raise ValidationError("Can't change an attested {}".format(self._meta.verbose_name))
-        return super().save(*args, **kwargs)
-
-    class Meta:
-        abstract = True

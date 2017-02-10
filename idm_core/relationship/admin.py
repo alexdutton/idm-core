@@ -4,9 +4,9 @@ from . import models
 
 
 class RelationshipAdmin(admin.ModelAdmin):
-    list_filter = ('state', 'target', 'type', 'suspended')
+    list_filter = ('state', 'organization', 'type', 'suspended')
     readonly_fields = ('state', 'suspended')
-    list_display = ('identity', 'target', 'type', 'state', 'suspended')
+    list_display = ('identity', 'organization', 'type', 'state', 'suspended')
 
 
 @admin.register(models.Affiliation)

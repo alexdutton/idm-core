@@ -3,7 +3,7 @@ import http.client
 from django.test import TestCase
 
 from idm_core.identifier.models import Identifier
-from idm_core.identity.models import Identity
+from idm_core.person.models import Person
 
 
 class SubViewTestCase(TestCase):
@@ -11,15 +11,15 @@ class SubViewTestCase(TestCase):
 
     def testIdentifierSubView(self):
         # Test that the IdentitySubViewMixin works and filters out identifiers for other identities
-        identity = Identity.objects.create(type_id='person')
-        identifier = Identifier.objects.create(identity=identity,
-                                         type_id='username',
-                                         value='my_username')
-        other_identity = Identity.objects.create(type_id='person')
-        other_identifier = Identifier.objects.create(identity=other_identity,
+        person = Person.objects.create()
+        identifier = Identifier.objects.create(identity=person,
+                                               type_id='username',
+                                               value='my_username')
+        other_person = Person.objects.create()
+        other_identifier = Identifier.objects.create(identity=other_person,
                                                      type_id='username',
                                                      value='other_username')
-        response = self.client.get('/person/{}/identifier/'.format(identity.id))
+        response = self.client.get('/person/{}/identifier/'.format(person.id))
         self.assertEqual(response.status_code, http.client.OK)
         data = response.json()
         self.assertEqual(data['count'], 1)

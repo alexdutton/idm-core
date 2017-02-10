@@ -1,12 +1,12 @@
-import django.db.models
 from django.contrib import admin
 from django.contrib.admin.options import TabularInline
+import django.db.models
 from django.forms import widgets
 from reversion.admin import VersionAdmin
 
 from idm_core.name.models import Name
 from idm_core.relationship.models import Affiliation
-from idm_core.identity import models
+from . import models
 
 
 class NameInlineModelAdmin(TabularInline):
@@ -19,12 +19,11 @@ class NameInlineModelAdmin(TabularInline):
 
 class AffiliationInlineModelAdmin(TabularInline):
     model = Affiliation
-    fields = ('target', 'type', 'state', 'start_date', 'end_date', 'effective_end_date')
+    fields = ('organization', 'type', 'state', 'start_date', 'end_date', 'effective_end_date')
     readonly_fields = ('state',)
-    fk_name = 'identity'
 
 
-@admin.register(models.Identity)
+@admin.register(models.Person)
 class PersonAdmin(VersionAdmin):
     formfield_overrides = {
         django.db.models.TextField: {'widget': widgets.TextInput},

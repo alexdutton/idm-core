@@ -6,7 +6,7 @@ from django.test import TestCase
 from idm_core.contact.models import ContactContext
 from idm_core.identifier.models import IdentifierType
 from idm_core.name.models import NameContext
-from idm_core.identity.models import Identity
+from idm_core.person.models import Person
 
 
 class CreationTestCase(TestCase):
@@ -17,13 +17,8 @@ class CreationTestCase(TestCase):
         self.assertEqual(response.status_code, http.client.CREATED)
         data = response.json()
         person_id = data['id']
-        person = Identity.objects.get(id=person_id)
+        person = Person.objects.get(id=person_id)
         self.assertEqual(person.state, 'established')
-
-    def testCreateIdentity(self):
-        # Shouldn't be able to create identities directly
-        response = self.client.post('/identity/', json.dumps({}), content_type='application/json')
-        self.assertEqual(response.status_code, http.client.METHOD_NOT_ALLOWED)
 
     def testCreateWithEmail(self):
         response = self.client.post('/person/', json.dumps({
@@ -35,7 +30,7 @@ class CreationTestCase(TestCase):
         self.assertEqual(response.status_code, http.client.CREATED)
         data = response.json()
         person_id = data['id']
-        person = Identity.objects.get(id=person_id)
+        person = Person.objects.get(id=person_id)
         self.assertEqual(person.emails.count(), 1)
         email = person.emails.get()
         self.assertEqual(email.context, ContactContext.objects.get(pk='home'))
@@ -54,7 +49,7 @@ class CreationTestCase(TestCase):
         self.assertEqual(response.status_code, http.client.CREATED)
         data = response.json()
         person_id = data['id']
-        person = Identity.objects.get(id=person_id)
+        person = Person.objects.get(id=person_id)
         self.assertEqual(person.names.count(), 1)
         name = person.names.get()
         self.assertEqual(list(name.contexts.all()), [NameContext.objects.get(pk='legal')])
@@ -68,7 +63,7 @@ class CreationTestCase(TestCase):
         self.assertEqual(response.status_code, http.client.CREATED)
         data = response.json()
         person_id = data['id']
-        person = Identity.objects.get(id=person_id)
+        person = Person.objects.get(id=person_id)
         self.assertEqual(person.nationalities.count(), 4)
         nationalities = person.nationality_set.all()
         self.assertEqual(set(n.country.id for n in nationalities), {826, 840, 535, 800})
@@ -83,7 +78,7 @@ class CreationTestCase(TestCase):
         self.assertEqual(response.status_code, http.client.CREATED)
         data = response.json()
         person_id = data['id']
-        person = Identity.objects.get(id=person_id)
+        person = Person.objects.get(id=person_id)
         identifier = person.identifiers.get()
         self.assertEqual(identifier.type, IdentifierType.objects.get(pk='sits-mst'))
         self.assertEqual(identifier.value, '123456')

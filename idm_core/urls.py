@@ -9,20 +9,21 @@ import idm_core.name.views
 import idm_core.nationality.views
 import idm_core.relationship.views
 import idm_core.organization.views
+import idm_core.person.views
 import idm_core.identity.views
 import idm_core.statistics.views
 
 router = routers.DefaultRouter()
-router.register('identity', idm_core.identity.views.IdentityViewSet, 'identity')
-router.register('person', idm_core.identity.views.PersonViewSet, base_name='person')
-router.register('organization', idm_core.identity.views.OrganizationViewSet, base_name='organization')
+#router.register('identity', idm_core.identity.views.IdentityViewSet, 'identity')
+router.register('person', idm_core.person.views.PersonViewSet, base_name='person')
+router.register('organization', idm_core.organization.views.OrganizationViewSet, base_name='organization')
 router.register('country', idm_core.nationality.views.CountryViewSet)
 router.register('affiliation-type', idm_core.relationship.views.AffiliationTypeViewSet)
 router.register('role-type', idm_core.relationship.views.RoleTypeViewSet)
 router.register('identifier-type', idm_core.identifier.views.IdentifierTypeViewSet)
 router.register('organization', idm_core.organization.views.OrganizationViewSet)
 
-person_router = routers.NestedSimpleRouter(router, r'person', lookup='person')
+person_router = routers.NestedSimpleRouter(router, r'person', lookup='identity')
 person_router.register('nationality', idm_core.nationality.views.NationalityViewSet, base_name='identity-nationality')
 person_router.register('affiliation', idm_core.relationship.views.AffiliationViewSet, base_name='identity-affiliation')
 person_router.register('role', idm_core.relationship.views.RoleViewSet, base_name='identity-role')

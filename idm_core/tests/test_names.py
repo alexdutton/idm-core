@@ -2,7 +2,7 @@ from django.core.exceptions import ValidationError
 from django.test import TestCase
 
 from idm_core.name.models import Name
-from idm_core.identity.models import Identity
+from idm_core.person.models import Person
 from idm_core.name.serializers import ParseNameField
 
 
@@ -10,7 +10,7 @@ class NamesTestCase(TestCase):
     fixtures = ['initial']
 
     def testMononym(self):
-        person = Identity.objects.create(type_id='person')
+        person = Person.objects.create()
         name = Name(identity=person,
                     components=[{'type': 'mononym', 'value': 'Socrates'}])
         name.save()
@@ -22,7 +22,7 @@ class NamesTestCase(TestCase):
         self.assertEqual(name.marked_up, '<name><mononym>Socrates</mononym></name>')
 
     def testMultipleMononyms(self):
-        person = Identity.objects.create(type_id='person')
+        person = Person.objects.create()
         name = Name(identity=person,
                     components=[{'type': 'mononym', 'value': 'Socrates'},
                                 {'type': 'mononym', 'value': 'Socrates'}])
@@ -30,7 +30,7 @@ class NamesTestCase(TestCase):
             name.save()
 
     def testWestern(self):
-        person = Identity.objects.create(type_id='person')
+        person = Person.objects.create()
         name = Name(identity=person,
                     components=[{'type': 'prefix', 'value': 'Rear Admiral'},
                                 {'type': 'given', 'value': 'Grace'},
@@ -48,7 +48,7 @@ class NamesTestCase(TestCase):
                          '<middle>Murray</middle> <family>Hopper</family></name>')
 
     def testChinese(self):
-        person = Identity.objects.create(type_id='person')
+        person = Person.objects.create()
         name = Name(identity=person,
                     space_delimited=False,
                     components=[{'type': 'family', 'value': '夏侯'},

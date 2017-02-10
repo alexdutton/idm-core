@@ -8,7 +8,7 @@ from . import models
 class CountrySerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = models.Country
-        exclude = ('identities',)
+        exclude = ('people',)
 
 
 class NationalitySerializer(Attestable, serializers.HyperlinkedModelSerializer):

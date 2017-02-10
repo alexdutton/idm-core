@@ -6,7 +6,7 @@ from django.db import transaction
 from django.test import TransactionTestCase
 from kombu.message import Message
 
-from idm_core.identity.models import Identity
+from idm_core.person.models import Person
 
 
 class NotificationTestCase(TransactionTestCase):
@@ -19,9 +19,9 @@ class NotificationTestCase(TransactionTestCase):
         with self.broker.acquire(block=True) as conn:
             queue = kombu.Queue(exclusive=True).bind(conn)
             queue.declare()
-            queue.bind_to(exchange=kombu.Exchange('idm.core.identity'), routing_key='#')
+            queue.bind_to(exchange=kombu.Exchange('idm.core.person'), routing_key='#')
             with transaction.atomic():
-                person = Identity(type_id='person')
+                person = Person()
                 person.save()
             message = queue.get()
             self.assertIsInstance(message, Message)
@@ -34,9 +34,9 @@ class NotificationTestCase(TransactionTestCase):
         with self.broker.acquire(block=True) as conn:
             queue = kombu.Queue(exclusive=True).bind(conn)
             queue.declare()
-            queue.bind_to(exchange=kombu.Exchange('idm.core.identity'), routing_key='#')
+            queue.bind_to(exchange=kombu.Exchange('idm.core.person'), routing_key='#')
             with transaction.atomic():
-                person = Identity(type_id='person')
+                person = Person()
                 person.save()
                 person.delete()
             message = queue.get()
@@ -45,11 +45,11 @@ class NotificationTestCase(TransactionTestCase):
     def testNoNotifcationWhenNotChanged(self):
         with self.broker.acquire(block=True) as conn:
             with transaction.atomic():
-                person = Identity(type_id='person')
+                person = Person()
                 person.save()
             queue = kombu.Queue(exclusive=True).bind(conn)
             queue.declare()
-            queue.bind_to(exchange=kombu.Exchange('idm.core.identity'), routing_key='#')
+            queue.bind_to(exchange=kombu.Exchange('idm.core.person'), routing_key='#')
             with transaction.atomic():
                 person.save()
             message = queue.get()
@@ -58,13 +58,13 @@ class NotificationTestCase(TransactionTestCase):
     def testNotifcationWhenChanged(self):
         with self.broker.acquire(block=True) as conn:
             with transaction.atomic():
-                person = Identity(type_id='person')
+                person = Person()
                 person.save()
             queue = kombu.Queue(exclusive=True).bind(conn)
             queue.declare()
-            queue.bind_to(exchange=kombu.Exchange('idm.core.identity'), routing_key='#')
+            queue.bind_to(exchange=kombu.Exchange('idm.core.person'), routing_key='#')
             with transaction.atomic():
-                person.extant = False
+                person.deceased = True
                 person.save()
             message = queue.get()
             self.assertIsInstance(message, Message)

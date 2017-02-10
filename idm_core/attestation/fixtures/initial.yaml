@@ -1,0 +1,20 @@
+- model: attestation.SourceDocumentType
+  pk: visa
+  fields:
+    label: 'visa'
+- model: attestation.SourceDocumentType
+  pk: driving-license
+  fields:
+    label: 'driving license'
+- model: attestation.SourceDocumentType
+  pk: passport
+  fields:
+    label: 'passport'
+- model: attestation.SourceDocumentType
+  pk: utility-bill
+  fields:
+    label: 'utility bill'
+- model: attestation.SourceDocumentType
+  pk: id-card
+  fields:
+    label: 'national identity card'

@@ -4,7 +4,7 @@ from django.test import TestCase
 from django_fsm import TransitionNotAllowed
 
 from idm_core.contact.models import Email, ContactContext
-from idm_core.identity.models import Identity
+from idm_core.person.models import Person
 
 
 class ClaimTestCase(TestCase):
@@ -12,7 +12,7 @@ class ClaimTestCase(TestCase):
 
     @mock.patch('templated_email.send_templated_mail')
     def testEmailSentOnStateChange(self, send_templated_mail):
-        person = Identity.objects.create(type_id='person')
+        person = Person.objects.create()
         contact_context = ContactContext.objects.get(pk='home')
         email = Email(identity=person, context=contact_context, value='user@example.org')
         email.save()
@@ -22,13 +22,13 @@ class ClaimTestCase(TestCase):
         self.assertEqual(send_templated_mail.call_count, 1)
 
     def testStateChangeFailWithoutEmail(self):
-        person = Identity.objects.create(type_id='person')
+        person = Person.objects.create()
         with self.assertRaises(TransitionNotAllowed):
             person.ready_for_activation()
 
     @mock.patch('templated_email.send_templated_mail')
     def testCanBeClaimed(self, send_templated_mail):
-        person = Identity.objects.create(type_id='person')
+        person = Person.objects.create()
         contact_context = ContactContext.objects.get(pk='home')
         email = Email(identity=person, context=contact_context, value='user@example.org')
         email.save()

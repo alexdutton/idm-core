@@ -6,9 +6,10 @@ from django.db import models
 from django.db.models.signals import post_save, post_delete
 from rest_framework.reverse import reverse
 
-from idm_core.attestation.models import Attestable
+from idm_core.attestation.mixins import Attestable
 from idm_core.name.fields import JSONSchemaField
 from idm_core.identity.models import Identity
+from idm_core.person.models import Person
 
 NAME_COMPONENT_TYPE_CHOICES = (
     ('title', 'Title'),
@@ -48,7 +49,7 @@ class NameContext(models.Model):
 
 
 class Name(Attestable, models.Model):
-    identity = models.ForeignKey(Identity, related_name='names')
+    identity = models.ForeignKey(Person, related_name='names')
 
     plain = models.TextField(blank=True)
     plain_full = models.TextField(blank=True)
