@@ -1,6 +1,5 @@
 import uuid
 
-import reversion
 from dirtyfields import DirtyFieldsMixin
 from django.conf import settings
 from django.contrib.auth.models import AbstractBaseUser
@@ -104,61 +103,3 @@ class IdentityBase(DirtyFieldsMixin, Contactable, Identifiable, models.Model):
 
     class Meta:
         abstract = True
-
-reversion.register(Identity)
-
-
-
-class OldIdentity(DirtyFieldsMixin, models.Model):
-    # Generic
-    primary_email = models.EmailField(blank=True)
-    primary_username = models.CharField(blank=True, max_length=32)
-    begin_date = models.DateField(null=True, blank=True)
-    end_date = models.DateField(null=True, blank=True)
-    extant = models.BooleanField(default=True)
-
-    # Application
-    pass
-
-    # Organization
-    pass
-
-    # Organization Role
-    organization = models.ForeignKey('self', related_name='role_identity', null=True, blank=True)
-    role_type = models.ForeignKey('relationship.RoleType', null=True, blank=True)
-    role_label = models.CharField(max_length=1024, blank=True)
-
-    # matriculation_date
-    # photo
-
-    claim_code = models.UUIDField(null=True, blank=True)
-
-    class Meta:
-        abstract = True
-        verbose_name = 'identity'
-        verbose_name_plural = 'identities'
-
-    def natural_key(self):
-        return self.uuid
-
-    def __str__(self):
-        try:
-            return self.primary_name.plain
-        except Exception:
-            return self.primary_email or str(self.id)
-
-    def save(self, *args, **kwargs):
-        if self.type_id == 'person':
-            if self.primary_name:
-                self.label = self.primary_name.plain
-                self.qualified_label = self.primary_name.plain_full
-                self.sort_label = self.primary_name.sort
-            else:
-                self.label = self.qualified_label = self.sort_label = ''
-        if self.type_id == 'organization-role':
-            self.label = self.role_label or self.role_type.label
-            self.qualified_label = ', '.join([self.label, self.organization.label])
-            self.sort_label = ', '.join([self.organization.label, self.label])
-        elif self.type_id == 'organization':
-            pass
-        return super().save(*args, **kwargs)

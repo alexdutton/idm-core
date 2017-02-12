@@ -151,7 +151,13 @@ class RoleType(RelationshipType):
 class OrganizationRole(IdentityBase):
     organization = models.ForeignKey(Organization)
     role_type = models.ForeignKey(RoleType)
+    role_label = models.CharField(max_length=255)
 
+    def save(self, *args, **kwargs):
+        self.label = self.role_label or self.role_type.label
+        self.qualified_label = ', '.join([self.label, self.organization.label])
+        self.sort_label = ', '.join([self.organization.label, self.label])
+        return super().save(*args, **kwargs)
 
 class Role(Relationship):
     identity = models.ForeignKey(Person)

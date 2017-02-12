@@ -1,3 +1,4 @@
+import reversion
 from django.db import models
 
 from idm_core.identity.models import IdentityBase
@@ -18,3 +19,14 @@ class Person(IdentityBase):
     date_of_birth = models.DateField(null=True, blank=True)
     date_of_death = models.DateField(null=True, blank=True)
     deceased = models.BooleanField(default=False)
+
+    def save(self, *args, **kwargs):
+        if self.primary_name_id:
+            self.label = self.primary_name.plain
+            self.qualified_label = self.primary_name.plain_full
+            self.sort_label = self.primary_name.sort
+        else:
+            self.label, self.qualified_label, self.sort_label = '', '', ''
+        return super().save(*args, **kwargs)
+
+reversion.register(Person)
