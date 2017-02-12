@@ -1,5 +1,6 @@
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 
+from idm_core.identifier.mixins import IdentifierFilterViewSetMixin
 from . import models, serializers
 
 
@@ -14,7 +15,7 @@ class IdentitySubViewMixin(object):
         return queryset
 
 
-class IdentityViewSet(ModelViewSet):
+class IdentityViewSet(IdentifierFilterViewSetMixin, ModelViewSet):
     #queryset = models.IdentityBase.objects.all()
     serializer_class = serializers.IdentitySerializer
 
