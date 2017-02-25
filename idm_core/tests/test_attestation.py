@@ -17,7 +17,7 @@ class AttestationTestCase(TestCase):
     def testEditingAttested(self):
         # It shouldn't be possible to modify something that's attested
         person = Person.objects.create()
-        user = get_user_model().objects.create(username='college-admin')
+        user = get_user_model().objects.create()
         name = Name.objects.create(identity=person,
                                    components=[{'type': 'given', 'value': 'Alice'}])
         source_document = SourceDocument.objects.create(identity=person,

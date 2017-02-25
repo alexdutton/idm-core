@@ -2,7 +2,8 @@ import uuid
 
 from dirtyfields import DirtyFieldsMixin
 from django.conf import settings
-from django.contrib.auth.models import AbstractBaseUser
+from django.contrib.auth.base_user import BaseUserManager
+from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
@@ -26,9 +27,13 @@ def get_uuid():
     return uuid.uuid4()
 
 
-class User(AbstractBaseUser):
-    uuid = models.UUIDField(primary_key=True, default=get_uuid, editable=False)
+class User(PermissionsMixin, AbstractBaseUser):
+    id = models.UUIDField(primary_key=True, default=get_uuid, editable=False)
     identity = models.ForeignKey('identity.Identity', null=True, blank=True)
+
+    USERNAME_FIELD = 'id'
+
+    objects = BaseUserManager()
 
 
 class Identity(models.Model):
@@ -103,3 +108,13 @@ class IdentityBase(DirtyFieldsMixin, Contactable, Identifiable, models.Model):
 
     class Meta:
         abstract = True
+
+
+class IdentityPermission(models.Model):
+    identity_content_type = models.ForeignKey(ContentType)
+    identity_id = models.UUIDField()
+    identity = GenericForeignKey('identity_content_type', 'identity_id')
+    organizations = models.ManyToManyField('organization.Organization', blank=True)
+    all_organizations = models.BooleanField(default=False)
+    identifier_types = models.ManyToManyField('identifier.IdentifierType', blank=True)
+    all_identifier_types = models.BooleanField(default=False)

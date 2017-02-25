@@ -1,6 +1,7 @@
 from django.db.models import Q
 
 from drf_fsm_transitions.viewset_mixins import get_viewset_transition_action_mixin
+from idm_core.identity.filters import IdentityPermissionFilterBackend
 from idm_core.identity.views import IdentityViewSet
 from idm_core.relationship.models import Affiliation
 
@@ -11,6 +12,7 @@ class PersonViewSet(get_viewset_transition_action_mixin(models.Person, 'state'),
                       IdentityViewSet):
     queryset = models.Person.objects.all()
     serializer_class = serializers.PersonSerializer
+    filter_backends = (IdentityPermissionFilterBackend,)
 
     def get_queryset(self):
         queryset = super().get_queryset()

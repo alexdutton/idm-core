@@ -100,6 +100,8 @@ BROKER_USERNAME = os.environ.get('BROKER_USERNAME', 'guest')
 BROKER_PASSWORD = os.environ.get('BROKER_PASSWORD', 'guest')
 BROKER_PREFIX = os.environ.get('BROKER_PREFIX', 'idm.core.')
 
+AUTH_USER_MODEL = 'identity.User'
+
 CELERYBEAT_SCHEDULE = {
     'delayed-save': {
         'task': 'idm_core.delayed_save.tasks.schedule_impending_saves',

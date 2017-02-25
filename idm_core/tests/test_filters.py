@@ -1,5 +1,6 @@
 import http.client
 
+from django.contrib.auth import get_user_model
 from django.test import TestCase
 
 from idm_core.identifier.models import Identifier
@@ -10,6 +11,12 @@ from idm_core.relationship.models import Affiliation
 
 class FiltersTestCase(TestCase):
     fixtures = ['initial']
+
+    def setUp(self):
+        user = get_user_model()(is_superuser=True)
+        user.set_password('admin')
+        user.save()
+        self.client.login(username=user.id, password='admin')
 
     def testFilterByIdentifier(self):
         other_identity = Person.objects.create()
