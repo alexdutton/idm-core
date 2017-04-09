@@ -14,12 +14,14 @@ from idm_core.person.models import Person
 
 class AttestationTestCase(TestCase):
     fixtures = ['initial']
+
     def testEditingAttested(self):
         # It shouldn't be possible to modify something that's attested
         person = Person.objects.create()
         user = get_user_model().objects.create()
         name = Name.objects.create(identity=person,
-                                   components=[{'type': 'given', 'value': 'Alice'}])
+                                   components=[{'type': 'given', 'value': 'Alice'}],
+                                   context_id='legal')
         source_document = SourceDocument.objects.create(identity=person,
                                                         type_id='visa',
                                                         validated_by=user)
@@ -37,7 +39,8 @@ class AttestationViewTestCase(TestCase):
     def testAttestableGet(self):
         person = Person.objects.create()
         name = Name.objects.create(identity=person,
-                                   components=[{'type': 'given', 'value': 'Alice'}])
+                                   components=[{'type': 'given', 'value': 'Alice'}],
+                                   context_id='legal')
         address = Address.objects.create(identity=person, context=ContactContext.objects.get(pk='home'))
 
         response = self.client.get('/person/{}/attestable/'.format(person.pk))

@@ -8,7 +8,7 @@ from . import models
 class NameAdmin(admin.ModelAdmin):
 
     list_display = ('plain', 'familiar', 'sort', 'first', 'last')
-    list_filter = ('contexts',)
+    list_filter = ('context',)
 
     formfield_overrides = {
         django.db.models.TextField: {'widget': widgets.TextInput},

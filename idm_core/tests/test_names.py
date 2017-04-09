@@ -12,7 +12,8 @@ class NamesTestCase(TestCase):
     def testMononym(self):
         person = Person.objects.create()
         name = Name(identity=person,
-                    components=[{'type': 'mononym', 'value': 'Socrates'}])
+                    components=[{'type': 'mononym', 'value': 'Socrates'}],
+                    context_id='legal')
         name.save()
         self.assertEqual(str(name), 'Socrates')
         self.assertEqual(name.plain, 'Socrates')
@@ -25,18 +26,20 @@ class NamesTestCase(TestCase):
         person = Person.objects.create()
         name = Name(identity=person,
                     components=[{'type': 'mononym', 'value': 'Socrates'},
-                                {'type': 'mononym', 'value': 'Socrates'}])
+                                {'type': 'mononym', 'value': 'Socrates'}],
+                    context_id='legal')
         with self.assertRaises(ValidationError):
             name.save()
 
     def testWestern(self):
         person = Person.objects.create()
         name = Name(identity=person,
-                    components=[{'type': 'prefix', 'value': 'Rear Admiral'},
-                                {'type': 'given', 'value': 'Grace'},
-                                {'type': 'middle', 'value': 'Brewster'},
-                                {'type': 'middle', 'value': 'Murray'},
-                                {'type': 'family', 'value': 'Hopper'}])
+                    components=[{'type': 'prefix', 'value': 'Rear Admiral'}, ' ',
+                                {'type': 'given', 'value': 'Grace'}, ' ',
+                                {'type': 'middle', 'value': 'Brewster'}, ' ',
+                                {'type': 'middle', 'value': 'Murray'}, ' ',
+                                {'type': 'family', 'value': 'Hopper'}],
+                    context_id='legal')
         name.save()
         self.assertEqual(str(name), 'Rear Admiral Grace Brewster Murray Hopper')
         self.assertEqual(name.plain, 'Grace Hopper')
@@ -50,9 +53,9 @@ class NamesTestCase(TestCase):
     def testChinese(self):
         person = Person.objects.create()
         name = Name(identity=person,
-                    space_delimited=False,
                     components=[{'type': 'family', 'value': '夏侯'},
-                                {'type': 'given', 'value': '徽'}])
+                                {'type': 'given', 'value': '徽'}],
+                    context_id='legal')
         name.save()
         self.assertEqual(str(name), '夏侯徽')
         self.assertEqual(name.plain, '夏侯徽')
@@ -79,10 +82,10 @@ class NamesTestCase(TestCase):
 
     def testParsingStringFirstLast(self):
         components = ParseNameField().to_internal_value('Grace Hopper')
-        self.assertEqual(components, [{'type': 'given', 'value': 'Grace'},
+        self.assertEqual(components, [{'type': 'given', 'value': 'Grace'}, ' ',
                                       {'type': 'family', 'value': 'Hopper'}])
 
     def testParsingDictFirstLast(self):
         components = ParseNameField().to_internal_value({'first': 'Grace', 'last': 'Hopper'})
-        self.assertEqual(components, [{'type': 'given', 'value': 'Grace'},
+        self.assertEqual(components, [{'type': 'given', 'value': 'Grace'}, ' ',
                                       {'type': 'family', 'value': 'Hopper'}])

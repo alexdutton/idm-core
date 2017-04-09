@@ -38,7 +38,7 @@ class MergingTestCase(TransactionTestCase):
     def testEverythingMoved(self):
         primary = self.create_person_from_json({
             'names': [{
-                "contexts": ["legal"],
+                "context": "legal",
                 "components": [{"type": "given", "value": "Alice"}],
             }],
             'identifiers': [{
@@ -48,7 +48,7 @@ class MergingTestCase(TransactionTestCase):
         })
         secondary = self.create_person_from_json({
             'names': [{
-                "contexts": ["presentational"],
+                "context": "presentational",
                 "components": [{"type": "given", "value": "Bob"}],
             }],
             'identifiers': [{
@@ -63,7 +63,7 @@ class MergingTestCase(TransactionTestCase):
         merging.merge(secondary, primary)
 
         self.assertEqual(primary.names.count(), 2)
-        self.assertEqual(secondary.names.count(), 0)
+        self.assertEqual(secondary.names.count(), 1)
 
         self.assertEqual(primary.identifiers.count(), 2)
         self.assertEqual(secondary.identifiers.count(), 0)
@@ -75,7 +75,7 @@ class MergingTestCase(TransactionTestCase):
     def testDontDuplicateNationalities(self):
         primary = self.create_person_from_json({
             'names': [{
-                "contexts": ["legal"],
+                "context": "legal",
                 "components": [{"type": "given", "value": "Alice"}],
             }],
             'nationalities': [{
@@ -84,7 +84,7 @@ class MergingTestCase(TransactionTestCase):
         })
         secondary = self.create_person_from_json({
             'names': [{
-                "contexts": ["presentational"],
+                "context": "presentational",
                 "components": [{"type": "given", "value": "Bob"}],
             }],
             'nationalities': [{

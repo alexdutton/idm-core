@@ -26,7 +26,7 @@ class IdentitySerializer(HyperlinkedModelSerializer):
     class Meta:
         model = models.Identity
 
-        fields = ('url', 'id', 'label', 'state', 'type_id')
+        fields = ('url', 'id', 'label', 'state')
 
         read_only_fields = (
             'merged_into',

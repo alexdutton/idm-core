@@ -11,14 +11,20 @@ from idm_core.nationality.serializers import EmbeddedNationalitySerializer
 from . import models
 
 
-class PlainPersonSerializer(TypeMixin, IdentifiableSerializer, serializers.ModelSerializer):
-    url = serializers.HyperlinkedIdentityField(view_name='person-detail')
-
+class TersePersonSerializer(TypeMixin, IdentifiableSerializer, serializers.ModelSerializer):
     class Meta:
         model = models.Person
-        fields = (
-            'id', 'url', 'label', 'sex', 'date_of_birth', 'date_of_death', 'deceased', 'state', 'identifiers',
-            'primary_email', 'primary_username',
+        fields = ('id', 'url', 'label', 'state')
+
+
+class PlainPersonSerializer(TersePersonSerializer):
+    url = serializers.HyperlinkedIdentityField(view_name='person-detail')
+
+    class Meta(TersePersonSerializer.Meta):
+        model = models.Person
+        fields = TersePersonSerializer.Meta.fields + (
+            'sex', 'date_of_birth', 'date_of_death', 'deceased', 'identifiers',
+            'primary_email', 'primary_username'
         )
 
 

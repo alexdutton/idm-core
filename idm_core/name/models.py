@@ -1,9 +1,10 @@
 from xml.sax.saxutils import escape
 
 import collections
+from dirtyfields import DirtyFieldsMixin
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.db.models.signals import post_save, post_delete
+from django.db.models.signals import post_save, post_delete, pre_save
 from rest_framework.reverse import reverse
 
 from idm_core.attestation.mixins import Attestable
@@ -24,18 +25,22 @@ NAME_COMPONENT_TYPE_CHOICES = (
 components_schema = {
     "type": "array",
     "items": {
-        "type": "object",
-        "properties": {
-            "type": {
-                "type": "string",
-                "enum": [choice[0] for choice in NAME_COMPONENT_TYPE_CHOICES],
+        "oneOf": [{
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "string",
+                    "enum": [choice[0] for choice in NAME_COMPONENT_TYPE_CHOICES],
+                },
+                "value": {
+                    "type": "string",
+                },
             },
-            "value": {
-                "type": "string",
-            },
-        },
-        "required": ["type", "value"],
-        "additionalProperties": False,
+            "required": ["type", "value"],
+            "additionalProperties": False,
+        }, {
+            "type": "string",
+        }],
     },
 }
 
@@ -48,7 +53,7 @@ class NameContext(models.Model):
         return self.label
 
 
-class Name(Attestable, models.Model):
+class Name(Attestable, DirtyFieldsMixin, models.Model):
     identity = models.ForeignKey(Person, related_name='names')
 
     plain = models.TextField(blank=True)
@@ -61,9 +66,11 @@ class Name(Attestable, models.Model):
 
     active = models.BooleanField(default=True)
 
-    space_delimited = models.BooleanField(default=True)
     components = JSONSchemaField(schema=components_schema)
-    contexts = models.ManyToManyField(NameContext)
+    context = models.ForeignKey(NameContext)
+
+    created = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.plain_full
@@ -71,31 +78,50 @@ class Name(Attestable, models.Model):
     def save(self, *args, **kwargs):
         components = self.components
         components_by_type = collections.defaultdict(list)
+        components_with_whitespace = []
         for component in components:
-            components_by_type[component['type']].append(component['value'])
+            if isinstance(component, dict):
+                components_by_type[component['type']].append(component['value'])
+                components_with_whitespace.append(component)
+            else:
+                components_with_whitespace.append({'type': 'whitespace', 'value': component})
 
-        delimiter = ' ' if self.space_delimited else ''
+        # This strips out e.g. titles, suffixes and middle names, and then removes leading and trailing whitespace.
+        # Embedded whitespace is then pared down.
+        plain = [c for c in components_with_whitespace
+                 if c['type'] in ('whitespace', 'family', 'given', 'mononym')]
+        while plain and plain[0]['type'] == 'whitespace':
+            plain.pop(0)
+        while plain and plain[-1]['type'] == 'whitespace':
+            plain.pop(-1)
+        i = 0
+        while i < len(plain) - 1:
+            if plain[i]['type'] == 'whitespace' and plain[i+1]['type'] == 'whitespace':
+                plain[i]['value'] += plain[i+1]['value'].strip()
+                del plain[i+1]
+            else:
+                i += 1
+        self.plain = ''.join(c['value'] for c in plain)
 
-        self.plain = delimiter.join(c['value'] for c in components if c['type'] in ('given', 'family', 'mononym'))
-        self.plain_full = delimiter.join(c['value'] for c in components)
+        self.plain_full = ''.join(c['value'] for c in components_with_whitespace)
         self.marked_up = '<name>{}</name>'.format(
-            delimiter.join('<{type}>{value}</{type}>'.format(type=c['type'], value=escape(c['value']))
+            ''.join('<{type}>{value}</{type}>'.format(type=c['type'], value=escape(c['value'])) if isinstance(c, dict) else c
                      for c in components))
         self.familiar = ''
-        for component in components:
+        for component in components_with_whitespace:
             if component['type'] == 'given':
                 self.familiar = component['value']
                 break
         else:
-            for component in components:
+            for component in components_with_whitespace:
                 if component['type'] == 'mononym':
                     self.familiar = component['value']
                     break
 
         if 'family' in components_by_type:
-            self.sort = delimiter.join(components_by_type['family'])
+            self.sort = ' '.join(components_by_type['family'])
             if 'given' in components_by_type:
-                for component in components:
+                for component in components_with_whitespace:
                     # If a given name precedes a family name, we've reversed their order, so add a ', '.
                     # If the family name comes first, stop looking for a given name.
                     if component['type'] == 'given':
@@ -103,16 +129,16 @@ class Name(Attestable, models.Model):
                         break
                     elif component['type'] == 'family':
                         break
-                self.sort += delimiter.join(components_by_type['given'] + components_by_type['middle'])
+                self.sort += ' '.join(components_by_type['given'] + components_by_type['middle'])
         elif 'mononym' in components_by_type:
             if len(components) != 1:
                 raise ValidationError("If there's a mononym, there must be only one component")
-            self.sort = delimiter.join(components_by_type['mononym'])
+            self.sort = ' '.join(components_by_type['mononym'])
         else:
             self.sort = self.plain
 
         self.first, self.last = '', ''
-        for component in components:
+        for component in components_with_whitespace:
             if component['type'] in ('given', 'family'):
                 if not self.first and 'given' in components_by_type:
                     self.first = component['value']
@@ -122,13 +148,12 @@ class Name(Attestable, models.Model):
         super(Name, self).save()
 
 
-def name_changed(instance, **kwargs):
+def name_changed(instance: Name, **kwargs):
     identity = instance.identity
     names = list(identity.names.filter(active=True).order_by('id'))
     names_by_context = collections.defaultdict(list)
     for name in names:
-        for context in name.contexts.all():
-            names_by_context[context.pk].append(name)
+        names_by_context[name.context_id].append(name)
 
     for context in ('presentational', 'legal', 'informal'):
         if context in names_by_context:
@@ -138,6 +163,20 @@ def name_changed(instance, **kwargs):
         identity.primary_name = None
 
     identity.save()
+
+
+def update_primary_name_if_identity_changed(instance: Name, **kwargs):
+    if 'identity' in instance.get_dirty_fields(check_relationship=True):
+        try:
+            person = instance.primary_name_of
+        except Name.primary_name_of.RelatedObjectDoesNotExist:
+            pass
+        else:
+            person.primary_name = None
+            person.save()
+
+
+pre_save.connect(update_primary_name_if_identity_changed, sender=Name)
 
 post_save.connect(name_changed, sender=Name)
 post_delete.connect(name_changed, sender=Name)

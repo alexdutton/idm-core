@@ -82,9 +82,10 @@ class CreationTestCase(TestCase):
                                   organization=self.organization,
                                   type=self.affiliation_type)
         affiliation.save()
-        affiliation.suspend(until=datetime.datetime(1970, 1, 2).replace(tzinfo=timezone.utc))
+        now.return_value = datetime.datetime(1970, 1, 2).replace(tzinfo=timezone.utc)
+        affiliation.suspend(until=datetime.datetime(1970, 1, 3).replace(tzinfo=timezone.utc))
         self.assertEqual(affiliation.state, 'suspended')
-        now.return_value = datetime.datetime(1970, 1, 3).replace(tzinfo=timezone.utc)
+        now.return_value = datetime.datetime(1970, 1, 4).replace(tzinfo=timezone.utc)
         affiliation._time_has_passed()
         self.assertEqual(affiliation.state, 'active')
 

@@ -10,8 +10,10 @@ class FiltersTestCase(TestCase):
     fixtures = ['initial']
 
     def setUp(self):
-        user = get_user_model().objects.create(password='password')
-        self.client.login(username=user.id, password='admin')
+        user = get_user_model()()
+        user.set_password('password')
+        user.save()
+        self.client.login(username=user.id, password='password')
 
     def testCantSee(self):
         person = Person.objects.create()

@@ -42,7 +42,7 @@ class CreationTestCase(TestCase):
                            {'type': 'family', 'value': 'Darwin'}]
         response = self.client.post('/person/', json.dumps({
             'names': [{
-                'contexts': ['legal'],
+                'context': 'legal',
                 'components': name_components,
             }]
         }), content_type='application/json')
@@ -52,7 +52,7 @@ class CreationTestCase(TestCase):
         person = Person.objects.get(id=person_id)
         self.assertEqual(person.names.count(), 1)
         name = person.names.get()
-        self.assertEqual(list(name.contexts.all()), [NameContext.objects.get(pk='legal')])
+        self.assertEqual(name.context, NameContext.objects.get(pk='legal'))
         self.assertEqual(name.components, name_components)
 
     def testCreateWithNationalities(self):

@@ -4,6 +4,7 @@ from django.utils import timezone
 from django.utils.functional import cached_property
 from django_fsm import FSMField, transition, RETURN_VALUE, FSMFieldMixin
 
+from idm_core.application.mixins import ManageableModel
 from idm_core.delayed_save.models import DelayedSave
 from idm_core.organization.models import Organization
 from idm_core.identity.models import Identity, IdentityBase
@@ -42,8 +43,12 @@ class RelationshipType(models.Model):
         return self.label
 
 
-class Relationship(models.Model):
-    start_date = models.DateTimeField()
+def now():
+    # Wrapping so we can mock it out when testing
+    return timezone.now()
+
+class Relationship(ManageableModel):
+    start_date = models.DateTimeField(default=now)
     end_date = models.DateTimeField(null=True, blank=True)
     effective_start_date = models.DateTimeField(null=True, blank=True)
     effective_end_date = models.DateTimeField(null=True, blank=True)
@@ -133,8 +138,6 @@ class Relationship(models.Model):
             return self.state
 
     def save(self, *args, **kwargs):
-        if not self.start_date:
-            self.start_date = timezone.now()
         self._time_has_passed()
         super().save(*args, **kwargs)
         self.schedule_resave()

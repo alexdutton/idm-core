@@ -39,6 +39,7 @@ def merge(merge_these, into_this, trigger=None, reason=None):
                 name.attestations.all().delete()
                 name.delete()
             else:
+                name.pk = None
                 name.identity = into_this
                 name.save()
 

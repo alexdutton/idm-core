@@ -10,7 +10,7 @@ import idm_core.nationality.views
 import idm_core.relationship.views
 import idm_core.organization.views
 import idm_core.person.views
-import idm_core.identity.views
+import idm_core.application.views
 import idm_core.statistics.views
 
 router = routers.DefaultRouter()
@@ -21,6 +21,7 @@ router.register('country', idm_core.nationality.views.CountryViewSet)
 router.register('affiliation-type', idm_core.relationship.views.AffiliationTypeViewSet)
 router.register('role-type', idm_core.relationship.views.RoleTypeViewSet)
 router.register('identifier-type', idm_core.identifier.views.IdentifierTypeViewSet)
+router.register('application', idm_core.application.views.ApplicationViewSet)
 router.register('organization', idm_core.organization.views.OrganizationViewSet)
 
 person_router = routers.NestedSimpleRouter(router, r'person', lookup='identity')
@@ -51,5 +52,6 @@ urlpatterns = [
     url(r'^', include(person_router.urls)),
     url(r'^statistics/$', idm_core.statistics.views.StatisticsView.as_view()),
     url(r'^admin/', admin.site.urls),
+    url(r'^oidc/', include('oidc_auth.urls')),
 
 ]

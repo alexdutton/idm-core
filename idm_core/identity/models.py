@@ -4,9 +4,10 @@ from dirtyfields import DirtyFieldsMixin
 from django.conf import settings
 from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
-from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
+from django.utils.translation import ugettext_lazy as _
 from django_fsm import FSMField, transition
 import templated_email
 
@@ -29,12 +30,37 @@ def get_uuid():
 
 class User(PermissionsMixin, AbstractBaseUser):
     id = models.UUIDField(primary_key=True, default=get_uuid, editable=False)
-    identity = models.ForeignKey('identity.Identity', null=True, blank=True)
+    identity_id = models.UUIDField(null=True, blank=True)
+    identity_content_type = models.ForeignKey(ContentType, null=True, blank=True)
+    identity = GenericForeignKey('identity_content_type', 'identity_id')
+
+    is_staff = models.BooleanField(
+        _('staff status'),
+        default=False,
+        help_text=_('Designates whether the user can log into this admin site.'),
+    )
+    is_active = models.BooleanField(
+        _('active'),
+        default=True,
+        help_text=_(
+            'Designates whether this user should be treated as active. '
+            'Unselect this instead of deleting accounts.'
+        ),
+    )
 
     USERNAME_FIELD = 'id'
 
     objects = BaseUserManager()
 
+    def __str__(self):
+        return str(self.id)
+
+    def get_short_name(self):
+        "Returns the short name for the user."
+        try:
+            return str(self.identity)
+        except :
+            return str(self.id)
 
 class Identity(models.Model):
     id = models.UUIDField(primary_key=True)
@@ -62,6 +88,7 @@ class IdentityBase(DirtyFieldsMixin, Contactable, Identifiable, models.Model):
     state = FSMField(choices=STATE_CHOICES, default='established')
     merged_into = models.ForeignKey('self', null=True, blank=True, related_name='merged_from')
 
+    identity_permissions = GenericRelation('identity.IdentityPermission', 'identity_id', 'identity_content_type')
 
     @transition(field=state, source='established', target='established',
                 conditions=[lambda self: self.emails.exists()])
@@ -111,6 +138,8 @@ class IdentityBase(DirtyFieldsMixin, Contactable, Identifiable, models.Model):
 
 
 class IdentityPermission(models.Model):
+    """The given identity has permissions to manage identities in the given organizations."""
+
     identity_content_type = models.ForeignKey(ContentType)
     identity_id = models.UUIDField()
     identity = GenericForeignKey('identity_content_type', 'identity_id')
