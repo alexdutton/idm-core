@@ -5,7 +5,7 @@ djangorestframework
 django-dirtyfields
 django-fsm
 django-haystack
-django-oidc
+django_oidc_auth
 django-reversion
 django-templated-email
 -e git://github.com/alexsdutton/drf-fsm-transitions.git@both#egg=drf-fsm-transitions
