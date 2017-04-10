@@ -1,4 +1,4 @@
-# Identity API
+# IdM Core API
 
 [![Build Status](https://travis-ci.org/alexsdutton/idm-core.svg?branch=master)](https://travis-ci.org/alexsdutton/idm-core) [![codecov](https://codecov.io/gh/alexsdutton/idm-core/branch/master/graph/badge.svg)](https://codecov.io/gh/alexsdutton/idm-core)
 
