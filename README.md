@@ -12,7 +12,7 @@ A prototypical identity API supporting:
 * Publishing data changes to AMQP
 
 
-# Getting started
+## Getting started
 
 Make rabbitmq available on localhost with a `guest:guest` administrator account.
 
@@ -30,3 +30,15 @@ Make rabbitmq available on localhost with a `guest:guest` administrator account.
 
     # Create a new person
     curl http://localhost:8000/person/ -d@examples/lewis-carroll.json -H"Content-type: application/json" -v
+
+
+## Architecture
+
+The IdM Core component is designed to support a collaborative approach to identity management.
+
+
+### Model mixins:
+
+* Attestable
+* Manageable
+* Suspendable (not yet implemented)

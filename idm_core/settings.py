@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.staticfiles',
+    'idm_brand',
     'idm_core', #.apps.IDMCoreConfig',
     'idm_core.application.apps.ApplicationConfig',
     'idm_core.attestation.apps.AttestationConfig',
@@ -43,11 +44,12 @@ INSTALLED_APPS = [
     'idm_core.contact',
     'idm_core.relationship.apps.OrgRelationshipConfig',
     'idm_core.identifier',
-    'idm_core.name',
+    'idm_core.name.apps.NameConfig',
     'idm_core.person.apps.PersonConfig',
     'idm_core.nationality.apps.NationalityConfig',
     'idm_core.delayed_save',
     'idm_core.organization.apps.OrganizationConfig',
+    'idm_core.selfservice',
     'idm_broker.apps.IDMBrokerConfig',
     'oidc_auth',
     'rest_framework',
@@ -144,6 +146,7 @@ OIDC_AUTH = {
         'client_id': '118661',
         'client_secret': '9a82e2c9b52fadd87ee79b67ead11a28012e270233432e1297c44665',
     },
+    'SCOPES': ['identity'],
 }
 
 SESSION_COOKIE_NAME = 'idm-core-sessionid'
@@ -155,3 +158,5 @@ LOGIN_URL = 'oidc-login'
 l = logging.getLogger('django.db.backends')
 l.setLevel(logging.DEBUG)
 l.addHandler(logging.StreamHandler())
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

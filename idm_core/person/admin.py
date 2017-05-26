@@ -14,13 +14,16 @@ class NameInlineModelAdmin(TabularInline):
     formfield_overrides = {
         django.db.models.TextField: {'widget': widgets.TextInput},
     }
-    fields = ('components', 'contexts', 'active', 'space_delimited')
+    fields = ('components', 'context', 'active', 'attested_by')
+    readonly_fields = ('attested_by',)
+    show_change_link = True
 
 
 class AffiliationInlineModelAdmin(TabularInline):
     model = Affiliation
-    fields = ('organization', 'type', 'state', 'start_date', 'end_date', 'effective_end_date')
+    fields = ('organization', 'type', 'state', 'start_date', 'end_date', 'effective_start_date', 'effective_end_date', 'review_date')
     readonly_fields = ('state',)
+    show_change_link = True
 
 
 @admin.register(models.Person)

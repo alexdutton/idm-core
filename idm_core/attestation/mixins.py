@@ -10,7 +10,7 @@ class Attestable(DirtyFieldsMixin, models.Model):
     attestations = GenericRelation('attestation.Attestation',
                                    content_type_field='attests_content_type',
                                    object_id_field='attests_object_id')
-    attested_by = ArrayField(models.SlugField(), default=[])
+    attested_by = ArrayField(models.SlugField(), default=[], blank=True)
 
     changeable_when_attested = frozenset({'attested_by'})
 

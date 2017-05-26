@@ -5,7 +5,7 @@ from . import models
 
 class ContactSerializer(serializers.ModelSerializer):
     class Meta:
-        fields = ('context', 'affiliation', 'identity')
+        fields = ('context', 'affiliation', 'identity', 'validated')
 
 
 class EmbeddedContactSerializer(ContactSerializer):
@@ -30,6 +30,11 @@ class AddressSerializer(ContactSerializer):
         model = models.Address
 
 
+class OnlineAccountSerializer(ContactSerializer):
+    class Meta(ContactSerializer.Meta):
+        model = models.OnlineAccount
+
+
 class EmbeddedEmailSerializer(EmailSerializer, EmbeddedContactSerializer):
     class Meta(EmailSerializer.Meta, EmbeddedContactSerializer.Meta):
-        fields = ('value', 'identity', 'context')
+        fields = ('value', 'identity', 'context', 'validated')

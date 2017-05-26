@@ -19,7 +19,7 @@ class SubViewTestCase(TestCase):
         other_identifier = Identifier.objects.create(identity=other_person,
                                                      type_id='username',
                                                      value='other_username')
-        response = self.client.get('/person/{}/identifier/'.format(person.id))
+        response = self.client.get('/api/person/{}/identifier/'.format(person.id))
         self.assertEqual(response.status_code, http.client.OK)
         data = response.json()
         self.assertEqual(data['count'], 1)

@@ -1,4 +1,5 @@
 import http.client
+import uuid
 
 from django.contrib.auth import get_user_model
 from rest_framework.exceptions import ValidationError
@@ -18,7 +19,7 @@ class AttestationTestCase(TestCase):
     def testEditingAttested(self):
         # It shouldn't be possible to modify something that's attested
         person = Person.objects.create()
-        user = get_user_model().objects.create()
+        user = get_user_model().objects.create(username=uuid.uuid4())
         name = Name.objects.create(identity=person,
                                    components=[{'type': 'given', 'value': 'Alice'}],
                                    context_id='legal')
@@ -43,7 +44,7 @@ class AttestationViewTestCase(TestCase):
                                    context_id='legal')
         address = Address.objects.create(identity=person, context=ContactContext.objects.get(pk='home'))
 
-        response = self.client.get('/person/{}/attestable/'.format(person.pk))
+        response = self.client.get('/api/person/{}/attestable/'.format(person.pk))
 
         self.assertEqual(response.status_code, http.client.OK)
         data = response.json()

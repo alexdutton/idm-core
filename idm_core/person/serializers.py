@@ -2,10 +2,11 @@ from django.contrib.contenttypes.models import ContentType
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
+from idm_core.application.mixins import ManageableModelSerializer
 from idm_core.contact.serializers import EmbeddedEmailSerializer
 from idm_core.identifier.serializers import EmbeddedIdentifierSerializer, IdentifiableSerializer
 from idm_core.identity.serializers import InvertedBooleanField, TypeMixin
-from idm_core.name.serializers import EmbeddedNameSerializer
+from idm_core.name.serializers import EmbeddedNameSerializer, NameSerializer
 from idm_core.nationality.serializers import EmbeddedNationalitySerializer
 
 from . import models
@@ -17,14 +18,15 @@ class TersePersonSerializer(TypeMixin, IdentifiableSerializer, serializers.Model
         fields = ('id', 'url', 'label', 'state')
 
 
-class PlainPersonSerializer(TersePersonSerializer):
+class PlainPersonSerializer(ManageableModelSerializer, TersePersonSerializer):
     url = serializers.HyperlinkedIdentityField(view_name='person-detail')
+    primary_name = NameSerializer()
 
     class Meta(TersePersonSerializer.Meta):
         model = models.Person
         fields = TersePersonSerializer.Meta.fields + (
             'sex', 'date_of_birth', 'date_of_death', 'deceased', 'identifiers',
-            'primary_email', 'primary_username'
+            'primary_email', 'primary_username', 'primary_name'
         )
 
 

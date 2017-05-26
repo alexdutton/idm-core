@@ -1,6 +1,7 @@
 import reversion
 from django.db import models
 
+from idm_core.application.mixins import ManageableModel
 from idm_core.identity.models import IdentityBase
 
 # ISO/IEC 5218
@@ -12,7 +13,7 @@ SEX_CHOICES = (
 )
 
 
-class Person(IdentityBase):
+class Person(ManageableModel, IdentityBase):
     sex = models.CharField(max_length=1, choices=SEX_CHOICES, default='0')
     primary_name = models.OneToOneField('name.Name', related_name='primary_name_of', null=True, blank=True, default=None)
 

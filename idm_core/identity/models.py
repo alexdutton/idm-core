@@ -2,12 +2,10 @@ import uuid
 
 from dirtyfields import DirtyFieldsMixin
 from django.conf import settings
-from django.contrib.auth.base_user import BaseUserManager
-from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
+from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
-from django.utils.translation import ugettext_lazy as _
 from django_fsm import FSMField, transition
 import templated_email
 
@@ -27,33 +25,31 @@ STATE_CHOICES = (
 def get_uuid():
     return uuid.uuid4()
 
+class UserManager(BaseUserManager):
+    def create_superuser(self, password, **kwargs):
+        user = self.model(**kwargs)
+        user.is_staff = True
+        user.is_superuser = True
+        user.set_password(password)
+        user.save()
 
-class User(PermissionsMixin, AbstractBaseUser):
-    id = models.UUIDField(primary_key=True, default=get_uuid, editable=False)
+
+class AbstractUserWithoutUsername(AbstractUser):
+    class Meta:
+        abstract = True
+AbstractUserWithoutUsername._meta.local_fields.remove(AbstractUserWithoutUsername._meta.get_field('username'))
+
+
+class User(AbstractUserWithoutUsername):
+    username = models.UUIDField(db_index=True, unique=True, editable=False)
     identity_id = models.UUIDField(null=True, blank=True)
     identity_content_type = models.ForeignKey(ContentType, null=True, blank=True)
     identity = GenericForeignKey('identity_content_type', 'identity_id')
 
-    is_staff = models.BooleanField(
-        _('staff status'),
-        default=False,
-        help_text=_('Designates whether the user can log into this admin site.'),
-    )
-    is_active = models.BooleanField(
-        _('active'),
-        default=True,
-        help_text=_(
-            'Designates whether this user should be treated as active. '
-            'Unselect this instead of deleting accounts.'
-        ),
-    )
-
-    USERNAME_FIELD = 'id'
-
-    objects = BaseUserManager()
+    objects = UserManager()
 
     def __str__(self):
-        return str(self.id)
+        return str(self.user_id)
 
     def get_short_name(self):
         "Returns the short name for the user."
@@ -61,6 +57,7 @@ class User(PermissionsMixin, AbstractBaseUser):
             return str(self.identity)
         except :
             return str(self.id)
+
 
 class Identity(models.Model):
     id = models.UUIDField(primary_key=True)
@@ -132,6 +129,9 @@ class IdentityBase(DirtyFieldsMixin, Contactable, Identifiable, models.Model):
             Identity.objects.create(identity=self)
             kwargs['force_insert'] = True
         super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.label
 
     class Meta:
         abstract = True

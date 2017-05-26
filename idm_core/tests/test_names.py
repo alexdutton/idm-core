@@ -20,6 +20,8 @@ class NamesTestCase(TestCase):
         self.assertEqual(name.plain_full, 'Socrates')
         self.assertEqual(name.familiar, 'Socrates')
         self.assertEqual(name.sort, 'Socrates')
+        self.assertEqual(name.first, '')
+        self.assertEqual(name.last, 'Socrates')
         self.assertEqual(name.marked_up, '<name><mononym>Socrates</mononym></name>')
 
     def testMultipleMononyms(self):

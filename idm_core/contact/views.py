@@ -17,3 +17,8 @@ class TelephoneViewSet(IdentitySubViewMixin, viewsets.ModelViewSet):
 class AddressViewSet(IdentitySubViewMixin, viewsets.ModelViewSet):
     serializer_class = serializers.AddressSerializer
     queryset = models.Address.objects.all()
+
+
+class OnlineAccountViewSet(IdentitySubViewMixin, viewsets.ModelViewSet):
+    serializer_class = serializers.OnlineAccountSerializer
+    queryset = models.OnlineAccount.objects.all()

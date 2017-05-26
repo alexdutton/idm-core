@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+
+{% block page_title %}Profile{% endblock %}
+
+{% block nav %}
+<ul class="pure-menu-list">
+    {% if user.is_authenticated %}
+    <li class="pure-menu-item"><a class="pure-menu-link" href="#">Log out</a></li>
+    {% else %}
+    <li class="pure-menu-item"><a class="pure-menu-link" href="{% url "oidc-login" %}">Log in</a></li>
+    {% endif %}
+</ul>
+{% endblock %}
+
+{% block content %}
+    <section>
+    <h2>Names</h2>
+        <table class="pure-table">
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Context</th>
+                <th>Attested?</th>
+            </tr>
+            </thead>
+            <tbody>{% for email in identity.names.all %}
+                <tr>
+                    <td>{{ email.plain }}</td>
+                    <td>{{ email.context.label }}</td>
+                    <td>{{ email.attested_by|yesno }}</td>
+                </tr>{% endfor %}
+            </tbody>
+        </table>
+    </section>
+
+    <section>
+    <h2>Affiliations</h2>
+        <table class="pure-table">
+            <thead>
+            <tr>
+                <th>Organization</th>
+                <th>Type</th>
+                <th>From</th>
+                <th>Until</th>
+                <th>State</th>
+                <th>Managed by</th>
+            </tr>
+            </thead>
+            <tbody>{% for affiliation in identity.affiliation_set.all %}
+                <tr>
+                    <td>{{ affiliation.organization }}</td>
+                    <td>{{ affiliation.type.label }}</td>
+                    <td>{{ affiliation.start_date|default_if_none:"" }}</td>
+                    <td>{{ affiliation.end_date|default_if_none:"" }}</td>
+                    <td>{{ affiliation.state }}</td>
+                    <td>{% if affiliation.manage_url %}<a href="{{ affiliation.manage_url }}">{{ affiliation.managed_by|default_if_none:"" }}{% else %}{{ affiliation.managed_by|default_if_none:"" }}{% endif %}</td>
+                </tr>{% endfor %}
+            </tbody>
+        </table>
+    </section>
+
+    <section>
+    <h2>Roles</h2>
+        <table class="pure-table">
+            <thead>
+            <tr>
+                <th>Organization</th>
+                <th>Role</th>
+                <th>From</th>
+                <th>Until</th>
+                <th>State</th>
+                <th>Managed by</th>
+            </tr>
+            </thead>
+            <tbody>{% for role in identity.role_set.all %}
+                <tr>
+                    <td>{{ role.organization }}</td>
+                    <td>{{ role.organization_role.label }}</td>
+                    <td>{{ role.start_date|default_if_none:"" }}</td>
+                    <td>{{ role.end_date|default_if_none:"" }}</td>
+                    <td>{{ role.state }}</td>
+                    <td>{% if role.manage_url %}<a href="{{ role.manage_url }}">{{ role.managed_by|default_if_none:"" }}{% else %}{{ role.managed_by|default_if_none:"" }}{% endif %}</td>
+                </tr>{% endfor %}
+            </tbody>
+        </table>
+    </section>
+
+    <section>
+    <h2>Email addresses</h2>
+        <table class="pure-table">
+            <thead>
+            <tr>
+                <th>Address</th>
+                <th>Context</th>
+                <th>Verified?</th>
+            </tr>
+            </thead>
+            <tbody>{% for email in identity.emails.all %}
+                <tr>
+                    <td>{{ email.value }}</td>
+                    <td>{{ email.context.label }}</td>
+                    <td>{{ email.validated|yesno }}</td>
+                </tr>{% endfor %}
+            </tbody>
+        </table>
+    </section>
+
+    <section>
+    <h2>Social identities</h2>
+        <table class="pure-table">
+            <thead>
+            <tr>
+                <th>Provider</th>
+                <th>Username</th>
+            </tr>
+            </thead>
+            <tbody>{% for online_account in identity.online_accounts.all %}
+                <tr>
+                    <td>{{ online_account.value }}</td>
+                </tr>{% endfor %}
+            </tbody>
+        </table>
+    </section>
+
+{% endblock %}

@@ -8,7 +8,7 @@ from idm_core.application.serializers import ApplicationSerializer
 
 class ManageableModel(models.Model):
     managed_by = models.ForeignKey('application.Application', null=True, blank=True, default=None)
-    unmanaged_fields = ArrayField(models.CharField(max_length=64), default=[])
+    unmanaged_fields = ArrayField(models.CharField(max_length=64), default=[], blank=True)
     manage_url = models.URLField(blank=True)
     upstream_id = models.CharField(max_length=32, null=True, blank=True)
 
@@ -29,7 +29,10 @@ class ManageableModelSerializer(serializers.ModelSerializer):
 
     def validate(self, attrs):
         from .models import Application
-        identity = self.context['request'].user.identity
+        try:
+            identity = self.context['request'].user.identity
+        except (KeyError, AttributeError):
+            identity = None
 
         # Check whether the user can
         if 'managed' in attrs:

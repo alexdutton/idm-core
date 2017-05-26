@@ -8,6 +8,9 @@ class Application(IdentityBase):
     manageable_content_types = models.ManyToManyField(ContentType,
                                                       through='application.ApplicationMayManageContentType')
 
+    def __str__(self):
+        return self.label
+
 
 class ApplicationMayManageContentType(models.Model):
     application = models.ForeignKey(Application)

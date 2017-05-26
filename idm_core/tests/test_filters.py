@@ -1,4 +1,5 @@
 import http.client
+import uuid
 
 from django.contrib.auth import get_user_model
 from django.test import TestCase
@@ -13,10 +14,10 @@ class FiltersTestCase(TestCase):
     fixtures = ['initial']
 
     def setUp(self):
-        user = get_user_model()(is_superuser=True)
+        user = get_user_model()(username=uuid.uuid4(), is_superuser=True)
         user.set_password('admin')
         user.save()
-        self.client.login(username=user.id, password='admin')
+        self.client.login(username=user.username, password='admin')
 
     def testFilterByIdentifier(self):
         other_identity = Person.objects.create()
@@ -25,7 +26,7 @@ class FiltersTestCase(TestCase):
                                                type_id='sits-mst',
                                                value='123456')
 
-        response = self.client.get('/person/?identifierType=sits-mst&identifier=123456')
+        response = self.client.get('/api/person/?identifierType=sits-mst&identifier=123456')
         self.assertEqual(response.status_code, http.client.OK)
         data = response.json()
         self.assertEqual(len(data['results']), 1)
@@ -40,7 +41,7 @@ class FiltersTestCase(TestCase):
                                                  type_id='staff',
                                                  state='active')
 
-        response = self.client.get('/person/', {'affiliationOrganization': organization.id})
+        response = self.client.get('/api/person/', {'affiliationOrganization': organization.id})
         self.assertEqual(response.status_code, http.client.OK)
         data = response.json()
         self.assertEqual(len(data['results']), 1)

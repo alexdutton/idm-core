@@ -144,6 +144,9 @@ class Name(Attestable, DirtyFieldsMixin, models.Model):
                     self.first = component['value']
                 elif not self.last:
                     self.last = component['value']
+            elif component['type'] == 'mononym':
+                self.last = component['value']
+                break
 
         super(Name, self).save()
 
