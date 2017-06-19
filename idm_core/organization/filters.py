@@ -1,6 +1,6 @@
 from rest_framework.filters import BaseFilterBackend
 
-from . import models
+from idm_core.relationship import models
 
 
 class AffiliationFilterBackend(BaseFilterBackend):

@@ -6,7 +6,8 @@ admin.autodiscover()
 
 urlpatterns = [
     url(r'^', include('idm_core.selfservice.urls', 'selfservice')),
-    url(r'^api/', include('idm_core.api_urls')),
+    url(r'^organization/', include('idm_core.organization.urls', 'organization')),
+    url(r'^api/', include('idm_core.api_urls', 'api')),
     url(r'^admin/', admin.site.urls),
     url(r'^oidc/', include('oidc_auth.urls')),
 ]

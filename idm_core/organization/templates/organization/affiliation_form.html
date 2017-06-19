@@ -1,0 +1,17 @@
+{% extends "organization/base.html" %}
+
+{% block h1_title %}{% if form.instance.pk %}{{ form.instance.identity }}, {{ form.instance.type }}{% else %}New{% endif %} affiliation at {{ organization }}{% endblock %}
+{% block title %}{% if form.instance.pk %}{{ form.instance.identity }}, {{ form.instance.type }}{% else %}New{% endif %} affiliation at {{ organization }}{% endblock %}
+
+{% block content %}
+    <form method="post">{% csrf_token %}
+    <table class="pure-table">
+        <tbody>
+    {{ form }}
+        </tbody>
+    </table>
+    <p>
+        <input type="submit" value="{% if form.instance.pk %}Update{% else %}Create{% endif %}">
+    </p>
+    </form>
+{% endblock %}

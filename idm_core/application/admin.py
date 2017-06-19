@@ -4,6 +4,6 @@ from . import models
 
 
 class ApplicationAdmin(admin.ModelAdmin):
-    pass
+    fields = ('label', 'manageable_content_types')
 
 admin.site.register(models.Application, ApplicationAdmin)

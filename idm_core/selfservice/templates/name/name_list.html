@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block h1_title %}Names{% endblock %}
+{% block title %}Names{% endblock %}
+
+{% block content %}
+<div class="pad-1">
+        <table class="pure-table">
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Context</th>
+                <th>Attested?</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>{% for name in object_list %}
+                <tr>
+                    <td>{{ name.plain_full }}</td>
+                    <td>{{ name.context.label }}</td>
+                    <td>{{ name.attested_by|yesno }}</td>
+                    <td><a href="{% url "selfservice:name-detail" pk=name.pk %}"><i class="fa fa-pencil" title="Edit"> </i></a></td>
+                </tr>{% endfor %}
+            </tbody>
+        </table>
+</div>
+{% endblock %}

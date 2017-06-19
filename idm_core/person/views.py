@@ -1,18 +1,24 @@
 from django.db.models import Q
+from rest_framework import permissions
 
 from drf_fsm_transitions.viewset_mixins import get_viewset_transition_action_mixin
+from idm_core.identifier.filters import IdentifierFilterBackend
 from idm_core.identity.filters import IdentityPermissionFilterBackend
 from idm_core.identity.views import IdentityViewSet
-from idm_core.relationship.models import Affiliation
+from idm_core.organization.models import Affiliation
 
 from . import models, serializers
 
 
 class PersonViewSet(get_viewset_transition_action_mixin(models.Person, 'state'),
-                      IdentityViewSet):
+                    IdentityViewSet):
+    permission_classes = (permissions.IsAuthenticated,)
     queryset = models.Person.objects.all()
     serializer_class = serializers.PersonSerializer
-    filter_backends = (IdentityPermissionFilterBackend,)
+    filter_backends = (
+        #IdentityPermissionFilterBackend,
+        IdentifierFilterBackend,
+    )
 
     def get_queryset(self):
         queryset = super().get_queryset()

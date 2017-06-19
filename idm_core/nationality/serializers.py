@@ -6,12 +6,15 @@ from . import models
 
 
 class CountrySerializer(serializers.HyperlinkedModelSerializer):
+    url = serializers.HyperlinkedIdentityField(view_name='api:country-detail')
+
     class Meta:
         model = models.Country
         exclude = ('people',)
 
 
 class NationalitySerializer(Attestable, serializers.HyperlinkedModelSerializer):
+    url = serializers.HyperlinkedIdentityField(view_name='api:nationality-detail')
     country = CountrySerializer()
 
     class Meta:

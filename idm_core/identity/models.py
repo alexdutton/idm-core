@@ -42,6 +42,7 @@ AbstractUserWithoutUsername._meta.local_fields.remove(AbstractUserWithoutUsernam
 
 class User(AbstractUserWithoutUsername):
     username = models.UUIDField(db_index=True, unique=True, editable=False)
+    principal_name = models.CharField(max_length=256, db_index=True, unique=True, null=True, blank=True)
     identity_id = models.UUIDField(null=True, blank=True)
     identity_content_type = models.ForeignKey(ContentType, null=True, blank=True)
     identity = GenericForeignKey('identity_content_type', 'identity_id')
@@ -49,7 +50,7 @@ class User(AbstractUserWithoutUsername):
     objects = UserManager()
 
     def __str__(self):
-        return str(self.user_id)
+        return str(self.username)
 
     def get_short_name(self):
         "Returns the short name for the user."
@@ -124,11 +125,9 @@ class IdentityBase(DirtyFieldsMixin, Contactable, Identifiable, models.Model):
         pass
 
     def save(self, *args, **kwargs):
-        if False and not self.id:
-            self.id = get_uuid()
-            Identity.objects.create(identity=self)
-            kwargs['force_insert'] = True
         super().save(*args, **kwargs)
+        Identity.objects.get_or_create(id=self.id,
+                                       content_type=ContentType.objects.get_for_model(type(self)))
 
     def __str__(self):
         return self.label

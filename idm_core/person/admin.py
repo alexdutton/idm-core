@@ -5,7 +5,7 @@ from django.forms import widgets
 from reversion.admin import VersionAdmin
 
 from idm_core.name.models import Name
-from idm_core.relationship.models import Affiliation
+from idm_core.organization.models import Affiliation
 from . import models
 
 

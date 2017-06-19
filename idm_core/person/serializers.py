@@ -13,13 +13,13 @@ from . import models
 
 
 class TersePersonSerializer(TypeMixin, IdentifiableSerializer, serializers.ModelSerializer):
+    url = serializers.HyperlinkedIdentityField(view_name='api:person-detail')
     class Meta:
         model = models.Person
         fields = ('id', 'url', 'label', 'state')
 
 
 class PlainPersonSerializer(ManageableModelSerializer, TersePersonSerializer):
-    url = serializers.HyperlinkedIdentityField(view_name='person-detail')
     primary_name = NameSerializer()
 
     class Meta(TersePersonSerializer.Meta):
@@ -40,15 +40,13 @@ class PersonSerializer(PlainPersonSerializer):
         fields = PlainPersonSerializer.Meta.fields + ('names', 'nationalities', 'emails')
 
     def create(self, validated_data):
-        if 'state' in validated_data and validated_data['state'] not in ('new', 'active'):
-            raise ValidationError("Can only create identities in states 'new' or 'active'.")
+        if 'state' in validated_data and validated_data['state'] not in ('established', 'active'):
+            raise ValidationError("Can only create identities in states 'established' or 'active'.")
         names = validated_data.pop('names', ())
         emails = validated_data.pop('emails', ())
         nationalities = validated_data.pop('nationality_set', ())
         identifiers = validated_data.pop('identifiers', ())
         person = super(PersonSerializer, self).create(validated_data)
-
-        identity_content_type_id, identity_id = ContentType.objects.get_for_model(type(person)).id, person.id
 
         for name in names:
             name['identity'] = person

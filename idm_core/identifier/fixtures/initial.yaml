@@ -10,14 +10,50 @@
     label: 'identity ID'
     applicable_to_all: true
 - model: identifier.IdentifierType
-  pk: card-number
+  pk: "card:number"
   fields:
     label: 'card number'
     applicable_to:
     - ['person', 'person']
 - model: identifier.IdentifierType
-  pk: sits-mst
+  pk: "sits:mst"
   fields:
     label: 'SITS MST code'
     applicable_to:
     - ['person', 'person']
+- model: identifier.IdentifierType
+  pk: "hris:employee"
+  fields:
+    label: 'HRIS employee ID'
+    applicable_to:
+    - ['person', 'person']
+- model: identifier.IdentifierType
+  pk: "oxpoints"
+  fields:
+    label: 'OxPoints ID'
+    applicable_to:
+    - ['organization', 'organization']
+- model: identifier.IdentifierType
+  pk: "pras:department"
+  fields:
+    label: 'PRAS department'
+    applicable_to:
+    - ['organization', 'organization']
+- model: identifier.IdentifierType
+  pk: "pras:division"
+  fields:
+    label: 'PRAS division'
+    applicable_to:
+      - ['organization', 'organization']
+- model: identifier.IdentifierType
+  pk: "finance"
+  fields:
+    label: 'finance code'
+    applicable_to:
+    - ['organization', 'organization']
+- model: identifier.IdentifierType
+  pk: "babylon:unit"
+  fields:
+    label: 'babylon unit code'
+    applicable_to:
+    - ['organization', 'organization']

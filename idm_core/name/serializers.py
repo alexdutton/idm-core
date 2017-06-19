@@ -2,17 +2,9 @@ import re
 from rest_framework import fields, serializers
 
 from idm_core.attestation.serializers import Attestable
-from idm_core.name.models import NameContext
+
 from . import models
-
-
-def _intersperse(iterable, delimiter):
-    # http://stackoverflow.com/a/5656097/613023
-    it = iter(iterable)
-    yield next(it)
-    for x in it:
-        yield delimiter
-        yield x
+from .utils import intersperse
 
 
 class ParseNameField(fields.Field):
@@ -67,13 +59,15 @@ class ParseNameField(fields.Field):
                 components.append({'type': 'given', 'value': data['first']})
             if len(data) > 1 and 'last' in data:
                 components.append({'type': 'family', 'value': data['last']})
-            components = list(_intersperse(components, ' '))
+            components = list(intersperse(components, ' '))
 
         return components or None
 
 
 class NameSerializer(Attestable, serializers.HyperlinkedModelSerializer):
-    context = serializers.PrimaryKeyRelatedField(queryset=NameContext.objects.all())
+    url = serializers.HyperlinkedIdentityField(view_name='api:name-detail')
+    identity = serializers.HyperlinkedRelatedField(read_only=True, view_name='api:person-detail')
+    context = serializers.PrimaryKeyRelatedField(queryset=models.NameContext.objects.all())
 
     components = fields.JSONField(required=False)
     parse = ParseNameField(source='components', required=False, write_only=True)
@@ -87,7 +81,7 @@ class NameSerializer(Attestable, serializers.HyperlinkedModelSerializer):
         model = models.Name
 
         fields = ('identity', 'plain', 'plain_full', 'marked_up', 'familiar', 'sort', 'first', 'last', 'active',
-                  'components', 'parse', 'context', 'attestations')
+                  'components', 'parse', 'context', 'attestations', 'url')
 
         read_only_fields = (
             'identity',

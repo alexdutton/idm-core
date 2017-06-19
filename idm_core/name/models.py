@@ -75,6 +75,9 @@ class Name(Attestable, DirtyFieldsMixin, models.Model):
     def __str__(self):
         return self.plain_full
 
+    def get_absolute_url(self):
+        return reverse('selfservice:name-detail', args=[self.pk])
+
     def save(self, *args, **kwargs):
         components = self.components
         components_by_type = collections.defaultdict(list)

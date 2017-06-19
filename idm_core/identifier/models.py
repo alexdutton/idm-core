@@ -12,6 +12,12 @@ class IdentifierType(models.Model):
     applicable_to = models.ManyToManyField(ContentType)
     applicable_to_all = models.BooleanField(default=False)
 
+    def __str__(self):
+        return self.label
+
+    class Meta:
+        ordering = ('id',)
+
 
 class Identifier(Attestable, models.Model):
     identity_id = models.UUIDField()

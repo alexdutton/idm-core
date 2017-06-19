@@ -6,7 +6,6 @@ from django_fsm import FSMField, transition, RETURN_VALUE, FSMFieldMixin
 
 from idm_core.application.mixins import ManageableModel
 from idm_core.delayed_save.models import DelayedSave
-from idm_core.organization.models import Organization
 from idm_core.identity.models import Identity, IdentityBase
 from idm_core.person.models import Person
 
@@ -141,53 +140,3 @@ class Relationship(ManageableModel):
         self._time_has_passed()
         super().save(*args, **kwargs)
         self.schedule_resave()
-
-
-class RoleType(RelationshipType):
-    """
-    e.g. bursar, ITSS, information custodian
-    """
-    # Role, in w3c org ontology terms
-    pass
-
-
-class OrganizationRole(IdentityBase):
-    organization = models.ForeignKey(Organization)
-    role_type = models.ForeignKey(RoleType)
-    role_label = models.CharField(max_length=255)
-
-    def save(self, *args, **kwargs):
-        self.label = self.role_label or self.role_type.label
-        self.qualified_label = ', '.join([self.label, self.organization.label])
-        self.sort_label = ', '.join([self.organization.label, self.label])
-        return super().save(*args, **kwargs)
-
-class Role(Relationship):
-    identity = models.ForeignKey(Person)
-    organization = models.ForeignKey(Organization)
-    type = models.ForeignKey(RoleType)
-
-    @cached_property
-    def organization_role(self):
-        try:
-            return OrganizationRole.objects.get(organization=self.organization, role_type=self.type)
-        except OrganizationRole.DoesNotExist:
-            return OrganizationRole.objects.create(organization=self.organization,
-                                                   role_type=self.type)
-
-    def save(self, *args, **kwargs):
-        self.organization_role
-        return super().save(*args, **kwargs)
-
-
-class AffiliationType(RelationshipType):
-    edu_person_affiliation_value = models.CharField(max_length=32, blank=True)
-
-
-class Affiliation(Relationship):
-    identity = models.ForeignKey(Person)
-    organization = models.ForeignKey(Organization)
-    type = models.ForeignKey(AffiliationType)
-
-    #metadata = JSONField(default={})
-    # location

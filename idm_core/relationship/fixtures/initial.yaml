@@ -1,53 +1,53 @@
 # Affiliation types
 
-- model: relationship.AffiliationType
+- model: organization.AffiliationType
   pk: staff
   fields:
     label: 'staff'
     edu_person_affiliation_value: member staff
-- model: relationship.AffiliationType
+- model: organization.AffiliationType
   pk: contract-staff
   fields:
     label: 'contract staff'
     edu_person_affiliation_value: staff
-- model: relationship.AffiliationType
+- model: organization.AffiliationType
   pk: undergraduate
   fields:
     label: 'undergraduate'
     edu_person_affiliation_value: member student
-- model: relationship.AffiliationType
+- model: organization.AffiliationType
   pk: postgraduate
   fields:
     label: 'postgraduate'
     edu_person_affiliation_value: member student
-- model: relationship.AffiliationType
+- model: organization.AffiliationType
   pk: academic-visitor
   fields:
     label: 'academic visitor'
     edu_person_affiliation_value: member
-- model: relationship.AffiliationType
+- model: organization.AffiliationType
   pk: student-applicant
   fields:
     label: 'student applicant'
-- model: relationship.AffiliationType
+- model: organization.AffiliationType
   pk: staff-applicant
   fields:
     label: 'staff applicant'
-- model: relationship.AffiliationType
+- model: organization.AffiliationType
   pk: returner
   fields:
     label: 'returner'
-- model: relationship.AffiliationType
+- model: organization.AffiliationType
   pk: alumnus
   fields:
     label: 'alumnus or alumna'
     edu_person_affiliation_value: alum
-- model: relationship.AffiliationType
+- model: organization.AffiliationType
   pk: friend
   fields:
     label: 'friend'
     edu_person_affiliation_value: affiliate
-- model: relationship.AffiliationType
+- model: organization.AffiliationType
   pk: member
   fields:
     label: 'member'
@@ -55,27 +55,27 @@
 
 # Role types
 
-- model: relationship.RoleType
+- model: organization.RoleType
   pk: itss
   fields:
     label: ITSS
-- model: relationship.RoleType
+- model: organization.RoleType
   pk: itss01
   fields:
     label: Primary ITSS
-- model: relationship.RoleType
+- model: organization.RoleType
   pk: webmaster
   fields:
     label: Webmaster
-- model: relationship.RoleType
+- model: organization.RoleType
   pk: senior-tutor
   fields:
     label: Senior Tutor
-- model: relationship.RoleType
+- model: organization.RoleType
   pk: head
   fields:
     label: Head
-- model: relationship.RoleType
+- model: organization.RoleType
   pk: secretary
   fields:
     label: Secretary

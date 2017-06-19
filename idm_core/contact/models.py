@@ -3,8 +3,9 @@ from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.db.models import Max
 
+from idm_core.application.mixins import ManageableModel
 from idm_core.attestation.mixins import Attestable
-from idm_core.relationship.models import Affiliation
+from idm_core.organization.models import Affiliation
 from idm_core.identity.models import Identity
 
 
@@ -13,7 +14,7 @@ class ContactContext(models.Model):
     label = models.CharField(max_length=255)
 
 
-class Contact(Attestable, models.Model):
+class Contact(Attestable, ManageableModel, models.Model):
     identity_content_type = models.ForeignKey(ContentType)
     identity_id = models.UUIDField()
     identity = GenericForeignKey('identity_content_type', 'identity_id')
@@ -51,6 +52,12 @@ class Address(Contact):
     pass
 
 
+class OnlineAccountProvider(models.Model):
+    id = models.CharField(primary_key=True, max_length=32)
+    label = models.TextField()
+
+
 class OnlineAccount(Contact):
-    pass
+    provider = models.ForeignKey(OnlineAccountProvider)
+    screen_name = models.TextField()
 

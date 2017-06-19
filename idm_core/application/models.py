@@ -5,13 +5,7 @@ from idm_core.identity.models import IdentityBase
 
 
 class Application(IdentityBase):
-    manageable_content_types = models.ManyToManyField(ContentType,
-                                                      through='application.ApplicationMayManageContentType')
+    manageable_content_types = models.ManyToManyField(ContentType)
 
     def __str__(self):
         return self.label
-
-
-class ApplicationMayManageContentType(models.Model):
-    application = models.ForeignKey(Application)
-    content_type = models.ForeignKey(ContentType)

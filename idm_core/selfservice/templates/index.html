@@ -1,16 +1,7 @@
 {% extends "base.html" %}
 
-{% block page_title %}Profile{% endblock %}
-
-{% block nav %}
-<ul class="pure-menu-list">
-    {% if user.is_authenticated %}
-    <li class="pure-menu-item"><a class="pure-menu-link" href="#">Log out</a></li>
-    {% else %}
-    <li class="pure-menu-item"><a class="pure-menu-link" href="{% url "oidc-login" %}">Log in</a></li>
-    {% endif %}
-</ul>
-{% endblock %}
+{% block h1_title %}Profile{% endblock %}
+{% block title %}Profile{% endblock %}
 
 {% block content %}
     <section>
@@ -21,13 +12,15 @@
                 <th>Name</th>
                 <th>Context</th>
                 <th>Attested?</th>
+                <th>Actions</th>
             </tr>
             </thead>
-            <tbody>{% for email in identity.names.all %}
+            <tbody>{% for name in object.names.all %}
                 <tr>
-                    <td>{{ email.plain }}</td>
-                    <td>{{ email.context.label }}</td>
-                    <td>{{ email.attested_by|yesno }}</td>
+                    <td>{{ name.plain_full }}</td>
+                    <td>{{ name.context.label }}</td>
+                    <td>{{ name.attested_by|yesno }}</td>
+                    <td><a href="{% url "selfservice:name-detail" pk=name.pk %}"><i class="fa fa-pencil" title="Edit"> </i></a></td>
                 </tr>{% endfor %}
             </tbody>
         </table>
@@ -46,7 +39,7 @@
                 <th>Managed by</th>
             </tr>
             </thead>
-            <tbody>{% for affiliation in identity.affiliation_set.all %}
+            <tbody>{% for affiliation in object.affiliation_set.all %}
                 <tr>
                     <td>{{ affiliation.organization }}</td>
                     <td>{{ affiliation.type.label }}</td>
@@ -72,7 +65,7 @@
                 <th>Managed by</th>
             </tr>
             </thead>
-            <tbody>{% for role in identity.role_set.all %}
+            <tbody>{% for role in object.role_set.all %}
                 <tr>
                     <td>{{ role.organization }}</td>
                     <td>{{ role.organization_role.label }}</td>
@@ -95,7 +88,7 @@
                 <th>Verified?</th>
             </tr>
             </thead>
-            <tbody>{% for email in identity.emails.all %}
+            <tbody>{% for email in object.emails.all %}
                 <tr>
                     <td>{{ email.value }}</td>
                     <td>{{ email.context.label }}</td>
@@ -112,11 +105,14 @@
             <tr>
                 <th>Provider</th>
                 <th>Username</th>
+                <th>Validated</th>
             </tr>
             </thead>
-            <tbody>{% for online_account in identity.online_accounts.all %}
+            <tbody>{% for online_account in object.online_accounts.all %}
                 <tr>
-                    <td>{{ online_account.value }}</td>
+                    <td>{{ online_account.provider.label }}</td>
+                    <td>{{ online_account.screen_name }}</td>
+                    <td>{{ online_account.validated|yesno }}</td>
                 </tr>{% endfor %}
             </tbody>
         </table>

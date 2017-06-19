@@ -3,15 +3,31 @@ from rest_framework import serializers
 from rest_framework.relations import RelatedField
 from rest_framework.serializers import HyperlinkedModelSerializer, ValidationError, ModelSerializer
 
+from . import models
+
 
 class TypeMixin(object):
     def to_representation(self, instance):
         data = super().to_representation(instance)
-        data['@type'] = self.Meta.model.__name__
+        data['@type'] = type(instance).__name__
         return data
 
 
-from idm_core.identity import models
+class IdentityRelatedField(serializers.RelatedField):
+    def to_representation(self, value):
+        assert isinstance(value, models.IdentityBase)
+        return {'id': value.pk,
+                '@type': type(value).__name__,
+                'label': value.label}
+
+    def get_queryset(self):
+        return []
+
+    def to_internal_value(self, data):
+        if isinstance(data, str):
+            return models.Identity.objects.get(id=data).identity
+        raise ValidationError
+
 
 class InvertedBooleanField(serializers.BooleanField):
     def to_internal_value(self, data):

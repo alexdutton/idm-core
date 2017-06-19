@@ -14,3 +14,32 @@
   pk: mobile
   fields:
     label: 'mobile'
+
+- model: contact.OnlineAccountProvider
+  pk: twitter
+  fields:
+    label: 'Twitter'
+- model: contact.OnlineAccountProvider
+  pk: google
+  fields:
+    label: 'Google'
+- model: contact.OnlineAccountProvider
+  pk: orcid
+  fields:
+    label: 'ORCID'
+- model: contact.OnlineAccountProvider
+  pk: github
+  fields:
+    label: 'GitHub'
+- model: contact.OnlineAccountProvider
+  pk: linkedin
+  fields:
+    label: 'LinkedIn'
+- model: contact.OnlineAccountProvider
+  pk: figshare
+  fields:
+    label: 'FigShare'
+- model: contact.OnlineAccountProvider
+  pk: facebook
+  fields:
+    label: 'Facebook'

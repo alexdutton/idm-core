@@ -2,6 +2,7 @@ import reversion
 from django.db import models
 
 from idm_core.application.mixins import ManageableModel
+from idm_core.contact.mixins import Contactable
 from idm_core.identity.models import IdentityBase
 
 # ISO/IEC 5218

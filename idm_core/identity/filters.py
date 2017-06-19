@@ -1,7 +1,6 @@
 from rest_framework.filters import BaseFilterBackend
 
-from idm_core.organization.models import Organization
-from idm_core.relationship.models import Affiliation
+from idm_core.organization.models import Organization, Affiliation
 from . import models
 
 

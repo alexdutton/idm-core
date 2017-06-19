@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block h1_title %}Name: {{ object.plain }}{% endblock %}
+{% block title %}Name: {{ object.plain }}{% endblock %}
+
+{% block content %}
+
+    <form method="post">{% csrf_token %}
+    <table>
+    {{ form }}
+        </table>
+    <input type="submit">
+        </form>
+
+    <section>
+        <h2>Inferred forms</h2>
+
+        <dl>
+            <dt>Common</dt>
+            <dd>{{ form.instance.plain }}</dd>
+            <dt>Full</dt>
+            <dd>{{ form.instance.plain_full }}</dd>
+            <dt>Familiar</dt>
+            <dd>{{ form.instance.familiar }}</dd>
+            <dt>First / Last</dt>
+            <dd>{{ form.instance.first }} {{ form.instance.last }}</dd>
+        </dl>
+    </section>
+
+{% endblock %}
