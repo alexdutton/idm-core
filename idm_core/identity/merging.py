@@ -5,7 +5,7 @@ from django.db import transaction, connection
 
 from idm_core.identifier.models import Identifier
 from idm_core.nationality.models import Nationality
-from idm_core.relationship.models import Affiliation, Role
+from idm_core.organization.models import Affiliation, Role
 from idm_core.attestation.models import SourceDocument
 from idm_core.name.models import Name
 

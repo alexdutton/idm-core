@@ -6,10 +6,9 @@ from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.models import ContentType
 from django.test import TestCase
 
-from idm_core.application.models import Application, ApplicationMayManageContentType
-from idm_core.organization.models import Organization
+from idm_core.application.models import Application
+from idm_core.organization.models import Organization, Affiliation
 from idm_core.person.models import Person
-from idm_core.relationship.models import Affiliation
 
 
 @unittest.skip('Tested functionality still a work in progress')
@@ -21,10 +20,8 @@ class ManageableTestCase(TestCase):
     def setUp(self):
         self.application_a = Application.objects.create()
         self.application_b = Application.objects.create()
-        ApplicationMayManageContentType.objects.create(application=self.application_a,
-                                                       content_type=ContentType.objects.get_for_model(Affiliation))
-        ApplicationMayManageContentType.objects.create(application=self.application_b,
-                                                       content_type=ContentType.objects.get_for_model(Affiliation))
+        self.application_a.manageable_content_types = [ContentType.objects.get_for_model(Affiliation)]
+        self.application_b.manageable_content_types = [ContentType.objects.get_for_model(Affiliation)]
         self.user_a = get_user_model()(identity=self.application_a)
         self.user_a.set_password('password')
         self.user_a.save()

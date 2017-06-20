@@ -5,9 +5,8 @@ from django.contrib.auth import get_user_model
 from django.test import TestCase
 
 from idm_core.identifier.models import Identifier
-from idm_core.organization.models import Organization
+from idm_core.organization.models import Organization, Affiliation
 from idm_core.person.models import Person
-from idm_core.relationship.models import Affiliation
 
 
 class FiltersTestCase(TestCase):
