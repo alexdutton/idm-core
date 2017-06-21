@@ -13,6 +13,7 @@ drf-haystack
 drf-nested-routers
 -e git://github.com/alexsdutton/idm-notification.git#egg=idm-notification
 -e git://github.com/alexsdutton/idm-brand.git#egg=idm-brand
+-e git://github.com/alexsdutton/drf-negotiate.git#egg=drf-negotiate
 jsonschema
 kombu
 psycopg2
