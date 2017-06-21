@@ -17,7 +17,7 @@ class AttestationSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = models.Attestation
-        exclude = ('supports_content_type', 'supports_object_id')
+        exclude = ('attests_content_type', 'attests_object_id')
 
 
 class SourceDocumentSerializer(serializers.HyperlinkedModelSerializer):
@@ -36,7 +36,7 @@ class AttestableSerializer(serializers.Serializer):
         return {
             '@type': type(instance).__name__,
             'id': instance.pk,
-            'url': reverse('{}-detail'.format(instance._meta.object_name.lower()),
+            'url': reverse('api:{}-detail'.format(instance._meta.object_name.lower()),
                            kwargs={'pk': instance.pk},
                            request=self.context['request']),
             'label': str(instance),

@@ -2,6 +2,7 @@ from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
 from idm_core.attestation.serializers import Attestable, AttestationSerializer
+from idm_core.person.models import Person
 from . import models
 
 
@@ -43,5 +44,7 @@ class NationalitySerializer(Attestable, serializers.HyperlinkedModelSerializer):
 
 
 class EmbeddedNationalitySerializer(NationalitySerializer):
+    identity = serializers.HyperlinkedRelatedField(queryset=Person.objects.all(), view_name='api:person-detail')
+
     class Meta(NationalitySerializer.Meta):
         exclude = ('attestations',)

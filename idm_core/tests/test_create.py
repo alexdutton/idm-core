@@ -1,7 +1,9 @@
 import http.client
 import json
+import uuid
 
-from django.test import TestCase
+from django.contrib.auth import get_user_model
+from rest_framework.test import APITestCase
 
 from idm_core.contact.models import ContactContext
 from idm_core.identifier.models import IdentifierType
@@ -9,8 +11,12 @@ from idm_core.name.models import NameContext
 from idm_core.person.models import Person
 
 
-class CreationTestCase(TestCase):
+class CreationTestCase(APITestCase):
     fixtures = ['initial']
+
+    def setUp(self):
+        self.user = get_user_model()(username=uuid.uuid4(), is_superuser=True)
+        self.client.force_authenticate(self.user)
 
     def testCreate(self):
         response = self.client.post('/api/person/', json.dumps({}), content_type='application/json')
@@ -71,7 +77,7 @@ class CreationTestCase(TestCase):
     def testCreateWithIdentifier(self):
         response = self.client.post('/api/person/', json.dumps({
             'identifiers': [{
-                'type': 'sits-mst',
+                'type': 'sits:mst',
                 'value': '123456',
             }],
         }), content_type='application/json')
@@ -80,7 +86,7 @@ class CreationTestCase(TestCase):
         person_id = data['id']
         person = Person.objects.get(id=person_id)
         identifier = person.identifiers.get()
-        self.assertEqual(identifier.type, IdentifierType.objects.get(pk='sits-mst'))
+        self.assertEqual(identifier.type, IdentifierType.objects.get(pk='sits:mst'))
         self.assertEqual(identifier.value, '123456')
 
     def testCreateWithUnknownNationality(self):

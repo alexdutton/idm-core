@@ -2,19 +2,17 @@ import http.client
 import uuid
 
 from django.contrib.auth import get_user_model
-from django.test import TestCase
+from rest_framework.test import APITestCase
 
 from idm_core.person.models import Person
 
 
-class IdentityTransitionTestCase(TestCase):
+class IdentityTransitionTestCase(APITestCase):
     fixtures = ['initial']
 
     def setUp(self):
-        user = get_user_model()(username=uuid.uuid4(), is_superuser=True)
-        user.set_password('admin')
-        user.save()
-        self.client.login(username=user.username, password='admin')
+        self.user = get_user_model()(username=uuid.uuid4(), is_superuser=True)
+        self.client.force_authenticate(self.user)
 
     def testActivate(self):
         person = Person.objects.create()

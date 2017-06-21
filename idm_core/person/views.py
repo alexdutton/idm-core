@@ -16,7 +16,7 @@ class PersonViewSet(get_viewset_transition_action_mixin(models.Person, 'state'),
     queryset = models.Person.objects.all()
     serializer_class = serializers.PersonSerializer
     filter_backends = (
-        #IdentityPermissionFilterBackend,
+        IdentityPermissionFilterBackend,
         IdentifierFilterBackend,
     )
 

@@ -41,7 +41,7 @@ class IDMCoreDaemon(ConsumerMixin):
                     user = User.objects.get(username=id)
                 except User.DoesNotExist:
                     user = User(username=id)
-                print(body)
+                # print(body)
                 try:
                     identity = Identity.objects.get(id=body['identity_id'])
                 except Identity.DoesNotExist:

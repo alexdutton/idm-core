@@ -2,19 +2,17 @@ import http.client
 import uuid
 
 from django.contrib.auth import get_user_model
-from django.test import TestCase
+from rest_framework.test import APITestCase
 
 from idm_core.person.models import Person
 
 
-class FiltersTestCase(TestCase):
+class FiltersTestCase(APITestCase):
     fixtures = ['initial']
 
     def setUp(self):
-        user = get_user_model()(username=uuid.uuid4())
-        user.set_password('password')
-        user.save()
-        self.client.login(username=user.username, password='password')
+        self.user = get_user_model()(username=uuid.uuid4())
+        self.client.force_authenticate(self.user)
 
     def testCantSee(self):
         person = Person.objects.create()
