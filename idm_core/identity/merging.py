@@ -12,7 +12,15 @@ from idm_core.name.models import Name
 _fields_to_copy = {'primary_email', 'primary_username', 'begin_date', 'end_date', 'date_of_birth', 'date_of_death', 'extant'}
 
 
-class MergeTypeDisparity(Exception):
+class MergeException(Exception):
+    pass
+
+
+class MergeTypeDisparity(MergeException):
+    pass
+
+
+class MergeIntoSelfException(MergeException):
     pass
 
 
@@ -22,6 +30,9 @@ def merge(merge_these, into_this, trigger=None, reason=None):
             merge_these = (merge_these,)
 
         merge_ids = {i.id for i in merge_these}
+
+        if into_this.pk in merge_ids:
+            raise MergeIntoSelfException("Cannot merge identity {} into itself".format(into_this.pk))
 
         for identity in merge_these:
             if type(identity) != type(into_this):
@@ -34,8 +45,10 @@ def merge(merge_these, into_this, trigger=None, reason=None):
             source_document.save()
 
         names = set(name.marked_up for name in into_this.names.all())
+        deleted_names = set()
         for name in Name.objects.filter(identity_id__in=merge_ids):
             if name.marked_up in names:
+                deleted_names.add(name.pk)
                 name.attestations.all().delete()
                 name.delete()
             else:
@@ -73,6 +86,8 @@ def merge(merge_these, into_this, trigger=None, reason=None):
                     setattr(into_this, field_name, getattr(identity, field_name))
             if identity.sex != '0' and into_this.sex == '0':
                 into_this.sex = identity.sex
+            if identity.primary_name_id in deleted_names or identity.primary_name_id == into_this.primary_name_id:
+                identity.primary_name_id = None
             identity.merge_into(into_this)
             identity.save()
 

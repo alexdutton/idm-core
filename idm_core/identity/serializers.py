@@ -37,18 +37,6 @@ class InvertedBooleanField(serializers.BooleanField):
         return not super().to_representation(value)
 
 
-class IdentitySerializer(HyperlinkedModelSerializer):
-    id = serializers.UUIDField(read_only=True)
-    class Meta:
-        model = models.Identity
-
-        fields = ('url', 'id', 'label', 'state')
-
-        read_only_fields = (
-            'merged_into',
-        )
-
-
 class TerseIdentitySerializer(RelatedField):
     @singledispatch
     def to_representation(self, value):
@@ -56,3 +44,28 @@ class TerseIdentitySerializer(RelatedField):
                 'label': value.label,
                 'qualified_label': value.label,
                 'state': value.state}
+
+
+class RelatedIdentitySerializer(RelatedField):
+    def to_representation(self, value):
+        return related_identity_to_representation(value, self.context)
+
+
+@singledispatch
+def related_identity_to_representation(identity, context):
+    return {'id': identity.id,
+            'label': identity.label,
+            'qualified_label': identity.label,
+            'state': identity.state,
+            '@type': type(identity).__name__}
+
+
+class IdentitySerializer(HyperlinkedModelSerializer):
+    url = serializers.HyperlinkedIdentityField(view_name='api:identity-detail')
+    id = serializers.UUIDField(read_only=True)
+    identity = RelatedIdentitySerializer(read_only=True)
+
+    class Meta:
+        model = models.Identity
+
+        fields = ('url', 'id', 'identity')

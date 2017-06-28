@@ -48,4 +48,4 @@ class OnlineAccountSerializer(ContactSerializer):
 
 class EmbeddedEmailSerializer(EmailSerializer, EmbeddedContactSerializer):
     class Meta(EmailSerializer.Meta, EmbeddedContactSerializer.Meta):
-        fields = ('value', 'identity', 'context', 'validated')
+        fields = ('url', 'value', 'identity', 'context', 'validated')

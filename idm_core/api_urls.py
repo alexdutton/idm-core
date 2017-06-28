@@ -13,7 +13,7 @@ import idm_core.application.views
 import idm_core.statistics.views
 
 router = routers.DefaultRouter()
-#router.register('identity', idm_core.identity.views.IdentityViewSet, 'identity')
+router.register('identity', idm_core.identity.views.IdentityViewSet, 'identity')
 router.register('person', idm_core.person.views.PersonViewSet, base_name='person')
 router.register('organization', idm_core.organization.api.OrganizationViewSet, base_name='organization')
 router.register('country', idm_core.nationality.views.CountryViewSet)

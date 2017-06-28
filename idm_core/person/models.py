@@ -23,11 +23,12 @@ class Person(ManageableModel, IdentityBase):
     deceased = models.BooleanField(default=False)
 
     def save(self, *args, **kwargs):
-        if self.primary_name_id:
+        from ..name.models import Name
+        try:
             self.label = self.primary_name.plain
             self.qualified_label = self.primary_name.plain_full
             self.sort_label = self.primary_name.sort
-        else:
+        except (Name.DoesNotExist, AttributeError):
             self.label, self.qualified_label, self.sort_label = '', '', ''
         return super().save(*args, **kwargs)
 

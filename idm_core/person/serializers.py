@@ -5,7 +5,8 @@ from rest_framework.exceptions import ValidationError
 from idm_core.application.mixins import ManageableModelSerializer
 from idm_core.contact.serializers import EmbeddedEmailSerializer
 from idm_core.identifier.serializers import EmbeddedIdentifierSerializer, IdentifiableSerializer
-from idm_core.identity.serializers import InvertedBooleanField, TypeMixin
+from idm_core.identity.serializers import InvertedBooleanField, TypeMixin, RelatedIdentitySerializer, \
+    related_identity_to_representation
 from idm_core.name.serializers import EmbeddedNameSerializer, NameSerializer
 from idm_core.nationality.serializers import EmbeddedNationalitySerializer
 
@@ -14,9 +15,11 @@ from . import models
 
 class TersePersonSerializer(TypeMixin, IdentifiableSerializer, serializers.ModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name='api:person-detail')
+    merged_into = serializers.HyperlinkedRelatedField(queryset=models.Person.objects.all(), view_name='api:person-detail')
+
     class Meta:
         model = models.Person
-        fields = ('id', 'url', 'label', 'state')
+        fields = ('id', 'url', 'label', 'state', 'merged_into')
 
 
 class PlainPersonSerializer(ManageableModelSerializer, TersePersonSerializer):
@@ -61,3 +64,7 @@ class PersonSerializer(PlainPersonSerializer):
         self.fields['nationalities'].create(nationalities)
         self.fields['identifiers'].create(identifiers)
         return person
+
+@related_identity_to_representation.register(models.Person)
+def related_person_to_representation(person, context):
+    return PersonSerializer(context=context).to_representation(person)

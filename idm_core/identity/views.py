@@ -1,3 +1,5 @@
+from rest_framework.decorators import detail_route
+from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 
 from idm_core.identifier.mixins import IdentifierFilterViewSetMixin
@@ -16,10 +18,10 @@ class IdentitySubViewMixin(object):
 
 
 class IdentityViewSet(IdentifierFilterViewSetMixin, ModelViewSet):
-    #queryset = models.IdentityBase.objects.all()
+    queryset = models.Identity.objects.all()
     serializer_class = serializers.IdentitySerializer
 
-    lookup_value_regex = r'[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}'
+#    lookup_value_regex = r'[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}'
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -27,3 +29,8 @@ class IdentityViewSet(IdentifierFilterViewSetMixin, ModelViewSet):
             queryset = queryset.filter(state__in=set(self.request.GET.getlist('state')))
         return queryset
 
+    @detail_route(methods=['post'])
+    def activate(self, request, pk=None):
+        object = self.get_object()
+        object.identity.activate()
+        return Response(status=204)

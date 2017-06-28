@@ -22,8 +22,6 @@ STATE_CHOICES = (
     ('merged', 'merged'), # Not in standard, but used for operational purposes
 )
 
-def get_uuid():
-    return uuid.uuid4()
 
 class UserManager(BaseUserManager):
     def create_superuser(self, password, **kwargs):
@@ -76,7 +74,7 @@ class IdentityBase(DirtyFieldsMixin, Contactable, Identifiable, models.Model):
     domain, this set of attributes related to the entity (the identity) may, but does not have to be, uniquely
     distinguishable from other identities in the ICT system. (taken from ISO/IEC 24760-1:2011)
     """
-    id = models.UUIDField(primary_key=True, editable=False, default=get_uuid)
+    id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
     label = models.CharField(max_length=1024, blank=True)
     qualified_label = models.CharField(max_length=1024, blank=True)
     sort_label = models.CharField(max_length=1024, blank=True)
@@ -87,18 +85,6 @@ class IdentityBase(DirtyFieldsMixin, Contactable, Identifiable, models.Model):
     merged_into = models.ForeignKey('self', null=True, blank=True, related_name='merged_from')
 
     identity_permissions = GenericRelation('identity.IdentityPermission', 'identity_id', 'identity_content_type')
-
-    @transition(field=state, source='established', target='established',
-                conditions=[lambda self: self.emails.exists()])
-    def ready_for_activation(self, email=None):
-        if not email:
-            email = self.emails.order_by('order').first().value
-        self.claim_code = get_uuid()
-        templated_email.send_templated_mail(template_name='claim-identity',
-                                            from_email=settings.DEFAULT_FROM_EMAIL,
-                                            to_email=email,
-                                            context={'identity': self,
-                                                     'claim_url': settings.CLAIM_URL.format(self.claim_code)})
 
     @transition(field=state, source='established', target='active')
     def activate(self):
