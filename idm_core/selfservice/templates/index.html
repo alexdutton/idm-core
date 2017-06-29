@@ -46,7 +46,7 @@
                     <td>{{ affiliation.start_date|default_if_none:"" }}</td>
                     <td>{{ affiliation.end_date|default_if_none:"" }}</td>
                     <td>{{ affiliation.state }}</td>
-                    <td>{% if affiliation.manage_url %}<a href="{{ affiliation.manage_url }}">{{ affiliation.managed_by|default_if_none:"" }}{% else %}{{ affiliation.managed_by|default_if_none:"" }}{% endif %}</td>
+                    <td>{% if affiliation.manage_url %}<a href="{{ affiliation.manage_url }}">{{ affiliation.managed_by|default_if_none:"" }}</a>{% else %}{{ affiliation.managed_by|default_if_none:"" }}{% endif %}</td>
                 </tr>{% endfor %}
             </tbody>
         </table>
@@ -72,7 +72,7 @@
                     <td>{{ role.start_date|default_if_none:"" }}</td>
                     <td>{{ role.end_date|default_if_none:"" }}</td>
                     <td>{{ role.state }}</td>
-                    <td>{% if role.manage_url %}<a href="{{ role.manage_url }}">{{ role.managed_by|default_if_none:"" }}{% else %}{{ role.managed_by|default_if_none:"" }}{% endif %}</td>
+                    <td>{% if role.manage_url %}<a href="{{ role.manage_url }}">{{ role.managed_by|default_if_none:"" }}</a>{% else %}{{ role.managed_by|default_if_none:"" }}{% endif %}</td>
                 </tr>{% endfor %}
             </tbody>
         </table>
