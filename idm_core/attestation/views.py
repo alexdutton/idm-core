@@ -14,6 +14,11 @@ class SourceDocumentViewSet(ModelViewSet):
     serializer_class = serializers.SourceDocumentSerializer
 
 
+class SourceDocumentTypeViewSet(ModelViewSet):
+    queryset = models.SourceDocumentType.objects.all()
+    serializer_class = serializers.SourceDocumentTypeSerializer
+
+
 class AttestationViewSet(ModelViewSet):
     queryset = models.Attestation.objects.all()
     serializer_class = serializers.AttestationSerializer

@@ -17,14 +17,25 @@ class AttestationSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = models.Attestation
-        exclude = ('attests_content_type', 'attests_object_id')
+        fields = ('source_document', 'attests')
+
+
+class SourceDocumentTypeSerializer(serializers.HyperlinkedModelSerializer):
+    url = serializers.HyperlinkedIdentityField(view_name='api:source-document-type-detail')
+
+    class Meta:
+        model = models.SourceDocumentType
+        fields = ('url', 'id', 'label')
 
 
 class SourceDocumentSerializer(serializers.HyperlinkedModelSerializer):
+    url = serializers.HyperlinkedIdentityField(view_name='api:source-document-detail')
+    type = serializers.PrimaryKeyRelatedField(queryset=models.SourceDocumentType.objects.all())
     attestations = AttestationSerializer(read_only=True, many=True)
 
     class Meta:
         model = models.SourceDocument
+        fields = ('url', 'id', 'attestations', 'identity', 'type', 'label')
 
 
 class Attestable(serializers.Serializer):

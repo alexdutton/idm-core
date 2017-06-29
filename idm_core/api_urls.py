@@ -38,6 +38,7 @@ person_router.register('attestable', idm_core.attestation.views.AttestableViewSe
 
 router.register('name', idm_core.name.views.NameViewSet, base_name='name')
 router.register('nationality', idm_core.nationality.views.NationalityViewSet)
+router.register('source-document-type', idm_core.attestation.views.SourceDocumentTypeViewSet)
 router.register('source-document', idm_core.attestation.views.SourceDocumentViewSet)
 router.register('attestation', idm_core.attestation.views.AttestationViewSet)
 router.register('affiliation', idm_core.organization.api.AffiliationViewSet)

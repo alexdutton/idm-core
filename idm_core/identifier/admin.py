@@ -8,4 +8,9 @@ class IdentifierAdmin(admin.ModelAdmin):
     list_filter = ('type', 'identity_content_type')
 
 
+class IdentifierTypeAdmin(admin.ModelAdmin):
+    list_display = ('id', 'label')
+
+
 admin.site.register(models.Identifier, IdentifierAdmin)
+admin.site.register(models.IdentifierType, IdentifierTypeAdmin)

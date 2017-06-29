@@ -13,6 +13,9 @@ class SourceDocumentType(models.Model):
     id = models.SlugField(primary_key=True)
     label = models.CharField(max_length=255)
 
+    def __str__(self):
+        return self.label
+
 
 class SourceDocument(models.Model):
     identity_content_type = models.ForeignKey(ContentType)
@@ -25,6 +28,9 @@ class SourceDocument(models.Model):
     active = models.BooleanField(default=False)
     complete = models.BooleanField(default=False)
     label = models.CharField(max_length=256, blank=True)
+
+    def __str__(self):
+        return self.label
 
 
 class SourceDocumentPage(models.Model):
