@@ -34,13 +34,19 @@ class IDMCoreDaemon(ConsumerMixin):
 
         with transaction.atomic(savepoint=False):
             assert isinstance(message, kombu.message.Message)
-            _, action, id = message.delivery_info['routing_key'].split('.')
-            id = uuid.UUID(id)
+            _, action, user_id = message.delivery_info['routing_key'].split('.')
+            print(message.delivery_info['routing_key'])
+            try:
+                user_id = uuid.UUID(user_id)
+            except ValueError:
+                logger.exception("Bad user_id in routing key %s", message.delivery_info['routing_key'])
+                message.reject()
+                return
             if action in ('created', 'changed'):
                 try:
-                    user = User.objects.get(username=id)
+                    user = User.objects.get(username=user_id)
                 except User.DoesNotExist:
-                    user = User(username=id)
+                    user = User(username=user_id)
                 # print(body)
                 try:
                     identity = Identity.objects.get(id=body['identity_id'])
@@ -55,7 +61,7 @@ class IDMCoreDaemon(ConsumerMixin):
                 message.ack()
                 logger.info("User {}".format(action))
             elif action == 'deleted':
-                for user in User.objects.filter(id=id):
+                for user in User.objects.filter(id=user_id):
                     user.delete()
                 message.ack()
             else:
