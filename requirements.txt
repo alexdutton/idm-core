@@ -5,6 +5,7 @@ djangorestframework
 django-dirtyfields
 django-fsm
 django-haystack
+django-phonenumber-field
 -e git://github.com/alexsdutton/django-oidc-auth.git#egg=django-oidc-auth
 django-reversion
 django-templated-email

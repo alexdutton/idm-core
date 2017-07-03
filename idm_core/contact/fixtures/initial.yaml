@@ -10,10 +10,35 @@
   pk: work
   fields:
     label: 'work'
-- model: contact.ContactContext
-  pk: mobile
+
+- model: contact.TelephoneType
+  pk: text
   fields:
-    label: 'mobile'
+    label: 'text'
+- model: contact.TelephoneType
+  pk: voice
+  fields:
+    label: 'voice'
+- model: contact.TelephoneType
+  pk: fax
+  fields:
+    label: 'fax'
+- model: contact.TelephoneType
+  pk: cell
+  fields:
+    label: 'cell'
+- model: contact.TelephoneType
+  pk: video
+  fields:
+    label: 'video'
+- model: contact.TelephoneType
+  pk: pager
+  fields:
+    label: 'pager'
+- model: contact.TelephoneType
+  pk: textphone
+  fields:
+    label: 'textphone'
 
 - model: contact.OnlineAccountProvider
   pk: twitter

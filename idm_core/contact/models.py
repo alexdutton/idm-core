@@ -2,6 +2,7 @@ from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelatio
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.db.models import Max
+from phonenumber_field.modelfields import PhoneNumberField
 
 from idm_core.application.mixins import ManageableModel
 from idm_core.attestation.mixins import Attestable
@@ -44,8 +45,18 @@ class Email(Contact):
     value = models.EmailField()
 
 
+# Values taken from RFC 6350
+# https://tools.ietf.org/html/rfc6350#section-6.4.1
+class TelephoneType(models.Model):
+    id = models.CharField(primary_key=True, max_length=10)
+    label = models.TextField()
+
+
 class Telephone(Contact):
-    value = models.EmailField()
+    type = models.ForeignKey(TelephoneType)
+    external = PhoneNumberField()
+    internal = models.CharField(max_length=16, blank=True)
+
 
 
 class Address(Contact):
