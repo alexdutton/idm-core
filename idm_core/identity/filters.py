@@ -17,3 +17,8 @@ class IdentityPermissionFilterBackend(BaseFilterBackend):
         affiliations = Affiliation.objects.filter(organization=organizations, state__in=('requested', 'forthcoming', 'active', 'suspended'))
         queryset = queryset.filter(affiliation=affiliations)
         return queryset
+
+
+class IdentityStateFilterBackend(BaseFilterBackend):
+    def filter_queryset(self, request, queryset, view):
+        return queryset

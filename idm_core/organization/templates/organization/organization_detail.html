@@ -9,5 +9,11 @@
 
 {% block content %}
 
+    <a href="{% url "contact:email-list" identity_type="organization" identity_id=object.id %}">Email addresses</a>
+    <a href="{% url "contact:online-account-list" identity_type="organization" identity_id=object.id %}">Online accounts</a>
+    <a href="{% url "contact:telephone-list" identity_type="organization" identity_id=object.id %}">Telephone numbers</a>
+    <a href="{% url "contact:address-list" identity_type="organization" identity_id=object.id %}">Addresses</a>
+
+    <a href="{% url "organization:affiliation-list" organization_pk=object.id %}">Affiliations</a>
 
 {% endblock %}

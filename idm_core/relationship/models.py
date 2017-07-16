@@ -16,7 +16,7 @@ class FSMBooleanField(FSMFieldMixin, models.BooleanField):
     """
     pass
 
-STATE_CHOICES = (
+RELATIONSHIP_STATE_CHOICES = (
     ('declined', 'Declined'),
     ('offered', 'Offered'),
     ('requested', 'Requested'),
@@ -59,7 +59,7 @@ class Relationship(ManageableModel):
 
     dependent_on = models.ForeignKey('self', null=True, blank=True)
 
-    state = FSMField(max_length=16, choices=STATE_CHOICES, db_index=True, protected=True)
+    state = FSMField(max_length=16, choices=RELATIONSHIP_STATE_CHOICES, db_index=True, protected=True)
     suspended = FSMBooleanField(db_index=True, default=False, protected=True)
 
     delayed_save = GenericRelation(DelayedSave)

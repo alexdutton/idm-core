@@ -5,7 +5,9 @@ from idm_core.identity.models import IdentityBase
 
 
 class Application(IdentityBase):
-    manageable_content_types = models.ManyToManyField(ContentType)
+    type_slug = 'application'
+
+    manageable_content_types = models.ManyToManyField(ContentType, blank=True)
 
     def __str__(self):
         return self.label

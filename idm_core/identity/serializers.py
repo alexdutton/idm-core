@@ -69,3 +69,5 @@ class IdentitySerializer(HyperlinkedModelSerializer):
         model = models.Identity
 
         fields = ('url', 'id', 'identity')
+
+

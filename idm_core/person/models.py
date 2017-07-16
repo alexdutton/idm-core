@@ -15,6 +15,8 @@ SEX_CHOICES = (
 
 
 class Person(ManageableModel, IdentityBase):
+    type_slug = 'person'
+
     sex = models.CharField(max_length=1, choices=SEX_CHOICES, default='0')
     primary_name = models.OneToOneField('name.Name', related_name='primary_name_of', null=True, blank=True, default=None)
 

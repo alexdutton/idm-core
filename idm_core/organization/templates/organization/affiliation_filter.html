@@ -1,0 +1,63 @@
+{% extends "organization/base.html" %}
+
+{% block title %}Affiliations at {{ organization }}{% endblock %}
+
+{% block header %}
+<h1>{{ organization }}</h1>
+<h2>Affiliations</h2>
+{% endblock %}
+
+{% block content %}
+
+    <form class="pure-form pure-form-stacked">
+    <fieldset>
+        <legend>Filter</legend>
+
+        <div class="pure-g">
+            {% for field in filter.form %}
+            <div class="pure-u-1 pure-u-md-1-4">
+                {{ field.label_tag }}
+                <div class="pure-u-23-24">{{ field }}</div>
+            </div>
+            {% endfor %}
+        </div>
+        <button type="submit" class="pure-button pure-button-primary">Filter</button>
+        </fieldset>
+</form>
+
+    {% include "pagination.html" %}
+
+    <form method="post">
+    <table class="pure-table">
+    <thead>
+    <tr>
+        <th></th>
+        <th>Person</th>
+        <th>Type</th>
+        <th>Course</th>
+        <th>Start</th>
+        <th>End</th>
+        <th>State</th>
+        <th>Managed by</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>{% for object in object_list %}
+    <tr>
+        <td></td>
+        <td><a href="{% url "organization:affiliation-update" organization_pk object.pk %}">{{ object.identity.label }}</a></td>
+        <td>{{ object.type.label }}</td>
+        <td>{{ object.course.label|default:"" }}</td>
+        <td>{{ object.start_date|default_if_none:"" }}</td>
+        <td>{{ object.end_date|default_if_none:"" }}</td>
+        <td>{{ object.state }}</td>
+        <td>{{ object.managed_by }}</td>
+        <td></td>
+    </tr>{% endfor %}
+    </tbody>
+    </table>
+    </form>
+
+        {% include "pagination.html" %}
+
+{% endblock %}

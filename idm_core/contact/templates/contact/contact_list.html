@@ -1,0 +1,14 @@
+{% extends "contact/base.html" %}
+
+{% block title %}{{ verbose_name_plural|capfirst }}{% if not self %} for {{ identity }}{% endif %}{% endblock %}
+
+{% block header %}
+<h1>{{ verbose_name_plural|capfirst }}</h1>
+{% if not self %}
+<h2><a href="{{ identity.get_absolute_url }}">{{ identity }}</a></h2>
+{% endif %}
+{% endblock %}
+
+{% block content %}
+{{ object_list }}
+{% endblock %}

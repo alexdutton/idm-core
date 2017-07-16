@@ -2,7 +2,7 @@ from django.conf.urls import include, url
 from rest_framework_nested import routers
 
 import idm_core.attestation.views
-import idm_core.contact.views
+import idm_core.contact.api_views
 import idm_core.identifier.views
 import idm_core.name.views
 import idm_core.nationality.views
@@ -44,10 +44,10 @@ router.register('attestation', idm_core.attestation.views.AttestationViewSet)
 router.register('affiliation', idm_core.organization.api.AffiliationViewSet)
 router.register('role', idm_core.organization.api.RoleViewSet)
 router.register('identifier', idm_core.identifier.views.IdentifierViewSet)
-router.register('email', idm_core.contact.views.EmailViewSet)
-router.register('telephone', idm_core.contact.views.TelephoneViewSet)
-router.register('address', idm_core.contact.views.AddressViewSet)
-router.register('online-account', idm_core.contact.views.OnlineAccountViewSet, base_name='online-account')
+router.register('email', idm_core.contact.api_views.EmailViewSet)
+router.register('telephone', idm_core.contact.api_views.TelephoneViewSet)
+router.register('address', idm_core.contact.api_views.AddressViewSet)
+router.register('online-account', idm_core.contact.api_views.OnlineAccountViewSet, base_name='online-account')
 
 urlpatterns = [
     url(r'^', include(router.urls)),

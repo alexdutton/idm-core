@@ -44,6 +44,10 @@ class Contact(Attestable, ManageableModel, models.Model):
 class Email(Contact):
     value = models.EmailField()
 
+    class Meta:
+        verbose_name = 'email address'
+        verbose_name_plural = 'email addresses'
+
 
 # Values taken from RFC 6350
 # https://tools.ietf.org/html/rfc6350#section-6.4.1
@@ -57,10 +61,14 @@ class Telephone(Contact):
     external = PhoneNumberField()
     internal = models.CharField(max_length=16, blank=True)
 
+    class Meta:
+        verbose_name = 'telephone number'
 
 
 class Address(Contact):
-    pass
+    class Meta:
+        verbose_name = 'address'
+        verbose_name_plural = 'addresses'
 
 
 class OnlineAccountProvider(models.Model):

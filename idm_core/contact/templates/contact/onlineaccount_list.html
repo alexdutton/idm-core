@@ -1,0 +1,18 @@
+{% extends "contact/contact_list.html" %}
+
+{% block content %}
+    <table class="pure-table">
+    <thead>
+    <tr>
+        <th>Provider</th>
+        <th>Screen name</th>
+    </tr>
+    </thead>
+    <tbody>{% for object in object_list %}
+        <tr>
+        <td>{{ object.provider.label }}</td>
+        <td>{{ object.screen_name }}</td>
+        </tr>
+    {% endfor %}</tbody>
+    </table>
+{% endblock %}

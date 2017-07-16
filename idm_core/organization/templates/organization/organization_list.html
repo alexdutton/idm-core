@@ -4,6 +4,7 @@
 {% block title %}Organizations{% endblock %}
 
 {% block content %}
+    {% include "pagination.html" %}
     <table class="pure-table">
     <thead>
     <tr>
@@ -16,4 +17,5 @@
     </tr>{% endfor %}
     </tbody>
     </table>
+    {% include "pagination.html" %}
 {% endblock %}

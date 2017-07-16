@@ -1,6 +1,7 @@
 import email
 
 import django
+import kombu
 import os
 from celery.schedules import crontab
 
@@ -42,6 +43,7 @@ INSTALLED_APPS = [
     'idm_core.attestation.apps.AttestationConfig',
     'idm_core.identity.apps.IdentityConfig',
     'idm_core.contact',
+    'idm_core.course',
     'idm_core.relationship.apps.OrgRelationshipConfig',
     'idm_core.identifier',
     'idm_core.name.apps.NameConfig',
@@ -147,6 +149,15 @@ OIDC_AUTH = {
         'client_secret': '9a82e2c9b52fadd87ee79b67ead11a28012e270233432e1297c44665',
     },
     'SCOPES': ['identity'],
+}
+
+IDM_BROKER = {
+    'CONSUMERS': [{
+        'queues': [kombu.Queue('idm.identity.user',
+                               exchange=kombu.Exchange('idm.auth.user', type='topic'),
+                               routing_key='#')],
+        'tasks': ['idm_core.tasks.update_user'],
+    }],
 }
 
 SESSION_COOKIE_NAME = 'idm-core-sessionid'

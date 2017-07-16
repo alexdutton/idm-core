@@ -3,6 +3,7 @@ from django.urls import reverse
 from django.utils.functional import cached_property
 
 from idm_core.contact.mixins import Contactable
+from idm_core.course.models import Course
 from idm_core.identity.models import IdentityBase
 from idm_core.person.models import Person
 from idm_core.relationship.models import Relationship, RelationshipType
@@ -19,6 +20,8 @@ class OrganizationRelationshipType(models.Model):
 
 
 class Organization(IdentityBase):
+    type_slug = 'organization'
+
     tags = models.ManyToManyField(OrganizationTag, blank=True)
 
     relationships = models.ManyToManyField(to='self', through='OrganizationRelationship', symmetrical=False)
@@ -54,6 +57,8 @@ class RoleType(RelationshipType):
 
 
 class OrganizationRole(IdentityBase):
+    type_slug = 'organization-role'
+
     organization = models.ForeignKey(Organization)
     role_type = models.ForeignKey(RoleType)
     role_label = models.CharField(max_length=255)
@@ -91,6 +96,7 @@ class Affiliation(Relationship):
     identity = models.ForeignKey(Person)
     organization = models.ForeignKey(Organization)
     type = models.ForeignKey(AffiliationType)
+    course = models.ForeignKey(Course, null=True, blank=True)
 
     def get_absolute_url(self):
         return reverse('organization:affiliation-update', kwargs={'organization_pk': str(self.organization_id),

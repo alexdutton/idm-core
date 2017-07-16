@@ -4,13 +4,15 @@ from django.shortcuts import get_object_or_404
 from django.views import View
 from django.views.generic import ListView, DetailView
 from django.views.generic.edit import CreateView, UpdateView
+from django_filters.views import FilterView
 
 from idm_core.organization.models import Organization
-from . import models, forms
+from . import models, forms, filters
 
 
 class OrganizationListView(LoginRequiredMixin, ListView):
     queryset = models.Organization.objects.order_by('label')
+    paginate_by = 100
 
 
 class OrganizationDetailView(LoginRequiredMixin, DetailView):
@@ -50,9 +52,11 @@ class OrganzationSubView(View):
         return context
 
 
-class AffiliationListView(LoginRequiredMixin, OrganzationSubView, ListView):
+class AffiliationListView(LoginRequiredMixin, OrganzationSubView, FilterView, ListView):
     model = models.Affiliation
     organization_permission = 'organization.view_affiliations'
+    filterset_class = filters.AffiliationFilter
+    paginate_by = 100
 
 
 class AffiliationCreateView(LoginRequiredMixin, OrganzationSubView, CreateView):

@@ -3,6 +3,7 @@ celery
 Django>=1.10,<1.11
 djangorestframework
 django-dirtyfields
+django-filter
 django-fsm
 django-haystack
 django-phonenumber-field

@@ -14,7 +14,7 @@ import templated_email
 from idm_core.contact.mixins import Contactable
 from idm_core.identifier.mixins import Identifiable
 
-STATE_CHOICES = (
+IDENTITY_STATE_CHOICES = (
     ('established', 'established'),
     ('active', 'active'),
     ('archived', 'archived'),
@@ -81,7 +81,7 @@ class IdentityBase(DirtyFieldsMixin, Contactable, Identifiable, models.Model):
 
     primary_username = models.CharField(blank=True, max_length=32)
 
-    state = FSMField(choices=STATE_CHOICES, default='established')
+    state = FSMField(choices=IDENTITY_STATE_CHOICES, default='established')
     merged_into = models.ForeignKey('self', null=True, blank=True, related_name='merged_from')
 
     identity_permissions = GenericRelation('identity.IdentityPermission', 'identity_id', 'identity_content_type')
