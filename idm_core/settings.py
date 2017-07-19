@@ -171,7 +171,7 @@ l = logging.getLogger('django.db.backends')
 l.setLevel(logging.DEBUG)
 l.addHandler(logging.StreamHandler())
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = os.environ.get('DJANGO_EMAIL_BACKEND', 'django.core.mail.backends.console.EmailBackend')
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': ('drf_negotiate.authentication.NegotiateAuthentication',),
