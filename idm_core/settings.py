@@ -110,6 +110,7 @@ TEMPLATES = [
 ROOT_URLCONF = 'idm_core.urls'
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.environ.get('DJANGO_STATIC_ROOT')
 
 API_BASE = os.environ.get('API_BASE', 'http://localhost:8000/')
 
