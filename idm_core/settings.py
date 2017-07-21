@@ -102,10 +102,12 @@ TEMPLATES = [
             'context_processors': (
                 'django.contrib.auth.context_processors.auth',
                 'django.template.context_processors.static',
+                'idm_core.context_processors.idm_core',
             ),
         },
     },
 ]
+
 
 ROOT_URLCONF = 'idm_core.urls'
 
@@ -178,3 +180,6 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 200,
 }
+
+IDM_AUTH_URL = os.environ.get('IDM_AUTH_URL', 'http://localhost:8001/')
+IDM_AUTH_URL_URL = os.environ.get('IDM_AUTH_URL_URL', 'http://localhost:8001/api/')

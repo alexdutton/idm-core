@@ -19,6 +19,6 @@
     <li class="pure-menu-item"><a class="pure-menu-link" href="{% url "oidc-login" %}">Log in</a></li>
     {% endif %}
 <hr>
-    <li class="pure-menu-item"><a class="pure-menu-link" href="http://localhost:8001/">Account management</a></li>
+    <li class="pure-menu-item"><a class="pure-menu-link" href="{{ IDM_AUTH_URL }}">Account management</a></li>
 </ul>
 {% endblock %}
