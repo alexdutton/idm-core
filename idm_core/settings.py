@@ -144,15 +144,15 @@ REST_FRAMEWORK = {
 
 OIDC_AUTH = {
     'DEFAULT_PROVIDER': {
-        'issuer': 'http://localhost:8001/',
-        'authorization_endpoint': 'http://localhost:8001/openid/authorize',
-        'token_endpoint': 'http://localhost:8001/openid/token',
-        'userinfo_endpoint': 'http://localhost:8001/openid/userinfo',
-        'jwks_uri': 'http://localhost:8001/openid/jwks',
-        'client_id': '118661',
-        'client_secret': '9a82e2c9b52fadd87ee79b67ead11a28012e270233432e1297c44665',
+        'issuer': os.environ.get('OIDC_ISSUER', 'http://localhost:8001/'),
+        'authorization_endpoint': os.environ.get('OIDC_AUTHORIZATION_ENDPOINT', 'http://localhost:8001/openid/authorize'),
+        'token_endpoint': os.environ.get('OIDC_TOKEN_ENDPOINT', 'http://localhost:8001/openid/token'),
+        'userinfo_endpoint': os.environ.get('OIDC_USERINFO_ENDPOINT', 'http://localhost:8001/openid/userinfo'),
+        'jwks_uri': os.environ.get('OIDC_JWKS_URI', 'http://localhost:8001/openid/jwks'),
+        'client_id': os.environ.get('OIDC_CLIENT_ID', ''),
+        'client_secret': os.environ.get('OIDC_CLIENT_SECRET', ''),
     },
-    'SCOPES': ['identity'],
+    'SCOPES': os.environ.get('OIDC_SCOPES', 'identity').split(),
 }
 
 IDM_BROKER = {
