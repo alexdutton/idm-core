@@ -151,6 +151,7 @@ OIDC_AUTH = {
         'jwks_uri': os.environ.get('OIDC_JWKS_URI', 'http://localhost:8001/openid/jwks'),
         'client_id': os.environ.get('OIDC_CLIENT_ID', ''),
         'client_secret': os.environ.get('OIDC_CLIENT_SECRET', ''),
+        'signing_alg':os.environ.get('OIDC_SIGNING_ALG', 'RS256')
     },
     'SCOPES': os.environ.get('OIDC_SCOPES', 'identity').split(),
 }
