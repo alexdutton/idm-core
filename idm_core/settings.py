@@ -160,7 +160,7 @@ OIDC_AUTH = {
 IDM_BROKER = {
     'CONSUMERS': [{
         'queues': [kombu.Queue('idm.identity.user',
-                               exchange=kombu.Exchange('idm.auth.user', type='topic'),
+                               exchange=kombu.Exchange('idm.auth.user', type='topic', passive=True),
                                routing_key='#')],
         'tasks': ['idm_core.tasks.update_user'],
     }],
