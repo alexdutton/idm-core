@@ -1,6 +1,7 @@
 from django.core.exceptions import ValidationError
 from django.test import TestCase
 
+from idm_core.name.forms import SimpleNameForm
 from idm_core.name.models import Name
 from idm_core.person.models import Person
 from idm_core.name.serializers import ParseNameField
@@ -36,7 +37,7 @@ class NamesTestCase(TestCase):
     def testWestern(self):
         person = Person.objects.create()
         name = Name(identity=person,
-                    components=[{'type': 'prefix', 'value': 'Rear Admiral'}, ' ',
+                    components=[{'type': 'title', 'value': 'Rear Admiral'}, ' ',
                                 {'type': 'given', 'value': 'Grace'}, ' ',
                                 {'type': 'middle', 'value': 'Brewster'}, ' ',
                                 {'type': 'middle', 'value': 'Murray'}, ' ',
@@ -49,7 +50,7 @@ class NamesTestCase(TestCase):
         self.assertEqual(name.familiar, 'Grace')
         self.assertEqual(name.sort, 'Hopper, Grace Brewster Murray')
         self.assertEqual(name.marked_up,
-                         '<name><prefix>Rear Admiral</prefix> <given>Grace</given> <middle>Brewster</middle> '
+                         '<name><title>Rear Admiral</title> <given>Grace</given> <middle>Brewster</middle> '
                          '<middle>Murray</middle> <family>Hopper</family></name>')
 
     def testChinese(self):
@@ -91,3 +92,32 @@ class NamesTestCase(TestCase):
         components = ParseNameField().to_internal_value({'first': 'Grace', 'last': 'Hopper'})
         self.assertEqual(components, [{'type': 'given', 'value': 'Grace'}, ' ',
                                       {'type': 'family', 'value': 'Hopper'}])
+
+
+class SimpleNameFormTestCase(TestCase):
+    components = [
+        {'type': 'title', 'value': 'Rear Admiral'}, ' ',
+        {'type': 'given', 'value': 'Grace'}, ' ',
+        {'type': 'middle', 'value': 'Brewster'}, ' ',
+        {'type': 'middle', 'value': 'Murray'}, ' ',
+        {'type': 'family', 'value': 'Hopper'}, ' ',
+        {'type': 'suffix', 'value': 'Suffix'}
+    ]
+
+    def testGenerateInitial(self):
+        name = Name(components=self.components)
+        name_form = SimpleNameForm(instance=name)
+        self.assertEqual('Rear Admiral', name_form.initial['title'])
+        self.assertEqual('Grace', name_form.initial['given'])
+        self.assertEqual('Brewster', name_form.initial['middle_1'])
+        self.assertEqual('Murray', name_form.initial['middle_2'])
+        self.assertEqual('Hopper', name_form.initial['family'])
+        self.assertEqual('Suffix', name_form.initial['suffix'])
+
+    def testClean(self):
+        data = {'title': 'Rear Admiral', 'given': 'Grace', 'middle_1': 'Brewster',
+                'middle_2': 'Murray', 'family': 'Hopper', 'suffix': 'Suffix'}
+        name_form = SimpleNameForm(data=data)
+        print(name_form.errors)
+        self.assertTrue(name_form.is_valid())
+        self.assertEqual(self.components, name_form.cleaned_data['components'])

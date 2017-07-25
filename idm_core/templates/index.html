@@ -20,7 +20,7 @@
                     <td>{{ name.plain_full }}</td>
                     <td>{{ name.context.label }}</td>
                     <td>{{ name.attested_by|yesno }}</td>
-                    <td><a href="{% url "selfservice:name-detail" pk=name.pk %}"><i class="fa fa-pencil" title="Edit"> </i></a></td>
+                    <td><a href="{% url "name:name-detail" pk=name.pk %}"><i class="fa fa-pencil" title="Edit"> </i></a></td>
                 </tr>{% endfor %}
             </tbody>
         </table>

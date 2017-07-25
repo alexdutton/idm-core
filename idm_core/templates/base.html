@@ -6,7 +6,7 @@
 <ul class="pure-menu-list">
     {% if user.is_authenticated %}
     <li class="pure-menu-item"><a class="pure-menu-link" href="{% url "selfservice:index" %}">Profile</a></li>
-    <li class="pure-menu-item"><a class="pure-menu-link" href="{% url "selfservice:name-list" %}">Names</a></li>
+    <li class="pure-menu-item"><a class="pure-menu-link" href="{% url "name:name-list" %}">Names</a></li>
     <!--<li class="pure-menu-heading">Contact details</li>-->
     <li class="pure-menu-item"><a class="pure-menu-link" href="{% url "contact:address-list-self" %}">Addresses</a></li>
     <li class="pure-menu-item"><a class="pure-menu-link" href="{% url "contact:email-list-self" %}">Email addresses</a></li>
