@@ -21,6 +21,7 @@ class SimpleNameForm(forms.ModelForm):
             for component in instance.components:
                 if isinstance(component, dict):
                     components_by_type[component['type']].append(component['value'])
+            old_initial = initial or {}
             initial = {
                 'title': (components_by_type['title'] + [''])[0],
                 'given': (components_by_type['given'] + [''])[0],
@@ -29,8 +30,9 @@ class SimpleNameForm(forms.ModelForm):
                 'middle_3': (components_by_type['middle'] + ['', '', ''])[2],
                 'family': (components_by_type['family'] + [''])[0],
                 'suffix': (components_by_type['suffix'] + [''])[0],
-                **(initial or {})
             }
+            initial.update(old_initial)
+
         super().__init__(*args, instance=instance, initial=initial, **kwargs)
 
     def clean(self):
