@@ -9,6 +9,7 @@ from idm_core.identity.serializers import InvertedBooleanField, TypeMixin, Relat
     related_identity_to_representation
 from idm_core.name.serializers import EmbeddedNameSerializer, NameSerializer
 from idm_core.nationality.serializers import EmbeddedNationalitySerializer
+from idm_core.organization.serializers import EmbeddedAffiliationSerializer
 
 from . import models
 
@@ -38,9 +39,10 @@ class PersonSerializer(PlainPersonSerializer):
     nationalities = EmbeddedNationalitySerializer(many=True, default=(), source='nationality_set')
     emails = EmbeddedEmailSerializer(many=True, default=())
     identifiers = EmbeddedIdentifierSerializer(many=True, default=())
+    affiliations = EmbeddedAffiliationSerializer(many=True, default=(), source='affiliation_set', read_only=True)
 
     class Meta(PlainPersonSerializer.Meta):
-        fields = PlainPersonSerializer.Meta.fields + ('names', 'nationalities', 'emails')
+        fields = PlainPersonSerializer.Meta.fields + ('names', 'nationalities', 'emails', 'affiliations')
 
     def create(self, validated_data):
         if 'state' in validated_data and validated_data['state'] not in ('established', 'active'):

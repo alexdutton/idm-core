@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}Identity attestation{% endblock %}
+{% block h1_title %}Identity attestation{% endblock %}
+
+{% block content %}
+
+    {% if self %}
+        <p>To support your relationship with the University, we may need to record that we've seen documents that support
+            your identity. You can see which documents we hold scans of here.</p>
+
+        <p>A week after uploading, we encrypt our copies of your documents so that they can no longer be decrypted by this
+            system. For more information, see our documentation.</p>
+    {% endif %}
+
+    <table class="pure-table">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Upload date</th>
+            <th>Document encrypted</th>
+            <th>Attests</th>
+        </tr>
+        </thead>
+        <tbody>{% for object in object_list %}
+            <tr>
+                <td><a href="{{ object.get_absolute_url }}">{{ object.label }}</a></td>
+                <td>{{ object.type }}</td>
+                <td>{{ object.uploaded_date }}</td>
+                <td>{{ object.encrypted|yesno }}</td>
+                <td>{{ object.attests|join:", " }}</td>
+            </tr>{% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}

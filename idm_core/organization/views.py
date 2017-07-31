@@ -74,3 +74,15 @@ class AffiliationUpdateView(LoginRequiredMixin, OrganzationSubView, UpdateView):
     form_class = forms.AffiliationForm
     organization_permission = 'organization.manage_affiliations'
     form_class = forms.AffiliationForm
+
+
+class PersonAffiliationListView(LoginRequiredMixin, FilterView, ListView):
+    model = models.Affiliation
+    filterset_class = filters.AffiliationFilter
+    paginate_by = 100
+    template_name = 'organization/person_affiliation_list.html'
+
+    def get_queryset(self):
+        return self.request.user.identity.affiliation_set.all()
+
+

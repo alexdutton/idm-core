@@ -8,6 +8,7 @@ from . import models
 class OrganizationAdmin(admin.ModelAdmin):
     pass
 
+
 @admin.register(models.Affiliation)
 class AffiliationAdmin(RelationshipAdmin):
     pass
@@ -16,6 +17,7 @@ class AffiliationAdmin(RelationshipAdmin):
 @admin.register(models.Role)
 class RoleAdmin(RelationshipAdmin):
     pass
+
 
 @admin.register(models.OrganizationRole)
 class OrganizationRoleAdmin(admin.ModelAdmin):

@@ -1,3 +1,24 @@
+- model: organization.OrganizationTag
+  pk: college
+  fields:
+    label: 'college'
+- model: organization.OrganizationTag
+  pk: pph
+  fields:
+    label: 'PPH'
+- model: organization.OrganizationTag
+  pk: bodleian
+  fields:
+    label: 'bodleian'
+- model: organization.OrganizationTag
+  pk: congregation
+  fields:
+    label: 'congregation'
+- model: organization.OrganizationTag
+  pk: unit
+  fields:
+    label: 'unit'
+
 - model: organization.OrganizationRelationshipType
   pk: subOrganization
   fields:
@@ -14,3 +35,12 @@
   pk: ric
   fields:
     label: 'recognized independent centre'
+
+- model: organization.BodleianGroup
+  pk: A
+  fields:
+    label: 'Group A'
+- model: organization.BodleianGroup
+  pk: S
+  fields:
+    label: 'Group S'

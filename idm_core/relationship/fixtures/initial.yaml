@@ -1,36 +1,65 @@
 # Affiliation types
 
 - model: organization.AffiliationType
-  pk: staff
+  pk: staff:employee
   fields:
     label: 'staff'
     edu_person_affiliation_value: member staff
+    metadata_fields:
+    - job_title
 - model: organization.AffiliationType
-  pk: contract-staff
+  pk: staff:contractor
   fields:
     label: 'contract staff'
     edu_person_affiliation_value: staff
+    metadata_fields:
+    - job_title
 - model: organization.AffiliationType
-  pk: undergraduate
+  pk: student:undergraduate
   fields:
     label: 'undergraduate'
     edu_person_affiliation_value: member student
+    metadata_fields:
+    - course
 - model: organization.AffiliationType
-  pk: postgraduate
+  pk: student:postgraduate:research
   fields:
-    label: 'postgraduate'
+    label: 'postgraduate (research)'
     edu_person_affiliation_value: member student
+    metadata_fields:
+    - course
+- model: organization.AffiliationType
+  pk: student:postgraduate:taught
+  fields:
+    label: 'postgraduate (taught)'
+    edu_person_affiliation_value: member student
+    metadata_fields:
+    - course
 - model: organization.AffiliationType
   pk: academic-visitor
   fields:
     label: 'academic visitor'
     edu_person_affiliation_value: member
 - model: organization.AffiliationType
-  pk: student-applicant
+  pk: applicant:student:undergraduate
   fields:
-    label: 'student applicant'
+    label: 'undergraduate applicant'
+    metadata_fields:
+    - course
 - model: organization.AffiliationType
-  pk: staff-applicant
+  pk: applicant:student:postgraduate:research
+  fields:
+    label: 'postgraduate applicant (research)'
+    metadata_fields:
+    - course
+- model: organization.AffiliationType
+  pk: applicant:student:postgraduate:taught
+  fields:
+    label: 'postgraduate applicant (taught)'
+    metadata_fields:
+    - course
+- model: organization.AffiliationType
+  pk: applicant:staff:employee
   fields:
     label: 'staff applicant'
 - model: organization.AffiliationType
@@ -38,9 +67,18 @@
   fields:
     label: 'returner'
 - model: organization.AffiliationType
-  pk: alumnus
+  pk: alumnum:undergraduate
   fields:
-    label: 'alumnus or alumna'
+    label: 'undergraduate alumnum'
+    edu_person_affiliation_value: alum
+- model: organization.AffiliationType
+  pk: alumnum:postgraduate:research
+  fields:
+    label: 'postgraduate alumnum (research)'
+- model: organization.AffiliationType
+  pk: alumnum:postgraduate:taught
+  fields:
+    label: 'postgraduate alumnum (taught)'
     edu_person_affiliation_value: alum
 - model: organization.AffiliationType
   pk: friend
@@ -51,6 +89,22 @@
   pk: member
   fields:
     label: 'member'
+- model: organization.AffiliationType
+  pk: member:affiliate
+  fields:
+    label: 'affiliate member'
+- model: organization.AffiliationType
+  pk: member:congregation
+  fields:
+    label: 'Member of Congregation'
+    metadata_fields:
+    - congregation_organization
+- model: organization.AffiliationType
+  pk: reader
+  fields:
+    label: 'reader'
+    metadata_fields:
+    - bodleian_group
 
 
 # Role types

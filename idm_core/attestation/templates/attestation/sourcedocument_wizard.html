@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}New attestation for {{ identity }}{% endblock %}
+{% block h1_title %}New attestation for {{ identity }}{% endblock %}
+
+{% block content %}
+
+    <form method="post" class="pure-form pure-form-aligned" enctype="multipart/form-data">{% csrf_token %}
+        {{ wizard.management_form }}
+
+    {{ form.forms }}
+
+        <fieldset>{% for field in form %}
+            <div class="pure-control-group">
+                {{ field.label_tag }}
+                {{ field }} {{ field.attestable }}
+                {% for error in field.errors %}
+                    <span class="pure-form-message-inline">{{ error }}</span>
+                {% endfor %}
+            </div>{% endfor %}
+            <div class="pure-controls">
+                {% if wizard.steps.prev %}
+                    {% comment %}https://stackoverflow.com/a/31911751{% endcomment %}
+                    <button type="submit" class="default-button-handler" aria-hidden="true" tabindex="-1"></button>
+                    <button class="pure-button" name="wizard_goto_step" value="{{ wizard.steps.prev }}">Back</button>
+                {% endif %}
+                <button type="submit" class="pure-button pure-button-primary">{% if wizard.steps.next %}Continue{% else %}Go{% endif %}</button>
+            </div>
+        </fieldset>
+    </form>
+
+{% endblock %}

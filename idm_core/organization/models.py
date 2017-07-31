@@ -1,4 +1,6 @@
+from django.contrib.postgres.fields import ArrayField
 from django.db import models
+from django.db.models import Max
 from django.urls import reverse
 from django.utils.functional import cached_property
 
@@ -15,7 +17,7 @@ class OrganizationTag(models.Model):
 
 
 class OrganizationRelationshipType(models.Model):
-    id = models.CharField(max_length=32, primary_key=True)
+    id = models.CharField(max_length=64, primary_key=True)
     label = models.CharField(max_length=255)
 
 
@@ -88,19 +90,38 @@ class Role(Relationship):
         return super().save(*args, **kwargs)
 
 
+class BodleianGroup(models.Model):
+    id = models.CharField(max_length=3, primary_key=True)
+    label = models.CharField(max_length=64)
+
+
 class AffiliationType(RelationshipType):
-    edu_person_affiliation_value = models.CharField(max_length=32, blank=True)
+    edu_person_affiliation_value = models.CharField(max_length=64, blank=True)
+    metadata_fields = ArrayField(models.CharField(max_length=32), default=[])
 
 
 class Affiliation(Relationship):
     identity = models.ForeignKey(Person)
     organization = models.ForeignKey(Organization)
     type = models.ForeignKey(AffiliationType)
+    order = models.PositiveSmallIntegerField()
+
+    job_title = models.TextField(blank=True)
     course = models.ForeignKey(Course, null=True, blank=True)
+    bodleian_group = models.ForeignKey(BodleianGroup, null=True, blank=True)
+    congregation_organization = models.ForeignKey(Organization, null=True, blank=True, related_name='congregation_affiliations')
 
     def get_absolute_url(self):
         return reverse('organization:affiliation-update', kwargs={'organization_pk': str(self.organization_id),
                                                                   'pk': str(self.id)})
 
-    #metadata = JSONField(default={})
-    # location
+    def save(self, *args, **kwargs):
+        if self.state not in ('upcoming', 'active', 'suspended'):
+            self.order = 10000
+        elif self.order is None:
+            c = type(self).objects.filter(identity_id=self.identity_id, state__in=('upcoming', 'active', 'suspended')).aggregate(Max('order')).get('order__max')
+            self.order = 0 if c is None else c + 1
+        return super().save(*args, **kwargs)
+
+    class Meta(Relationship.Meta):
+        ordering = ('order',)

@@ -1,7 +1,7 @@
 from django.conf.urls import include, url
 from rest_framework_nested import routers
 
-import idm_core.attestation.views
+import idm_core.attestation.api_views
 import idm_core.contact.api_views
 import idm_core.identifier.views
 import idm_core.name.api_views
@@ -28,19 +28,19 @@ person_router = routers.NestedSimpleRouter(router, r'person', lookup='identity')
 person_router.register('nationality', idm_core.nationality.views.NationalityViewSet, base_name='identity-nationality')
 person_router.register('affiliation', idm_core.organization.api.AffiliationViewSet, base_name='identity-affiliation')
 person_router.register('role', idm_core.organization.api.RoleViewSet, base_name='identity-role')
-person_router.register('source-document', idm_core.attestation.views.SourceDocumentViewSet, base_name='identity-source-document')
+person_router.register('source-document', idm_core.attestation.api_views.SourceDocumentViewSet, base_name='identity-source-document')
 person_router.register('name', idm_core.name.api_views.NameViewSet, base_name='identity-name')
 person_router.register('identifier', idm_core.identifier.views.IdentifierViewSet, base_name='identity-identifier')
-person_router.register('attestable', idm_core.attestation.views.AttestableViewSet, base_name='identity-attestable')
-person_router.register('attestable', idm_core.attestation.views.AttestableViewSet, base_name='identity-attestable')
+person_router.register('attestable', idm_core.attestation.api_views.AttestableViewSet, base_name='identity-attestable')
+person_router.register('attestable', idm_core.attestation.api_views.AttestableViewSet, base_name='identity-attestable')
 
 
 
 router.register('name', idm_core.name.api_views.NameViewSet, base_name='name')
 router.register('nationality', idm_core.nationality.views.NationalityViewSet)
-router.register('source-document-type', idm_core.attestation.views.SourceDocumentTypeViewSet)
-router.register('source-document', idm_core.attestation.views.SourceDocumentViewSet)
-router.register('attestation', idm_core.attestation.views.AttestationViewSet)
+router.register('source-document-type', idm_core.attestation.api_views.SourceDocumentTypeViewSet)
+router.register('source-document', idm_core.attestation.api_views.SourceDocumentViewSet)
+router.register('attestation', idm_core.attestation.api_views.AttestationViewSet)
 router.register('affiliation', idm_core.organization.api.AffiliationViewSet)
 router.register('role', idm_core.organization.api.RoleViewSet)
 router.register('identifier', idm_core.identifier.views.IdentifierViewSet)

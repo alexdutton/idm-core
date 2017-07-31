@@ -75,8 +75,13 @@ class OnlineAccountProvider(models.Model):
     id = models.CharField(primary_key=True, max_length=32)
     label = models.TextField()
 
+    def __str__(self):
+        return self.label
+
 
 class OnlineAccount(Contact):
     provider = models.ForeignKey(OnlineAccountProvider)
     screen_name = models.TextField()
 
+    def __str__(self):
+        return '{} at {}'.format(self.screen_name, self.provider)

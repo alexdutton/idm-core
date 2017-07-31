@@ -94,6 +94,8 @@ AUTHENTICATION_BACKENDS = [
 #     }
 # }
 
+SITE_ID = 1
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -171,6 +173,7 @@ SESSION_COOKIE_NAME = 'idm-core-sessionid'
 import logging
 
 LOGIN_URL = 'oidc-login'
+LOGOUT_URL = 'logout'
 
 l = logging.getLogger('django.db.backends')
 l.setLevel(logging.DEBUG)
@@ -185,4 +188,5 @@ REST_FRAMEWORK = {
 }
 
 IDM_AUTH_URL = os.environ.get('IDM_AUTH_URL', 'http://localhost:8001/')
+IDM_CARD_URL = os.environ.get('IDM_CARD_URL', 'http://localhost:8002/')
 IDM_AUTH_URL_URL = os.environ.get('IDM_AUTH_URL_URL', 'http://localhost:8001/api/')

@@ -1,0 +1,47 @@
+{% extends "organization/base.html" %}
+
+{% block title %}Affiliations at {{ organization }}{% endblock %}
+
+{% block header %}
+<h1>{{ organization }}</h1>
+<h2>Affiliations</h2>
+{% endblock %}
+
+{% block content %}
+
+    {% include "pagination.html" %}
+
+    <form method="post">
+    <table class="pure-table">
+    <thead>
+    <tr>
+        <th></th>
+        <th>Organization</th>
+        <th>Type</th>
+        <th>Course</th>
+        <th>Start</th>
+        <th>End</th>
+        <th>State</th>
+        <th>Managed by</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>{% for object in object_list %}
+    <tr>
+        <td></td>
+        <td>{{ object.organization.label }}</td>
+        <td>{{ object.type.label }}</td>
+        <td>{{ object.course.label|default:"" }}</td>
+        <td>{{ object.start_date|default_if_none:"" }}</td>
+        <td>{{ object.end_date|default_if_none:"" }}</td>
+        <td>{{ object.state }}</td>
+        <td>{{ object.managed_by }}</td>
+        <td></td>
+    </tr>{% endfor %}
+    </tbody>
+    </table>
+    </form>
+
+        {% include "pagination.html" %}
+
+{% endblock %}

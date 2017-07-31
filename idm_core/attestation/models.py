@@ -26,18 +26,12 @@ class SourceDocument(models.Model):
     uploaded_date = models.DateTimeField(auto_now_add=True)
     validated_by = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='validated_source_documents')
     active = models.BooleanField(default=False)
-    complete = models.BooleanField(default=False)
     label = models.CharField(max_length=256, blank=True)
+    document = models.FileField()
+    encrypted = models.BooleanField(default=False)
 
     def __str__(self):
         return self.label
-
-
-class SourceDocumentPage(models.Model):
-    source_document = models.ForeignKey(SourceDocument)
-    page_number = models.PositiveSmallIntegerField(null=True, blank=True)
-    content_type = models.CharField(max_length=255)
-    image = models.ImageField()
 
 
 class Attestation(models.Model):

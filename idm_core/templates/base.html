@@ -12,6 +12,7 @@
     <li class="pure-menu-item"><a class="pure-menu-link" href="{% url "contact:email-list-self" %}">Email addresses</a></li>
     <li class="pure-menu-item"><a class="pure-menu-link" href="{% url "contact:telephone-list-self" %}">Telephone numbers</a></li>
     <li class="pure-menu-item"><a class="pure-menu-link" href="{% url "contact:online-account-list-self" %}">Online accounts</a></li>
+    <li class="pure-menu-item"><a class="pure-menu-link" href="{% url "attestation:source-document-list-self" %}">Identity attestation</a></li>
     <li class="pure-menu-item"><a class="pure-menu-link" href="{% url "organization:index" %}">Organizations</a></li>
         {% block organization_nav %}{% endblock %}
     <li class="pure-menu-item"><a class="pure-menu-link" href="#">Log out</a></li>
@@ -20,5 +21,6 @@
     {% endif %}
 <hr>
     <li class="pure-menu-item"><a class="pure-menu-link" href="{{ IDM_AUTH_URL }}">Account management</a></li>
+    <li class="pure-menu-item"><a class="pure-menu-link" href="{{ IDM_CARD_URL }}">Card management</a></li>
 </ul>
 {% endblock %}
