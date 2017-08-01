@@ -15,6 +15,9 @@ class OrganizationTag(models.Model):
     id = models.CharField(max_length=32, primary_key=True)
     label = models.CharField(max_length=255)
 
+    def __str__(self):
+        return '{} ({})'.format(self.id, self.label)
+
 
 class OrganizationRelationshipType(models.Model):
     id = models.CharField(max_length=64, primary_key=True)
