@@ -14,3 +14,5 @@ class OrganizationConfig(AppConfig):
             {'serializer': serializers.AffiliationTypeSerializer, 'exchange': 'reference'},
             {'serializer': serializers.RoleTypeSerializer, 'exchange': 'reference'},
         ])
+        apps.get_app_config('idm_broker').register_related_notification(model=models.Affiliation,
+                                                                        accessor=lambda affiliation: affiliation.identity)
