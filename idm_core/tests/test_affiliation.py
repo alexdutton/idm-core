@@ -14,7 +14,7 @@ class CreationTestCase(TestCase):
 
     def setUp(self):
         self.organization = Organization.objects.create(label='Department of Metaphysics')
-        self.affiliation_type = AffiliationType.objects.get(pk='staff')
+        self.affiliation_type = AffiliationType.objects.get(pk='staff:employee')
 
     def testForthcomingAffiliation(self):
         person = Person.objects.create()

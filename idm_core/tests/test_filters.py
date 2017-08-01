@@ -35,7 +35,7 @@ class FiltersTestCase(APITestCase):
         organization = Organization.objects.create()
         affiliation = Affiliation.objects.create(identity=identity,
                                                  organization=organization,
-                                                 type_id='staff',
+                                                 type_id='staff:employee',
                                                  state='active')
 
         response = self.client.get('/api/person/', {'affiliationOrganization': organization.id})
