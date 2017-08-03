@@ -3,6 +3,7 @@ from django import forms
 from django.forms import widgets
 from rest_framework.filters import BaseFilterBackend
 
+from idm_core.course.models import Course
 from idm_core.identity.models import IDENTITY_STATE_CHOICES
 from idm_core.relationship.models import RELATIONSHIP_STATE_CHOICES
 from . import models
@@ -40,10 +41,12 @@ class AffiliationFilter(django_filters.FilterSet):
                                                 label='Affiliation state')
     identity__state = django_filters.MultipleChoiceFilter(choices=IDENTITY_STATE_CHOICES,
                                                           label='Identity state')
+    type = django_filters.ModelMultipleChoiceFilter(queryset=models.AffiliationType.objects.all())
+    course = django_filters.ModelMultipleChoiceFilter(queryset=Course.objects.all())
 
     start_date = django_filters.DateFromToRangeFilter()
     end_date = django_filters.DateFromToRangeFilter()
 
     class Meta:
         model = models.Affiliation
-        fields = ['state', 'identity__state', 'start_date', 'end_date']
+        fields = ['state', 'type', 'course', 'identity__state', 'start_date', 'end_date']
