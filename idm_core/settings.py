@@ -70,6 +70,7 @@ MIDDLEWARE_CLASSES = [
     #'reversion.middleware.RevisionMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.auth.middleware.RemoteUserMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
 ]
@@ -77,7 +78,7 @@ MIDDLEWARE_CLASSES = [
 AUTHENTICATION_BACKENDS = [
     'oidc_auth.auth.OpenIDConnectBackend',
     'django.contrib.auth.backends.ModelBackend',
-    'django.contrib.auth.backends.RemoteUserBackend',
+    'idm_core.auth.RemoteUserBackend',
 ]
 
 
