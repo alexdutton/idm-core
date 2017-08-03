@@ -15,6 +15,10 @@
   fields:
     label: 'congregation'
 - model: organization.OrganizationTag
+  pk: convocation
+  fields:
+    label: 'convocation'
+- model: organization.OrganizationTag
   pk: unit
   fields:
     label: 'unit'
