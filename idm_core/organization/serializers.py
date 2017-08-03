@@ -18,7 +18,7 @@ class OrganizationSerializer(TypeMixin, HyperlinkedModelSerializer):
 
     class Meta:
         model = models.Organization
-        fields = ('id', 'label', 'tags', 'identifiers', 'url')
+        fields = ('id', 'label', 'short_label', 'tags', 'identifiers', 'url')
 
     def create(self, validated_data):
         if 'state' in validated_data and validated_data['state'] not in ('established', 'active'):
@@ -30,6 +30,15 @@ class OrganizationSerializer(TypeMixin, HyperlinkedModelSerializer):
             identifier['identity'] = organization
         self.fields['identifiers'].create(identifiers)
         return organization
+
+    def update(self, instance, validated_data):
+        tags = validated_data.pop('tags', None)
+        identifiers = validated_data.pop('identifiers', None)
+        print(validated_data)
+        instance = super().update(instance, validated_data)
+        if tags is not None:
+            instance.tags = tags
+        return instance
 
 
 class TerseOrganizationSerializer(OrganizationSerializer):

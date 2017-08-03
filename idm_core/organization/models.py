@@ -26,6 +26,9 @@ class OrganizationRelationshipType(models.Model):
 
 class Organization(IdentityBase):
     type_slug = 'organization'
+    sub_nav_template = 'organization/sub_nav.html'
+
+    short_label = models.CharField(max_length=255, blank=True)
 
     tags = models.ManyToManyField(OrganizationTag, blank=True)
 
@@ -101,6 +104,9 @@ class BodleianGroup(models.Model):
 class AffiliationType(RelationshipType):
     edu_person_affiliation_value = models.CharField(max_length=64, blank=True)
     metadata_fields = ArrayField(models.CharField(max_length=32), default=[])
+
+    class Meta:
+        ordering = ('label',)
 
 
 class Affiliation(Relationship):
