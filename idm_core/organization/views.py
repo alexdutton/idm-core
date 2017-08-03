@@ -47,8 +47,10 @@ class OrganzationSubView(View):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context.update({'organization': self.organization,
-                        'organization_pk': str(self.organization.pk)})
+        context.update({'identity': self.organization,
+                        'organization': self.organization,
+                        'organization_pk': str(self.organization.pk),
+                        'base_template': 'organization/base.html'})
         return context
 
 

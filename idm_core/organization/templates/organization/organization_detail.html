@@ -4,16 +4,42 @@
 {% block title %}{{ object.label }}{% endblock %}
 
 {% block header %}
-<h1>{{ object.label }}</h1>
+    <h1>{{ object.label }}</h1>
 {% endblock %}
 
 {% block content %}
 
-    <a href="{% url "contact:email-list" identity_type="organization" identity_id=object.id %}">Email addresses</a>
-    <a href="{% url "contact:online-account-list" identity_type="organization" identity_id=object.id %}">Online accounts</a>
-    <a href="{% url "contact:telephone-list" identity_type="organization" identity_id=object.id %}">Telephone numbers</a>
-    <a href="{% url "contact:address-list" identity_type="organization" identity_id=object.id %}">Addresses</a>
+    {% if object.tags %}
+        <section>
+            <h2>
+                <h2>Tags</h2>
+                <ul>{% for tag in object.tags.all %}
+                    <li>{{ tag.label }}</li>{% endfor %}
+                </ul>
+            </h2>
+        </section>
+    {% endif %}
 
-    <a href="{% url "organization:affiliation-list" organization_pk=object.id %}">Affiliations</a>
+    {% if object.identifiers %}
+        <section>
+            <h2>Identifiers</h2>
+
+            <table class="pure-table">
+                <thead>
+                <tr>
+                    <th>Type</th>
+                    <th>Value</th>
+                </tr>
+                </thead>
+                <tbody>{% for identifier in object.identifiers.all %}
+                    <tr>
+                        <td>{{ identifier.type }}</td>
+                        <td>{{ identifier.value }}</td>
+                    </tr>{% endfor %}
+
+                </tbody>
+            </table>
+        </section>
+    {% endif %}
 
 {% endblock %}

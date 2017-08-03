@@ -5,16 +5,15 @@
 {% block nav %}
 <ul class="pure-menu-list">
     {% if user.is_authenticated %}
-    <li class="pure-menu-item"><a class="pure-menu-link" href="{% url "selfservice:index" %}">Profile</a></li>
     <li class="pure-menu-item"><a class="pure-menu-link" href="{% url "name:name-list" %}">Names</a></li>
     <!--<li class="pure-menu-heading">Contact details</li>-->
     <li class="pure-menu-item"><a class="pure-menu-link" href="{% url "contact:address-list-self" %}">Addresses</a></li>
     <li class="pure-menu-item"><a class="pure-menu-link" href="{% url "contact:email-list-self" %}">Email addresses</a></li>
     <li class="pure-menu-item"><a class="pure-menu-link" href="{% url "contact:telephone-list-self" %}">Telephone numbers</a></li>
     <li class="pure-menu-item"><a class="pure-menu-link" href="{% url "contact:online-account-list-self" %}">Online accounts</a></li>
+    <li class="pure-menu-item"><a class="pure-menu-link" href="{% url "person-affiliation-list" %}">Affiliations</a></li>
     <li class="pure-menu-item"><a class="pure-menu-link" href="{% url "attestation:source-document-list-self" %}">Identity attestation</a></li>
     <li class="pure-menu-item"><a class="pure-menu-link" href="{% url "organization:index" %}">Organizations</a></li>
-        {% block organization_nav %}{% endblock %}
     <li class="pure-menu-item"><a class="pure-menu-link" href="#">Log out</a></li>
     {% else %}
     <li class="pure-menu-item"><a class="pure-menu-link" href="{% url "oidc-login" %}">Log in</a></li>

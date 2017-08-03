@@ -1,13 +1,1 @@
 {% extends "base.html" %}
-
-{% block organization_nav %}
-    {% if organization_pk %}
-
-        <li class="pure-menu-item pure-menu-has-children">
-            <a href="{% url "organization:detail" pk=organization_pk %}" class="pure-menu-link">{{ organization }}</a>
-            <ul class="pure-menu-children">
-                <li class="pure-menu-item"><a href="#" class="pure-menu-link">Affiliations</a></li>
-            </ul>
-        </li>
-    {% endif %}
-{% endblock %}

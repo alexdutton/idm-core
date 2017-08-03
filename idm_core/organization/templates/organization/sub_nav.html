@@ -1,0 +1,10 @@
+    <div class="pure-menu pure-menu-horizontal" style="text-align: center">
+        <ul class="pure-menu-list">
+            <li class="pure-menu-item"><a class="pure-menu-link" href="{{ object.get_absolute_url }}">Home</a></li>
+            <li class="pure-menu-item"><a class="pure-menu-link" href="{% url "contact:email-list" identity_type="organization" identity_id=object.id %}">Email addresses</a></li>
+            <li class="pure-menu-item"><a class="pure-menu-link" href="{% url "contact:online-account-list" identity_type="organization" identity_id=object.id %}">Online accounts</a></li>
+            <li class="pure-menu-item"><a class="pure-menu-link" href="{% url "contact:telephone-list" identity_type="organization" identity_id=object.id %}">Telephone numbers</a></li>
+            <li class="pure-menu-item"><a class="pure-menu-link" href="{% url "contact:address-list" identity_type="organization" identity_id=object.id %}">Addresses</a></li>
+            <li class="pure-menu-item"><a class="pure-menu-link" href="{% url "organization:affiliation-list" organization_pk=object.id %}">Affiliations</a></li>
+        </ul>
+    </div>
