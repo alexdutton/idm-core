@@ -15,6 +15,7 @@ class OrganizationListView(LoginRequiredMixin, ListView):
     paginate_by = 100
 
 
+
 class OrganizationDetailView(LoginRequiredMixin, DetailView):
     model = models.Organization
 

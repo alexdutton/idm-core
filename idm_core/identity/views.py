@@ -1,3 +1,4 @@
+from django.db import transaction
 from rest_framework.decorators import detail_route
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
@@ -29,8 +30,21 @@ class IdentityViewSet(IdentifierFilterViewSetMixin, ModelViewSet):
             queryset = queryset.filter(state__in=set(self.request.GET.getlist('state')))
         return queryset
 
+    def create(self, request, *args, **kwargs):
+        with transaction.atomic():
+            return super().create(request, *args, **kwargs)
+
+    def update(self, request, *args, **kwargs):
+        with transaction.atomic():
+            return super().update(request, *args, **kwargs)
+
+    def destroy(self, request, *args, **kwargs):
+        with transaction.atomic():
+            return super().destroy(request, *args, **kwargs)
+
     @detail_route(methods=['post'])
     def activate(self, request, pk=None):
-        object = self.get_object()
-        object.identity.activate()
-        return Response(status=204)
+        with transaction.atomic():
+            object = self.get_object()
+            object.identity.activate()
+            return Response(status=204)
