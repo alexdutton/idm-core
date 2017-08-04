@@ -26,6 +26,7 @@
         </table>
     </section>
 
+    {% if object.affiliation_set.exists %}
     <section>
     <h2>Affiliations</h2>
         <table class="pure-table">
@@ -51,7 +52,9 @@
             </tbody>
         </table>
     </section>
+    {% endif %}
 
+    {% if object.role_set.exists %}
     <section>
     <h2>Roles</h2>
         <table class="pure-table">
@@ -77,7 +80,9 @@
             </tbody>
         </table>
     </section>
+    {% endif %}
 
+    {% if object.emails.exists %}
     <section>
     <h2>Email addresses</h2>
         <table class="pure-table">
@@ -97,7 +102,9 @@
             </tbody>
         </table>
     </section>
+    {% endif %}
 
+    {% if object.online_accounts.exists %}
     <section>
     <h2>Social identities</h2>
         <table class="pure-table">
@@ -119,5 +126,6 @@
             </tbody>
         </table>
     </section>
+    {% endif %}
 
 {% endblock %}

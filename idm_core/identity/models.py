@@ -85,6 +85,7 @@ class IdentityBase(DirtyFieldsMixin, Contactable, Identifiable, models.Model):
     merged_into = models.ForeignKey('self', null=True, blank=True, related_name='merged_from')
 
     identity_permissions = GenericRelation('identity.IdentityPermission', 'identity_id', 'identity_content_type')
+    source_documents = GenericRelation('attestation.SourceDocument', 'identity_id', 'identity_content_type')
 
     @transition(field=state, source='established', target='active')
     def activate(self):
