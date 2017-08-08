@@ -14,6 +14,9 @@ class ContactContext(models.Model):
     id = models.SlugField(primary_key=True)
     label = models.CharField(max_length=255)
 
+    def __str__(self):
+        return self.label
+
 
 class Contact(Attestable, ManageableModel, models.Model):
     identity_content_type = models.ForeignKey(ContentType)

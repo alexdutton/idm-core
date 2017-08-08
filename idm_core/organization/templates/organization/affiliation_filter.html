@@ -1,63 +1,75 @@
-{% extends "organization/base.html" %}
+{% extends "organization/base.html" %}{% load widget_tweaks %}
 
 {% block title %}Affiliations at {{ organization }}{% endblock %}
 
 {% block header %}
-<h1>Affiliations</h1>
-<h2>{{ organization }}</h2>
+    <h1>Affiliations</h1>
+    <h2>{{ organization }}</h2>
 {% endblock %}
 
 {% block content %}
+    <div class="pure-g">
 
-    <form class="pure-form pure-form-stacked">
-    <fieldset>
-        <legend>Filter</legend>
 
-        <div class="pure-g">
-            {% for field in filter.form %}
-            <div class="pure-u-1 pure-u-md-1-4">
-                {{ field.label_tag }}
-                <div class="pure-u-23-24">{{ field }}</div>
-            </div>
-            {% endfor %}
-        </div>
-        <button type="submit" class="pure-button pure-button-primary">Filter</button>
-        </fieldset>
-</form>
+    <div class="pure-u-1 pure-u-md-3-4 pure-u-lg-4-5">
+        {% include "pagination.html" %}
 
-    {% include "pagination.html" %}
-
-    <form method="post">
-    <table class="pure-table">
-    <thead>
-    <tr>
-        <th></th>
-        <th>Person</th>
-        <th>Type</th>
-        <th>Course</th>
-        <th>Start</th>
-        <th>End</th>
-        <th>State</th>
-        <th>Managed by</th>
-        <th>Actions</th>
-    </tr>
-    </thead>
-    <tbody>{% for object in object_list %}
-    <tr>
-        <td></td>
-        <td><a href="{% url "organization:affiliation-update" organization_pk object.pk %}">{{ object.identity.label }}</a></td>
-        <td>{{ object.type.label }}</td>
-        <td>{{ object.course.label|default:"" }}</td>
-        <td>{{ object.start_date|default_if_none:"" }}</td>
-        <td>{{ object.end_date|default_if_none:"" }}</td>
-        <td>{{ object.state }}</td>
-        <td>{{ object.managed_by }}</td>
-        <td></td>
-    </tr>{% endfor %}
-    </tbody>
-    </table>
-    </form>
+        <form method="post">
+            <table class="pure-table">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>Person</th>
+                    <th>Type</th>
+                    <th>Start</th>
+                    <th>End</th>
+                    <th>State</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for object in object_list %}
+                    <tr>
+                        <td>
+                            <a href="{% url "organization:affiliation-update" organization_pk object.pk %}" title="Edit"><i class="fa fa-edit"> </i></a>
+                            <a href="{% url "organization:affiliation-update" organization_pk object.pk %}" title="Suspend" disabled><i class="fa fa-exclamation-circle"> </i></a>
+                            <a href="{% url "organization:affiliation-update" organization_pk object.pk %}" title="End" disabled><i class="fa fa-times-circle"> </i></a>
+                        </td>
+                        <td><a href="{{ object.get_absolute_url }}">{{ object.identity.label }}</a></td>
+                        <td>{{ object.type.label }}</td>
+                        <td>{{ object.start_date|default_if_none:"" }}</td>
+                        <td>{{ object.end_date|default_if_none:"" }}</td>
+                        <td>{{ object.state }}</td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="9">There are no affiliations to display.</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </form>
 
         {% include "pagination.html" %}
+    </div>
+    <div class="pure-u-1 pure-u-md-1-4 pure-u-lg-1-5">
+    <div class="pure-g">
+
+        <a href="{% url "organization:affiliation-create" organization_pk %}" class="pure-button pure-button-primary pure-u-1-2"
+           title="Offer an affiliation to a person already known to the Identity Management Service">New</a>
+        <a href="{% url "organization:affiliation-invite" organization_pk %}" class="pure-button button-secondary pure-u-1-2"
+           title="Invite a person to claim an affiliation to your organization">Invite</a>
+    </div>
+            <form class="pure-form pure-form-stacked">
+                 {% for field in filter.form %}
+                        <div>
+                            {{ field.label_tag }}
+                            {% render_field field class+="pure-input-1" %}
+                        </div>
+                    {% endfor %}
+                <button type="submit" class="pure-button pure-button-primary">Filter</button>
+        </form>
+    </div>
+
+    </div>
 
 {% endblock %}

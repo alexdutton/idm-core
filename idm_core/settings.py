@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     'oidc_auth',
     'rest_framework',
     'reversion',
+    'widget_tweaks',
 ]
 try:
     __import__('django_extensions')

@@ -1,12 +1,16 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import PermissionDenied
+from django.db import transaction
 from django.shortcuts import get_object_or_404
 from django.views import View
 from django.views.generic import ListView, DetailView
 from django.views.generic.edit import CreateView, UpdateView
 from django_filters.views import FilterView
 
+from idm_core.contact.models import Email
+from idm_core.name.models import Name
 from idm_core.organization.models import Organization
+from idm_core.person.models import Person
 from . import models, forms, filters
 
 
@@ -69,14 +73,45 @@ class AffiliationCreateView(LoginRequiredMixin, OrganzationSubView, CreateView):
 
     def form_valid(self, form):
         form.instance.organization = self.organization
+        form.instance.state = 'offered'
         return super().form_valid(form)
+
+
+class AffiliationInviteView(LoginRequiredMixin, OrganzationSubView, CreateView):
+    model = models.Affiliation
+    organization_permission = 'organization.offer_affiliations'
+    form_class = forms.AffiliationInviteForm
+
+    def form_valid(self, form):
+        with transaction.atomic():
+            email = form.cleaned_data['email']
+            try:
+                # Look up person based on a validated email address
+                form.instance.identity = Person.objects.get(emails=Email.objects.filter(value=email,
+                                                                                        validated=True))
+                form.instance.state = 'offered'
+            except Person.DoesNotExist:
+                form.instance.identity = Person.objects.create()
+                Name.objects.create(identity=form.instance.identity,
+                                    components=[{'type': 'given', 'value': form.cleaned_data['first_name']}, ' ',
+                                                {'type': 'family', 'value': form.cleaned_data['last_name']}],
+                                    context_id='presentational')
+                Email.objects.create(identity=form.instance.identity,
+                                     value=email,
+                                     validated=False,
+                                     context_id='home')
+            form.instance.organization = self.organization
+            return super().form_valid(form)
 
 
 class AffiliationUpdateView(LoginRequiredMixin, OrganzationSubView, UpdateView):
     model = models.Affiliation
     form_class = forms.AffiliationForm
     organization_permission = 'organization.manage_affiliations'
-    form_class = forms.AffiliationForm
+
+    def form_valid(self, form):
+        form.instance.organization = self.organization
+        return super().form_valid(form)
 
 
 class PersonAffiliationListView(LoginRequiredMixin, FilterView, ListView):
