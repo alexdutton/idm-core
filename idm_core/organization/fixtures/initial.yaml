@@ -22,6 +22,10 @@
   pk: unit
   fields:
     label: 'unit'
+- model: organization.OrganizationTag
+  pk: division
+  fields:
+    label: 'division'
 
 - model: organization.OrganizationRelationshipType
   pk: subOrganization
