@@ -203,4 +203,4 @@ REST_FRAMEWORK = {
 
 IDM_AUTH_URL = os.environ.get('IDM_AUTH_URL', 'http://localhost:8001/')
 IDM_CARD_URL = os.environ.get('IDM_CARD_URL', 'http://localhost:8002/')
-IDM_AUTH_URL_URL = os.environ.get('IDM_AUTH_URL_URL', 'http://localhost:8001/api/')
+IDM_AUTH_API_URL = os.environ.get('IDM_AUTH_API_URL', 'http://localhost:8001/api/')
