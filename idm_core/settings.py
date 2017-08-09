@@ -32,12 +32,14 @@ DATABASES = {
 }
 
 INSTALLED_APPS = [
+    'celery_haystack',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.staticfiles',
+    'haystack',
     'idm_brand',
     'idm_core', #.apps.IDMCoreConfig',
     'idm_core.application.apps.ApplicationConfig',
@@ -141,6 +143,15 @@ CELERYBEAT_SCHEDULE = {
         'task': 'idm_core.delayed_save.tasks.schedule_impending_saves',
         'schedule': crontab(),
     }
+}
+
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'haystack.backends.solr_backend.SolrEngine',
+        'URL': os.environ.get('HAYSTACK_SOLR_URL', 'http://127.0.0.1:8983/solr'),
+        # ...or for multicore...
+        # 'URL': 'http://127.0.0.1:8983/solr/mysite',
+    },
 }
 
 

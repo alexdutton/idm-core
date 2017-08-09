@@ -1,5 +1,6 @@
 amqp
 celery
+celery-haystack
 Django>=1.10,<1.11
 djangorestframework
 django-dirtyfields
@@ -21,6 +22,7 @@ drf-nested-routers
 jsonschema
 kombu
 psycopg2
+pysolr
 pytz
 PyYAML
 requests
