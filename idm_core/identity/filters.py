@@ -1,3 +1,4 @@
+import django_filters
 from rest_framework.filters import BaseFilterBackend
 
 from idm_core.organization.models import Organization, Affiliation
@@ -22,3 +23,8 @@ class IdentityPermissionFilterBackend(BaseFilterBackend):
 class IdentityStateFilterBackend(BaseFilterBackend):
     def filter_queryset(self, request, queryset, view):
         return queryset
+
+
+class IdentityFilter(django_filters.FilterSet):
+    state = django_filters.ChoiceFilter(choices=models.IDENTITY_STATE_CHOICES,
+                                        label='State')

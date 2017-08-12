@@ -1,4 +1,4 @@
-{% extends "organization/base.html" %}
+{% extends "organization/base.html" %}{% load fsm %}{% load more_like_this %}
 
 {% block h1_title %}{{ object.label }}{% endblock %}
 {% block title %}{{ object.label }}{% endblock %}
@@ -8,6 +8,61 @@
 {% endblock %}
 
 {% block content %}
+
+    <section>
+        <h2>State</h2>
+        <form method="post">{% csrf_token %}
+            {% if object.state == 'established' %}
+                <p>This organization has not yet been activated. Either activate it now, or merge it into another organization.</p>
+            {% elif object.state == 'merged' %}
+                <p>This organization has been merged into <a href="{{ object.merged_into.get_absolute_url }}">{{ object.merged_into }}</a>.</p>
+            {% endif %}
+            {% with object|available_state_transitions:request.user as available_transitions %}
+                <p>
+                    {% if 'activate' in available_transitions %}
+                        <button type="submit" name="transition" value="activate" class="pure-button">Activate</button>
+                    {% endif %}
+                    {% if 'archive' in available_transitions %}
+                        <button type="submit" name="transition" value="archive"  class="pure-button">Archive</button>
+                    {% endif %}
+                    {% if 'restore' in available_transitions %}
+                        <button type="submit" name="transition" value="restore"  class="pure-button">Restore</button>
+                    {% endif %}
+                </p>
+            {% endwith %}
+        </form>
+
+        {% if object.state == 'established' %}
+            {% more_like_this object as mlt limit 5 %}
+            <table class="pure-table">
+                <thead>
+                <tr>
+                    <th>Organization</th>
+                    <th>State</th>
+                    <th>Tags</th>
+                    <th>Identifiers</th>
+                    <th>Merge</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for other in mlt %}
+                    <tr>
+                        <td><a href="{{ other.object.get_absolute_url }}">{{ other.object }}</a></td>
+                        <td>{{ other.object.state }}</td>
+                        <td>{% for tag in other.object.tags.all %}{{ tag.label }}{% if not forloop.last %}, {% endif %}{% endfor %}</td>
+                        <td>{% for identifier in other.object.identifiers.all %}{{ identifier.type.label }}: {{ identifier.value }}{% if not forloop.last %}<br>{% endif %}{% endfor %}</td>
+                        <td>
+                            <form method="post">{% csrf_token %}
+                                <button type="submit" name="transition" value="merge_into" class="pure-button">Merge into this</button>
+                                <input type="hidden" name="merge_into" value="{{ other.pk }}">
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+    </section>
 
     {% if object.tags %}
         <section>

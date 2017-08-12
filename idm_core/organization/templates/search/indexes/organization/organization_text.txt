@@ -1,0 +1,9 @@
+{{ object.label }}
+
+{% for identifier in object.identifiers.all %}
+{{ identifier.value }}
+{% endfor %}
+
+{% for tag in object.tags.all %}
+{{ tag.label }}
+{% endfor %}

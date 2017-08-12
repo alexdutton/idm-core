@@ -1,4 +1,9 @@
+from django.core.exceptions import PermissionDenied
 from django.db import transaction
+from django.http import HttpResponseBadRequest
+from django.shortcuts import redirect
+from django.views.generic import DetailView
+from django_fsm import has_transition_perm, can_proceed, Transition
 from rest_framework.decorators import detail_route
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
@@ -48,3 +53,26 @@ class IdentityViewSet(IdentifierFilterViewSetMixin, ModelViewSet):
             object = self.get_object()
             object.identity.activate()
             return Response(status=204)
+
+
+class IdentityDetailView(DetailView):
+    available_transitions = {'activate', 'archive', 'restore', 'merge_into'}
+
+    def get_transition_kwargs(self, name):
+        if name == 'merge':
+            return {'others': self.model.objects.filter(pk_in=self.request.POST.getlist('merge_into'))}
+        if name == 'merge_into':
+            return {'other': self.model.objects.get(pk=self.request.POST.get('merge_into'))}
+
+    def post(self, request, **kwargs):
+        with transaction.atomic():
+            self.object = self.get_object(self.get_queryset().select_for_update())
+            assert isinstance(self.object, models.IdentityBase)
+            if request.POST.get('transition') in self.available_transitions:
+                transition = getattr(self.object, request.POST['transition'])
+                if not has_transition_perm(transition, request.user):
+                    raise PermissionDenied
+                transition_kwargs = self.get_transition_kwargs(request.POST['transition']) or {}
+                transition(**transition_kwargs)
+                self.object.save()
+                return redirect(self.request.build_absolute_uri())

@@ -4,6 +4,7 @@ from django.forms import widgets
 from rest_framework.filters import BaseFilterBackend
 
 from idm_core.course.models import Course
+from idm_core.identity.filters import IdentityFilter
 from idm_core.identity.models import IDENTITY_STATE_CHOICES
 from idm_core.relationship.models import RELATIONSHIP_STATE_CHOICES
 from . import models
@@ -34,6 +35,10 @@ class RoleFilterBackend(BaseFilterBackend):
                 affiliations = affiliations.filter(type_id__in=request.GET.getlist('affiliationType'))
             queryset = queryset.filter(affiliation=affiliations)
         return queryset
+
+
+class OrganizationFilter(IdentityFilter):
+    pass
 
 
 class AffiliationFilter(django_filters.FilterSet):

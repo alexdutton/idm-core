@@ -110,6 +110,7 @@ TEMPLATES = [
             'context_processors': (
                 'django.contrib.auth.context_processors.auth',
                 'django.template.context_processors.static',
+                'django.template.context_processors.request',
                 'idm_core.context_processors.idm_core',
             ),
         },
@@ -153,6 +154,8 @@ HAYSTACK_CONNECTIONS = {
         # 'URL': 'http://127.0.0.1:8983/solr/mysite',
     },
 }
+
+HAYSTACK_SIGNAL_PROCESSOR = 'celery_haystack.signals.CelerySignalProcessor'
 
 
 OIDC_AUTH = {

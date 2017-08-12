@@ -1,26 +1,29 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import PermissionDenied
 from django.db import transaction
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
 from django.views import View
 from django.views.generic import ListView, DetailView
 from django.views.generic.edit import CreateView, UpdateView
 from django_filters.views import FilterView
+from django_fsm import has_transition_perm, can_proceed
 
 from idm_core.contact.models import Email
+from idm_core.identity.views import IdentityDetailView
 from idm_core.name.models import Name
 from idm_core.organization.models import Organization
 from idm_core.person.models import Person
 from . import models, forms, filters
 
 
-class OrganizationListView(LoginRequiredMixin, ListView):
+class OrganizationListView(LoginRequiredMixin, FilterView, ListView):
+    model = models.Organization
     queryset = models.Organization.objects.order_by('label')
+    filterset_class = filters.OrganizationFilter
     paginate_by = 100
 
 
-
-class OrganizationDetailView(LoginRequiredMixin, DetailView):
+class OrganizationDetailView(LoginRequiredMixin, IdentityDetailView):
     model = models.Organization
 
     def get_object(self, queryset=None):
@@ -89,7 +92,6 @@ class AffiliationInviteView(LoginRequiredMixin, OrganzationSubView, CreateView):
                 # Look up person based on a validated email address
                 form.instance.identity = Person.objects.get(emails=Email.objects.filter(value=email,
                                                                                         validated=True))
-                form.instance.state = 'offered'
             except Person.DoesNotExist:
                 form.instance.identity = Person.objects.create()
                 Name.objects.create(identity=form.instance.identity,
