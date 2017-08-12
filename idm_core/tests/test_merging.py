@@ -2,9 +2,7 @@ import datetime
 
 from django.test import TransactionTestCase
 
-from idm_core.identity import merging
-from idm_core.identity.merging import MergeTypeDisparity
-from idm_core.identity.models import Identity
+from idm_core.identity.exceptions import MergeTypeDisparity
 from idm_core.organization.models import Organization
 from idm_core.person.models import Person
 from idm_core.person.serializers import PersonSerializer
@@ -22,7 +20,7 @@ class MergingTestCase(TransactionTestCase):
         primary = Person.objects.create()
         secondary = Person.objects.create()
 
-        merging.merge(secondary, primary)
+        primary.merge(secondary)
 
         self.assertEqual(secondary.merged_into, primary)
         self.assertEqual(secondary.state, 'merged')
@@ -32,7 +30,7 @@ class MergingTestCase(TransactionTestCase):
         secondary = Organization.objects.create()
 
         with self.assertRaises(MergeTypeDisparity):
-            merging.merge(secondary, primary)
+            primary.merge(secondary)
 
 
     def testEverythingMoved(self):
@@ -60,7 +58,7 @@ class MergingTestCase(TransactionTestCase):
             'date_of_death': '1970-01-03',
         })
 
-        merging.merge(secondary, primary)
+        primary.merge(secondary)
 
         self.assertEqual(primary.names.count(), 2)
         self.assertEqual(secondary.names.count(), 1)
@@ -92,7 +90,7 @@ class MergingTestCase(TransactionTestCase):
             }],
         })
 
-        merging.merge(secondary, primary)
+        primary.merge(secondary)
 
         self.assertEqual(primary.nationalities.count(), 1)
         self.assertEqual(secondary.nationalities.count(), 0)

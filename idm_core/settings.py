@@ -48,7 +48,7 @@ INSTALLED_APPS = [
     'idm_core.contact',
     'idm_core.course',
     'idm_core.relationship.apps.OrgRelationshipConfig',
-    'idm_core.identifier',
+    'idm_core.identifier.apps.IdentifierConfig',
     'idm_core.name.apps.NameConfig',
     'idm_core.person.apps.PersonConfig',
     'idm_core.nationality.apps.NationalityConfig',

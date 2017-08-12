@@ -3,7 +3,6 @@ from django.contrib.contenttypes.models import ContentType
 from django.db import models
 
 from idm_core.attestation.mixins import Attestable
-from idm_core.identity.models import Identity
 
 
 class IdentifierType(models.Model):

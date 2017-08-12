@@ -24,6 +24,19 @@ class Person(ManageableModel, IdentityBase):
     date_of_death = models.DateField(null=True, blank=True)
     deceased = models.BooleanField(default=False)
 
+    def _merge(self, others, other_ids):
+        super()._merge(others, other_ids)
+
+        fields_to_copy = {'date_of_birth', 'date_of_death', 'deceased'}
+        for other in others:
+            for field_name in fields_to_copy:
+                if getattr(other, field_name) and not getattr(self, field_name):
+                    setattr(self, field_name, getattr(other, field_name))
+            if other.sex != '0' and self.sex == '0':
+                self.sex = other.sex
+        pass
+
+
     def save(self, *args, **kwargs):
         from ..name.models import Name
         try:

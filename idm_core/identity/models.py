@@ -1,11 +1,12 @@
 import uuid
 
+import collections
 from dirtyfields import DirtyFieldsMixin
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
-from django.db import models
+from django.db import models, connection
 from django_fsm import FSMField, transition
 import templated_email
 
@@ -13,6 +14,8 @@ import templated_email
 # ISO/IEC 24760-1:2011
 from idm_core.contact.mixins import Contactable
 from idm_core.identifier.mixins import Identifiable
+from idm_core.identity.exceptions import MergeIntoSelfException, MergeTypeDisparity
+from idm_core.identity.signals import pre_merge, post_merge
 
 IDENTITY_STATE_CHOICES = (
     ('established', 'established'),
@@ -103,9 +106,53 @@ class IdentityBase(DirtyFieldsMixin, Contactable, Identifiable, models.Model):
     def restore(self):
         pass
 
+    def merge(self, others, secondary=False):
+        """
+
+        :param others: A collection of other identities to merge in
+        :param secondary:
+        :return:
+        """
+        if not isinstance(others, collections.abc.Iterable):
+            others = (others,)
+
+        other_ids = {i.id for i in others}
+
+        if self.pk in other_ids:
+            raise MergeIntoSelfException("Cannot merge identity {} into itself".format(self.pk))
+
+        for other in others:
+            if type(self) != type(other):
+                raise MergeTypeDisparity("Type of {} ({}) does not match that of {} ({})".format(
+                    other.id, type(other).__name__, self.id, type(self).__name__
+                ))
+
+        self._merge(others, other_ids)
+
+        pre_merge.send(type(self), target=self, others=others, other_ids=other_ids)
+        if not secondary:
+            for other in others:
+                other.merge_into(self, secondary=True)
+                other.save()
+        post_merge.send(type(self), target=self, others=others, other_ids=other_ids)
+
+    def _merge(self, others, other_ids):
+        pass
+
     @transition(field=state, source=['established', 'active'], target='merged')
-    def merge_into(self, other):
-        self.merged_into = other
+    def merge_into(self, other, secondary=False):
+        """
+
+        :param other: The identity into which this one is being merged
+        :param secondary: If true, this is just a state change as a result of another's merge. Otherwise, call
+          other.merge()
+        :return: None
+        """
+        if secondary:
+            self.merged_into = other
+        else:
+            other.merge([self], secondary=True)
+            other.save()
 
     @transition(field=state, source='active', target='suspended')
     def suspend(self, other):

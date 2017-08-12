@@ -7,7 +7,7 @@ from rest_framework.exceptions import ValidationError
 
 from drf_fsm_transitions.viewset_mixins import get_viewset_transition_action_mixin
 from idm_core.identifier.filters import IdentifierFilterBackend
-from idm_core.identity import merging
+from idm_core.identity import exceptions
 from idm_core.identity.filters import IdentityPermissionFilterBackend
 from idm_core.identity.views import IdentityViewSet
 from idm_core.organization.models import Affiliation
@@ -46,5 +46,5 @@ class PersonViewSet(get_viewset_transition_action_mixin(models.Person, 'state'),
             if others.count() != len(other_ids):
                 missing_ids = sorted(set(other_ids) - set(others.values_list('pk', flat=True)))
                 raise ValidationError("Couldn't find identities for IDs {}, or not in suitable state".format(', '.join(missing_ids)))
-            merging.merge(others, identity)
+            exceptions.merge(others, identity)
             return HttpResponse(status=204)
