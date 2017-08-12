@@ -94,3 +94,12 @@ class MergingTestCase(TransactionTestCase):
 
         self.assertEqual(primary.nationalities.count(), 1)
         self.assertEqual(secondary.nationalities.count(), 0)
+
+    def testReverseMerge(self):
+        primary = Person.objects.create()
+        secondary = Person.objects.create()
+
+        secondary.merge_into(primary)
+
+        self.assertEqual(secondary.merged_into, primary)
+        self.assertEqual(secondary.state, 'merged')

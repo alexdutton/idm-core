@@ -148,9 +148,8 @@ class IdentityBase(DirtyFieldsMixin, Contactable, Identifiable, models.Model):
           other.merge()
         :return: None
         """
-        if secondary:
-            self.merged_into = other
-        else:
+        self.merged_into = other
+        if not secondary:
             other.merge([self], secondary=True)
             other.save()
 
