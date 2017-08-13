@@ -74,16 +74,21 @@ class AffiliationCreateView(LoginRequiredMixin, OrganzationSubView, CreateView):
     organization_permission = 'organization.offer_affiliations'
     form_class = forms.AffiliationForm
 
-    def form_valid(self, form):
-        form.instance.organization = self.organization
-        form.instance.state = 'offered'
-        return super().form_valid(form)
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['instance'] = self.model(state='offered', organization=self.organization)
+        return kwargs
 
 
 class AffiliationInviteView(LoginRequiredMixin, OrganzationSubView, CreateView):
     model = models.Affiliation
     organization_permission = 'organization.offer_affiliations'
     form_class = forms.AffiliationInviteForm
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['instance'] = self.model(state='offered', organization=self.organization)
+        return kwargs
 
     def form_valid(self, form):
         with transaction.atomic():
@@ -102,7 +107,6 @@ class AffiliationInviteView(LoginRequiredMixin, OrganzationSubView, CreateView):
                                      value=email,
                                      validated=False,
                                      context_id='home')
-            form.instance.organization = self.organization
             return super().form_valid(form)
 
 
