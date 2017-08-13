@@ -13,6 +13,7 @@ from idm_core.identity.views import IdentityDetailView
 from idm_core.name.models import Name
 from idm_core.organization.models import Organization
 from idm_core.person.models import Person
+from utils.mixins import FSMTransitionViewMixin
 from . import models, forms, filters
 
 
@@ -110,10 +111,11 @@ class AffiliationInviteView(LoginRequiredMixin, OrganzationSubView, CreateView):
             return super().form_valid(form)
 
 
-class AffiliationUpdateView(LoginRequiredMixin, OrganzationSubView, UpdateView):
+class AffiliationUpdateView(LoginRequiredMixin, FSMTransitionViewMixin, OrganzationSubView, UpdateView):
     model = models.Affiliation
     form_class = forms.AffiliationForm
     organization_permission = 'organization.manage_affiliations'
+    available_transitions = {'accept', 'reject'}
 
     def form_valid(self, form):
         form.instance.organization = self.organization

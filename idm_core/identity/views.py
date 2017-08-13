@@ -9,6 +9,7 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 
 from idm_core.identifier.mixins import IdentifierFilterViewSetMixin
+from utils.mixins import FSMTransitionViewMixin
 from . import models, serializers
 
 
@@ -55,7 +56,7 @@ class IdentityViewSet(IdentifierFilterViewSetMixin, ModelViewSet):
             return Response(status=204)
 
 
-class IdentityDetailView(DetailView):
+class IdentityDetailView(FSMTransitionViewMixin, DetailView):
     available_transitions = {'activate', 'archive', 'restore', 'merge_into'}
 
     def get_transition_kwargs(self, name):
@@ -63,16 +64,3 @@ class IdentityDetailView(DetailView):
             return {'others': self.model.objects.filter(pk_in=self.request.POST.getlist('merge_into'))}
         if name == 'merge_into':
             return {'other': self.model.objects.get(pk=self.request.POST.get('merge_into'))}
-
-    def post(self, request, **kwargs):
-        with transaction.atomic():
-            self.object = self.get_object(self.get_queryset().select_for_update())
-            assert isinstance(self.object, models.IdentityBase)
-            if request.POST.get('transition') in self.available_transitions:
-                transition = getattr(self.object, request.POST['transition'])
-                if not has_transition_perm(transition, request.user):
-                    raise PermissionDenied
-                transition_kwargs = self.get_transition_kwargs(request.POST['transition']) or {}
-                transition(**transition_kwargs)
-                self.object.save()
-                return redirect(self.request.build_absolute_uri())

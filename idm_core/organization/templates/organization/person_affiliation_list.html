@@ -1,4 +1,4 @@
-{% extends "organization/base.html" %}
+{% extends "organization/base.html" %}{% load fsm %}
 
 {% block title %}Affiliations at {{ organization }}{% endblock %}
 
@@ -11,7 +11,6 @@
 
     {% include "pagination.html" %}
 
-    <form method="post">
     <table class="pure-table">
     <thead>
     <tr>
@@ -36,11 +35,25 @@
         <td>{{ object.end_date|default_if_none:"" }}</td>
         <td>{{ object.state }}</td>
         <td>{{ object.managed_by }}</td>
-        <td></td>
+        <td>
+
+        <form method="post" action="{{ object.get_absolute_url }}">{% csrf_token %}
+        <input type="hidden" name="next" value="{{ request.build_absolute_uri }}">
+            {% with object|available_state_transitions:request.user as available_transitions %}
+                <p>
+                    {% if 'accept' in available_transitions %}
+                        <button type="submit" name="transition" value="accept" class="pure-button pure-button-primary">Accept</button>
+                    {% endif %}
+                    {% if 'reject' in available_transitions %}
+                        <button type="submit" name="transition" value="reject"  class="pure-button button-error">Reject</button>
+                    {% endif %}
+                </p>
+            {% endwith %}
+        </form>
+        </td>
     </tr>{% endfor %}
     </tbody>
     </table>
-    </form>
 
         {% include "pagination.html" %}
 
