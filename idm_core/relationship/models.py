@@ -8,13 +8,7 @@ from idm_core.application.mixins import ManageableModel
 from idm_core.delayed_save.models import DelayedSave
 from idm_core.identity.models import Identity, IdentityBase
 from idm_core.person.models import Person
-
-
-class FSMBooleanField(FSMFieldMixin, models.BooleanField):
-    """
-    Same as FSMField, but stores the state value in a BooleanField.
-    """
-    pass
+from idm_core.utils.fields import FSMBooleanField
 
 RELATIONSHIP_STATE_CHOICES = (
     ('declined', 'Declined'),

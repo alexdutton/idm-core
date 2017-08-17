@@ -1,19 +1,18 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import PermissionDenied
 from django.db import transaction
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import get_object_or_404
 from django.views import View
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView
 from django.views.generic.edit import CreateView, UpdateView
 from django_filters.views import FilterView
-from django_fsm import has_transition_perm, can_proceed
 
 from idm_core.contact.models import Email
 from idm_core.identity.views import IdentityDetailView
 from idm_core.name.models import Name
 from idm_core.organization.models import Organization
 from idm_core.person.models import Person
-from utils.mixins import FSMTransitionViewMixin
+from idm_core.utils.mixins import FSMTransitionViewMixin
 from . import models, forms, filters
 
 

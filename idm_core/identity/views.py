@@ -1,15 +1,11 @@
-from django.core.exceptions import PermissionDenied
 from django.db import transaction
-from django.http import HttpResponseBadRequest
-from django.shortcuts import redirect
 from django.views.generic import DetailView
-from django_fsm import has_transition_perm, can_proceed, Transition
 from rest_framework.decorators import detail_route
 from rest_framework.response import Response
-from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
+from rest_framework.viewsets import ModelViewSet
 
 from idm_core.identifier.mixins import IdentifierFilterViewSetMixin
-from utils.mixins import FSMTransitionViewMixin
+from idm_core.utils.mixins import FSMTransitionViewMixin
 from . import models, serializers
 
 
