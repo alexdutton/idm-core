@@ -53,10 +53,10 @@ class IdentityViewSet(IdentifierFilterViewSetMixin, ModelViewSet):
 
 
 class IdentityDetailView(FSMTransitionViewMixin, DetailView):
-    available_transitions = {'activate', 'archive', 'restore', 'merge_into'}
+    available_transitions = {'activate', 'archive', 'restore', 'merge_into', 'merge'}
 
     def get_transition_kwargs(self, name):
         if name == 'merge':
-            return {'others': self.model.objects.filter(pk_in=self.request.POST.getlist('merge_into'))}
+            return {'others': self.model.objects.filter(pk_in=self.request.POST.getlist('id'))}
         if name == 'merge_into':
             return {'other': self.model.objects.get(pk=self.request.POST.get('merge_into'))}
