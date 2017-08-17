@@ -10,6 +10,7 @@ admin.autodiscover()
 urlpatterns = [
     url(r'^', include('idm_core.selfservice.urls', 'selfservice')),
     url(r'^', include('idm_core.contact.urls', 'contact')),
+    url(r'^', include('idm_core.image.urls', 'image')),
     url(r'^', include('idm_core.attestation.urls', 'attestation')),
     url(r'^affiliation/$', PersonAffiliationListView.as_view(), name='person-affiliation-list'),
     url(r'^name/', include('idm_core.name.urls', 'name')),

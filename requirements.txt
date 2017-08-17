@@ -9,6 +9,7 @@ django-formtools
 django-fsm
 django-haystack
 django-phonenumber-field
+django-sendfile
 -e git://github.com/alexsdutton/django-oidc-auth.git#egg=django-oidc-auth
 django-reversion
 django-templated-email

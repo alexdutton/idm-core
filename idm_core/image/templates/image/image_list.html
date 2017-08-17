@@ -1,0 +1,49 @@
+{% extends "base.html" %}{% load fsm %}
+
+{% block h1_title %}Images{% endblock %}
+{% block title %}Images{% endblock %}
+
+{% block content %}
+
+    <table class="pure-table">
+        <thead>
+        <tr>
+            <th>Type</th>
+            <th>Current</th>
+            <th>Proposed</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>{% for context, context_images in images.items %}
+            <tr>
+                <td>{{ context.label|capfirst }}</td>
+                <td>
+                    {% if context_images.approved %}
+                        <img src="{{ context_images.approved.get_image_url }}" alt="Current image" style="object-fit: contain; width: 300px; height: 300px; background-color: lightgray">
+                    {% endif %}
+                </td>
+                <td>
+                    {% if context_images.proposed %}
+                        <img src="{{ context_images.proposed.get_image_url }}" alt="Proposed image" style="object-fit: contain; width: 300px; height: 300px; background-color: lightgray">
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="{% url "image:image-create-self" context=context.id %}" class="pure-button"><i class="fa fa-upload"> </i> New</a>
+                    {% if context_images.proposed %}
+                        <form method="post" action="{{ context_images.proposed.get_absolute_url }}">{% csrf_token %}
+                            {% with context_images.proposed|available_state_transitions:request.user as available_transitions %}
+                                {% if 'approve' in available_transitions %}
+                                    <button type="submit" name="transition" value="approve" class="pure-button">Approve</button>
+                                {% endif %}
+                                {% if 'reject' in available_transitions %}
+                                    <button type="submit" name="transition" value="reject"  class="pure-button">Reject</button>
+                                {% endif %}
+                            {% endwith %}
+                        </form>
+                    {% endif %}
+                </td>
+            </tr>{% endfor %}
+
+        </tbody>
+    </table>
+{% endblock %}

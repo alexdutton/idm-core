@@ -1,0 +1,8 @@
+- model: image.ImageContext
+  pk: card
+  fields:
+    label: "card photograph"
+    subject_to_approval: true
+    aspect_ratio: 0.666667
+    instructions: |
+      <p>Help</p>
