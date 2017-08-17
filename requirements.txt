@@ -3,6 +3,7 @@ celery
 celery-haystack
 Django>=1.10,<1.11
 djangorestframework
+django-camera-imagefield
 django-dirtyfields
 django-filter
 django-formtools
