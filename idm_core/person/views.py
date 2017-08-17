@@ -46,5 +46,5 @@ class PersonViewSet(get_viewset_transition_action_mixin(models.Person, 'state'),
             if others.count() != len(other_ids):
                 missing_ids = sorted(set(other_ids) - set(others.values_list('pk', flat=True)))
                 raise ValidationError("Couldn't find identities for IDs {}, or not in suitable state".format(', '.join(missing_ids)))
-            exceptions.merge(others, identity)
+            identity.merge(others)
             return HttpResponse(status=204)
