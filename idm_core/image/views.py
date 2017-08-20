@@ -54,7 +54,7 @@ class ImageListView(ImageView, ListView):
 
 
 class ImageDetailView(FSMTransitionViewMixin, ImageView, DetailView):
-    available_transitions = {'approve', 'reject'}
+    available_transitions = {'accept', 'reject'}
 
 
 class ImageFileView(SingleObjectMixin, View):
