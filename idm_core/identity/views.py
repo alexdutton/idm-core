@@ -48,7 +48,18 @@ class IdentityViewSet(IdentifierFilterViewSetMixin, ModelViewSet):
     def activate(self, request, pk=None):
         with transaction.atomic():
             object = self.get_object()
-            object.identity.activate()
+            if isinstance(object, models.Identity):
+                object = object.identity
+            object.activate()
+            return Response(status=204)
+
+    @detail_route(methods=['post'])
+    def merge(self, request, pk=None):
+        with transaction.atomic():
+            object = self.get_object()
+            if isinstance(object, models.Identity):
+                object = object.identity
+            object.merge(others=type(object).objects.filter(pk__in=self.request.POST.getlist('id')))
             return Response(status=204)
 
 

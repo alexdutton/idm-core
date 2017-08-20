@@ -7,7 +7,7 @@ from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
 from django.db import models, connection
-from django_fsm import FSMField, transition
+from django_fsm import FSMField, transition, RETURN_VALUE
 import templated_email
 
 
@@ -94,23 +94,25 @@ class IdentityBase(DirtyFieldsMixin, Contactable, Identifiable, models.Model):
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
 
-    @transition(field=state, source='established', target='active')
+    @transition(field=state, source='established', target='active', permission='identity.can_activate_identity')
     def activate(self):
         pass
 
-    @transition(field=state, source='active', target='archived')
+    @transition(field=state, source='active', target='archived', permission='identity.can_archive_identity')
     def archive(self):
         pass
 
-    @transition(field=state, source='archived', target='established')
+    @transition(field=state, source='archived', target='established', permission='identity.can_restore_identity')
     def restore(self):
         pass
 
+    @transition(field=state, source=['established', 'active'], target=RETURN_VALUE('established', 'active'),
+                permission='identity.can_merge_identity')
     def merge(self, others, secondary=False):
         """
 
         :param others: A collection of other identities to merge in
-        :param secondary:
+        :param secondary: Whether this merge is being called from another's merge_into transition
         :return:
         """
         if not isinstance(others, collections.abc.Iterable):
@@ -136,10 +138,13 @@ class IdentityBase(DirtyFieldsMixin, Contactable, Identifiable, models.Model):
                 other.save()
         post_merge.send(type(self), target=self, others=others, other_ids=other_ids)
 
+        return self.state
+
     def _merge(self, others, other_ids):
         pass
 
-    @transition(field=state, source=['established', 'active'], target='merged')
+    @transition(field=state, source=['established', 'active'], target='merged',
+                permission='identity.can_merge_identity')
     def merge_into(self, other, secondary=False):
         """
 
@@ -171,6 +176,12 @@ class IdentityBase(DirtyFieldsMixin, Contactable, Identifiable, models.Model):
 
     class Meta:
         abstract = True
+        permissions = (
+            ('can_merge_identity', 'can merge identity'),
+            ('can_archive_identity', 'can archive identity'),
+            ('can_activate_identity', 'can activate identity'),
+            ('can_restore_identity', 'can restore identity'),
+        )
 
 
 class IdentityPermission(models.Model):

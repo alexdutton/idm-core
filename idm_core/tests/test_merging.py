@@ -1,11 +1,16 @@
 import datetime
+import http.client
+import uuid
+from urllib.parse import urlencode
 
 from django.test import TransactionTestCase
+from rest_framework.test import APITransactionTestCase
 
 from idm_core.identity.exceptions import MergeTypeDisparity
 from idm_core.organization.models import Organization
 from idm_core.person.models import Person
 from idm_core.person.serializers import PersonSerializer
+from oidc_auth.utils import get_user_model
 
 
 class MergingTestCase(TransactionTestCase):
@@ -103,3 +108,33 @@ class MergingTestCase(TransactionTestCase):
 
         self.assertEqual(secondary.merged_into, primary)
         self.assertEqual(secondary.state, 'merged')
+
+
+class MergingAPITestCase(APITransactionTestCase):
+    def setUp(self):
+        self.user = get_user_model()(username=uuid.uuid4(), is_superuser=True)
+        self.client.force_authenticate(self.user)
+
+    def testMergeIdentity(self):
+        primary = Person.objects.create()
+        secondary = Person.objects.create()
+
+        response = self.client.post('/api/identity/{}/merge/'.format(primary.id),
+                                    data={'id': str(secondary.id)})
+        self.assertEqual(http.client.NO_CONTENT, response.status_code)
+
+        secondary.refresh_from_db()
+        self.assertEqual('merged', secondary.state)
+        self.assertEqual(primary.id, secondary.merged_into.id)
+
+    def testMergePerson(self):
+        primary = Person.objects.create()
+        secondary = Person.objects.create()
+
+        response = self.client.post('/api/person/{}/merge/'.format(primary.id),
+                                    data={'id': str(secondary.id)})
+        self.assertEqual(http.client.NO_CONTENT, response.status_code)
+
+        secondary.refresh_from_db()
+        self.assertEqual('merged', secondary.state)
+        self.assertEqual(primary.id, secondary.merged_into.id)
