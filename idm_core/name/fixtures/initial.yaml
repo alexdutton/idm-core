@@ -2,19 +2,14 @@
   pk: legal
   fields:
     label: 'legal'
+    subject_to_acceptance: true
 - model: name.NameContext
   pk: presentational
   fields:
     label: 'presentational'
+    subject_to_acceptance: false
 - model: name.NameContext
   pk: informal
   fields:
     label: 'informal'
-- model: name.NameContext
-  pk: student
-  fields:
-    label: 'student'
-- model: name.NameContext
-  pk: staff
-  fields:
-    label: 'staff'
+    subject_to_acceptance: false

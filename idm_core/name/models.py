@@ -7,6 +7,7 @@ from django.db import models
 from django.db.models.signals import post_save, post_delete, pre_save
 from rest_framework.reverse import reverse
 
+from idm_core.acceptance.models import AcceptableModel
 from idm_core.attestation.mixins import Attestable
 from idm_core.name.fields import JSONSchemaField
 from idm_core.identity.models import Identity
@@ -48,12 +49,14 @@ components_schema = {
 class NameContext(models.Model):
     id = models.CharField(max_length=32, primary_key=True)
     label = models.TextField()
+    subject_to_acceptance = models.BooleanField(default=True)
+    only_one_accepted = models.BooleanField(default=True)
 
     def __str__(self):
         return self.label
 
 
-class Name(Attestable, DirtyFieldsMixin, models.Model):
+class Name(Attestable, DirtyFieldsMixin, AcceptableModel):
     identity = models.ForeignKey(Person, related_name='names')
 
     plain = models.TextField(blank=True)
@@ -77,6 +80,17 @@ class Name(Attestable, DirtyFieldsMixin, models.Model):
 
     def get_absolute_url(self):
         return reverse('name:name-detail', args=[self.pk])
+
+    @property
+    def subject_to_acceptance(self):
+        return self.context.subject_to_acceptance
+
+    @property
+    def only_one_accepted(self):
+        return self.context.only_one_accepted
+
+    def get_acceptance_queryset(self):
+        return type(self).objects.filter(identity_id=self.identity_id, context_id=self.context_id)
 
     def save(self, *args, **kwargs):
         components = self.components

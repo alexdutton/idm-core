@@ -3,10 +3,12 @@ import http.client
 import uuid
 from urllib.parse import urlencode
 
+from django.db import transaction
 from django.test import TransactionTestCase
 from rest_framework.test import APITransactionTestCase
 
 from idm_core.identity.exceptions import MergeTypeDisparity
+from idm_core.name.models import Name
 from idm_core.organization.models import Organization
 from idm_core.person.models import Person
 from idm_core.person.serializers import PersonSerializer
@@ -25,7 +27,8 @@ class MergingTestCase(TransactionTestCase):
         primary = Person.objects.create()
         secondary = Person.objects.create()
 
-        primary.merge(secondary)
+        with transaction.atomic():
+            primary.merge(secondary)
 
         self.assertEqual(secondary.merged_into, primary)
         self.assertEqual(secondary.state, 'merged')
@@ -35,11 +38,13 @@ class MergingTestCase(TransactionTestCase):
         secondary = Organization.objects.create()
 
         with self.assertRaises(MergeTypeDisparity):
-            primary.merge(secondary)
+            with transaction.atomic():
+                primary.merge(secondary)
 
 
     def testEverythingMoved(self):
-        primary = self.create_person_from_json({
+        with transaction.atomic():
+            primary = self.create_person_from_json({
             'names': [{
                 "context": "legal",
                 "components": [{"type": "given", "value": "Alice"}],
@@ -49,21 +54,21 @@ class MergingTestCase(TransactionTestCase):
                 "value": "abcd0001",
             }],
         })
-        secondary = self.create_person_from_json({
-            'names': [{
-                "context": "presentational",
-                "components": [{"type": "given", "value": "Bob"}],
-            }],
-            'identifiers': [{
-                "type": "username",
-                "value": "abcd0002",
-            }],
-            'sex': '2',
-            'date_of_birth': '1970-01-02',
-            'date_of_death': '1970-01-03',
-        })
+            secondary = self.create_person_from_json({
+                'names': [{
+                    "context": "presentational",
+                    "components": [{"type": "given", "value": "Bob"}],
+                }],
+                'identifiers': [{
+                    "type": "username",
+                    "value": "abcd0002",
+                }],
+                'sex': '2',
+                'date_of_birth': '1970-01-02',
+                'date_of_death': '1970-01-03',
+            })
 
-        primary.merge(secondary)
+            primary.merge(secondary)
 
         self.assertEqual(primary.names.count(), 2)
         self.assertEqual(secondary.names.count(), 1)
@@ -76,6 +81,42 @@ class MergingTestCase(TransactionTestCase):
         self.assertEqual(primary.date_of_death, datetime.date(1970, 1, 3))
 
     def testDontDuplicateNationalities(self):
+        with transaction.atomic():
+            primary = self.create_person_from_json({
+                'names': [{
+                    "context": "legal",
+                    "components": [{"type": "given", "value": "Alice"}],
+                }],
+                'nationalities': [{
+                    "country": "GBR",
+                }],
+            })
+            secondary = self.create_person_from_json({
+                'names': [{
+                    "context": "presentational",
+                    "components": [{"type": "given", "value": "Bob"}],
+                }],
+                'nationalities': [{
+                    "country": "GBR",
+                }],
+            })
+
+            primary.merge(secondary)
+
+        self.assertEqual(primary.nationalities.count(), 1)
+        self.assertEqual(secondary.nationalities.count(), 0)
+
+    def testReverseMerge(self):
+        primary = Person.objects.create()
+        secondary = Person.objects.create()
+
+        with transaction.atomic():
+            secondary.merge_into(primary)
+
+        self.assertEqual(secondary.merged_into, primary)
+        self.assertEqual(secondary.state, 'merged')
+
+    def testMergeWithOverlappingAcceptedNameContexts(self):
         primary = self.create_person_from_json({
             'names': [{
                 "context": "legal",
@@ -87,27 +128,18 @@ class MergingTestCase(TransactionTestCase):
         })
         secondary = self.create_person_from_json({
             'names': [{
-                "context": "presentational",
+                "context": "legal",
                 "components": [{"type": "given", "value": "Bob"}],
             }],
             'nationalities': [{
                 "country": "GBR",
             }],
         })
+        Name.objects.update(state='accepted')
 
-        primary.merge(secondary)
-
-        self.assertEqual(primary.nationalities.count(), 1)
-        self.assertEqual(secondary.nationalities.count(), 0)
-
-    def testReverseMerge(self):
-        primary = Person.objects.create()
-        secondary = Person.objects.create()
-
-        secondary.merge_into(primary)
-
-        self.assertEqual(secondary.merged_into, primary)
-        self.assertEqual(secondary.state, 'merged')
+        with transaction.atomic():
+            primary.merge(secondary)
+        self.assertEqual(primary.names.count(), 1)
 
 
 class MergingAPITestCase(APITransactionTestCase):

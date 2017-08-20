@@ -9,18 +9,18 @@ class ImageModelTestCase(TestCase):
 
     def setUp(self):
         self.identity = Person.objects.create()
-        self.approval_context = ImageContext.objects.create(id='approval', subject_to_approval=True)
-        self.simple_context = ImageContext.objects.create(id='simple', subject_to_approval=False)
+        self.approval_context = ImageContext.objects.create(id='approval', subject_to_acceptance=True)
+        self.simple_context = ImageContext.objects.create(id='simple', subject_to_acceptance=False)
 
-    def testCreateAndApprove(self):
+    def testCreateAndAccept(self):
         image = Image.objects.create(context=self.approval_context, identity=self.identity)
         self.assertEqual(image.state, 'proposed')
-        image.approve()
-        self.assertEqual(image.state, 'approved')
+        image.accept()
+        self.assertEqual(image.state, 'accepted')
 
-    def testCreateAndApproveWithOther(self):
-        other_image = Image.objects.create(context=self.approval_context, state='approved', identity=self.identity)
+    def testCreateAndAcceptWithOther(self):
+        other_image = Image.objects.create(context=self.approval_context, state='accepted', identity=self.identity)
         image = Image.objects.create(context=self.approval_context, identity=self.identity)
         self.assertEqual(image.state, 'proposed')
-        image.approve()
-        self.assertEqual(image.state, 'approved')
+        image.accept()
+        self.assertEqual(image.state, 'accepted')

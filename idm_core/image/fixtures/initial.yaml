@@ -2,7 +2,7 @@
   pk: card
   fields:
     label: "card photograph"
-    subject_to_approval: true
+    subject_to_acceptance: true
     aspect_ratio: 0.666667
     instructions: |
       <p>Help</p>

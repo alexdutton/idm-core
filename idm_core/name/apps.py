@@ -1,3 +1,4 @@
+import collections
 from django.apps import apps, AppConfig
 
 from idm_core.identity.signals import pre_merge
@@ -15,19 +16,16 @@ class NameConfig(AppConfig):
         pre_merge.connect(self.on_person_merge, sender=Person)
 
     def on_person_merge(self, target, others, other_ids, **kwargs):
-        names = set(name.marked_up for name in target.names.all())
-        deleted_names = set()
         from idm_core.name.models import Name
-        for name in Name.objects.filter(identity_id__in=other_ids):
-            if name.marked_up in names:
-                deleted_names.add(name.pk)
-                name.attestations.all().delete()
-                name.delete()
-            else:
+        single_names = target.names.filter(state='accepted',
+                                           context__only_one_accepted=True).values_list('context_id', flat=True)
+        existing_multiple_names = collections.defaultdict(set)
+        for name in target.names.filter(state='accepted',
+                                           context__only_one_accepted=False):
+            existing_multiple_names[name.context_id].add(name.marked_up)
+
+        for name in Name.objects.filter(state='accepted').exclude(context_id__in=single_names):
+            if name.marked_up not in existing_multiple_names[name.context_id]:
                 name.pk = None
                 name.identity = target
                 name.save()
-
-        for other in others:
-            if other.primary_name_id in deleted_names or other.primary_name_id == other.primary_name_id:
-                other.primary_name_id = None

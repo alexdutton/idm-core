@@ -8,6 +8,7 @@ from django.db import models
 from django.urls import reverse
 from django.utils.timezone import now
 
+from idm_core.acceptance.models import AcceptableModel
 from idm_core.attestation.mixins import Attestable
 
 IMAGE_STATE_CHOICES = (
@@ -21,7 +22,7 @@ IMAGE_STATE_CHOICES = (
 class ImageContext(models.Model):
     id = models.CharField(max_length=16, primary_key=True)
     label = models.CharField(max_length=255)
-    subject_to_approval = models.BooleanField()
+    subject_to_acceptance = models.BooleanField()
     aspect_ratio = models.FloatField(null=True, blank=True)
     instructions = models.TextField()
 
@@ -30,7 +31,7 @@ class ImageContext(models.Model):
     max_height = models.IntegerField(default=2160)
 
 
-class Image(models.Model):
+class Image(AcceptableModel):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
 
     identity_id = models.UUIDField()
@@ -44,32 +45,12 @@ class Image(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
 
-    state = django_fsm.FSMField(choices=IMAGE_STATE_CHOICES, default='proposed')
+    @property
+    def subject_to_acceptance(self):
+        return self.context.subject_to_acceptance
 
-    @django_fsm.transition(state, source=['proposed', 'rejected'], target='approved')
-    def approve(self):
-        pass
-
-    def recent_photo(self):
-        return now() - self.created < timedelta(3650)
-
-    @django_fsm.transition(state, source=['proposed', 'accepted'], target='rejected',
-                           conditions=[recent_photo])
-    def reject(self):
-        for image in self.objects.filter(identity_id=self.identity_id,
-                                         context=self.context,
-                                         state='accepted').select_for_update():
-            image.retire()
-
-    @django_fsm.transition(state, source='*', target='previous')
-    def retire(self):
-        pass
-
-    def save(self, *args, **kwargs):
-        # Automatic approval for images that don't need approving
-        if self.state == 'proposed' and not self.context.subject_to_approval:
-            self.approve()
-        return super().save(*args, **kwargs)
+    def get_acceptance_queryset(self):
+        return type(self).objects.filter(identity_id=self.identity_id, context_id=self.context_id)
 
     def get_image_url(self):
         return reverse('image:image-file', args=(self.pk,))
