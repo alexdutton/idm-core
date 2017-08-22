@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "base.html" %}{% load fsm %}
 
 {% block h1_title %}Names{% endblock %}
 {% block title %}Names{% endblock %}
@@ -8,18 +8,34 @@
         <table class="pure-table">
             <thead>
             <tr>
-                <th>Name</th>
                 <th>Context</th>
-                <th>Attested?</th>
+                <th>Current</th>
+                <th>Proposed</th>
                 <th>Actions</th>
             </tr>
             </thead>
-            <tbody>{% for name in object_list %}
-                <tr>
-                    <td>{{ name.plain_full }}</td>
-                    <td>{{ name.context.label }}</td>
-                    <td>{{ name.attested_by|yesno }}</td>
-                    <td><a href="{{ name.get_absolute_url }}"><i class="fa fa-pencil" title="Edit"> </i></a></td>
+        <tbody>{% for context, context_names in names.items %}
+            <tr>
+                <td>{{ context.label|capfirst }}</td>
+
+                <td>{{ context_names.accepted }}</td>
+                <td>{{ context_names.proposed }}</td>
+                <td>
+                    <a href="{% url "name:name-create-self" context=context.id %}" class="pure-button"><i class="fa fa-edit"> </i> Change</a>
+                    {% if context_names.proposed %}
+                        <form method="post" action="{{ context_names.proposed.get_absolute_url }}">{% csrf_token %}
+                            <input type="hidden" name="next" value="{{ request.build_absolute_uri }}">
+                            {% with context_names.proposed|available_state_transitions:request.user as available_transitions %}
+                                {% if 'accept' in available_transitions %}
+                                    <button type="submit" name="transition" value="accept" class="pure-button">Accept</button>
+                                {% endif %}
+                                {% if 'reject' in available_transitions %}
+                                    <button type="submit" name="transition" value="reject"  class="pure-button">Reject</button>
+                                {% endif %}
+                            {% endwith %}
+                        </form>
+                    {% endif %}
+                </td>
                 </tr>{% endfor %}
             </tbody>
         </table>

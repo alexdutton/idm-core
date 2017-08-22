@@ -13,7 +13,7 @@ urlpatterns = [
     url(r'^', include('idm_core.image.urls', 'image')),
     url(r'^', include('idm_core.attestation.urls', 'attestation')),
     url(r'^affiliation/$', PersonAffiliationListView.as_view(), name='person-affiliation-list'),
-    url(r'^name/', include('idm_core.name.urls', 'name')),
+    url(r'^', include('idm_core.name.urls', 'name')),
     url(r'^organization/', include('idm_core.organization.urls', 'organization')),
     url(r'^api/', include('idm_core.api_urls', 'api')),
     url(r'^admin/', admin.site.urls),
