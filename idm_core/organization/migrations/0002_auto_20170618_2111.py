@@ -14,6 +14,10 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AlterModelOptions(
             name='organization',
-            options={'permissions': (('manage_organization', 'can manage an organization'), ('view_affiliations', 'can view affiliated people'), ('manage_affiliations', 'can manage affiliations'), ('offer_affiliations', 'can offer affiliations'), ('manage_roles', 'can manage roles'))},
+            options={'permissions': (('manage_organization', 'can manage an organization'),
+                                     ('view_affiliations', 'can view affiliated people'),
+                                     ('manage_affiliations', 'can manage affiliations'),
+                                     ('offer_affiliations', 'can offer affiliations'),
+                                     ('manage_roles', 'can manage roles'))},
         ),
     ]

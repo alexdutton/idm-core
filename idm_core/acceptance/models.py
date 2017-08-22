@@ -13,9 +13,6 @@ class AcceptableModel(models.Model):
     subject_to_acceptance = True
     only_one_accepted = True
 
-    def get_acceptance_queryset(self):
-        return type(self).objects.all()
-
     state = django_fsm.FSMField(choices=IMAGE_STATE_CHOICES, default='proposed')
 
     @django_fsm.transition(state, source=['proposed', 'rejected'], target='accepted')

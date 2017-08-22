@@ -8,12 +8,13 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-            migrations.RunSQL(
-                "CREATE UNIQUE INDEX contact_onlineaccount_unique ON contact_onlineaccount (provider_id, screen_name) WHERE validated",
-                "DROP INDEX contact_onlineaccount_unique"
-            ),
-            migrations.RunSQL(
-                "CREATE UNIQUE INDEX contact_email_unique ON contact_email (value) WHERE validated",
-                "DROP INDEX contact_email_unique"
-            ),
+        migrations.RunSQL(
+            ("CREATE UNIQUE INDEX contact_onlineaccount_unique ON contact_onlineaccount (provider_id, screen_name) "
+             "WHERE validated"),
+            "DROP INDEX contact_onlineaccount_unique"
+        ),
+        migrations.RunSQL(
+            "CREATE UNIQUE INDEX contact_email_unique ON contact_email (value) WHERE validated",
+            "DROP INDEX contact_email_unique"
+        ),
     ]

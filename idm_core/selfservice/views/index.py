@@ -10,10 +10,5 @@ class IndexView(LoginRequiredMixin, DetailView):
     template_name = 'index.html'
     model = Person
 
-    def get_object(self):
+    def get_object(self, queryset=None):
         return self.request.user.identity
-
-    def get_context_data(self, object):
-        return {
-            'object': object,
-        }

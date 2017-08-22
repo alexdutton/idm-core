@@ -8,7 +8,8 @@ from idm_core.identity.models import Identity
 
 class StatisticsView(APIView):
     def get(self, request):
-        recursive_defaultdict = lambda: collections.defaultdict(recursive_defaultdict)
+        def recursive_defaultdict():
+            return collections.defaultdict(recursive_defaultdict)
         data = recursive_defaultdict()
         for result in Identity.objects.values('type_id', 'state').annotate(count=Count('*')):
             data[result['type_id'].title()][result['state']] = result['count']

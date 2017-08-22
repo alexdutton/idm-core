@@ -6,6 +6,7 @@ from django.utils import timezone
 
 logger = logging.getLogger(__name__)
 
+
 @shared_task
 def schedule_impending_saves():
     from .models import DelayedSave
@@ -13,6 +14,7 @@ def schedule_impending_saves():
     for delayed_save in DelayedSave.objects.filter(when__lte=threshold):
         delayed_save.schedule()
         logger.info("Scheduled impending save: %s", delayed_save)
+
 
 @shared_task
 def save_object(content_type_id, object_id):

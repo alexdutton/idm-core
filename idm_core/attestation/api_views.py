@@ -1,6 +1,4 @@
 from django.apps import apps
-from django.contrib.contenttypes.fields import GenericForeignKey
-from django.db.models import ForeignKey
 from rest_framework import mixins
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
 

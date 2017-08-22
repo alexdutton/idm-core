@@ -57,7 +57,7 @@ class User(AbstractUserWithoutUsername):
         "Returns the short name for the user."
         try:
             return str(self.identity)
-        except :
+        except Exception:
             return str(self.id)
 
 

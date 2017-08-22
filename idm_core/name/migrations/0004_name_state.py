@@ -16,6 +16,8 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='name',
             name='state',
-            field=django_fsm.FSMField(choices=[('proposed', 'proposed'), ('accepted', 'accepted'), ('rejected', 'rejected'), ('previous', 'previous')], default='proposed', max_length=50),
+            field=django_fsm.FSMField(choices=[('proposed', 'proposed'), ('accepted', 'accepted'),
+                                               ('rejected', 'rejected'), ('previous', 'previous')],
+                                      default='proposed', max_length=50),
         ),
     ]

@@ -13,7 +13,8 @@ class RelationshipTypeSerializer(serializers.HyperlinkedModelSerializer):
 
 class TersePersonSerializer(TypeMixin, IdentifiableSerializer, serializers.ModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name='api:person-detail')
-    merged_into = serializers.HyperlinkedRelatedField(queryset=models.Person.objects.all(), view_name='api:person-detail')
+    merged_into = serializers.HyperlinkedRelatedField(queryset=models.Person.objects.all(),
+                                                      view_name='api:person-detail')
 
     class Meta:
         model = models.Person

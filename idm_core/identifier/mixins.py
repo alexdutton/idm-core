@@ -14,7 +14,7 @@ class IdentifierFilterViewSetMixin(object):
         from .models import Identifier
         queryset = super().get_queryset()
         if 'identifierType' in self.request.GET and 'identifier' in self.request.GET:
-            identifier_type =  self.request.GET['identifierType']
+            identifier_type = self.request.GET['identifierType']
             identifiers = self.request.GET.getlist('identifier')
             identity_ids = Identifier.objects.filter(type_id=identifier_type,
                                                      value__in=identifiers).values_list('identity_id',

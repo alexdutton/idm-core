@@ -56,10 +56,10 @@ class IdentityViewSet(IdentifierFilterViewSetMixin, ModelViewSet):
     @detail_route(methods=['post'])
     def merge(self, request, pk=None):
         with transaction.atomic():
-            object = self.get_object()
-            if isinstance(object, models.Identity):
-                object = object.identity
-            object.merge(others=type(object).objects.filter(pk__in=self.request.POST.getlist('id')))
+            identity = self.get_object()
+            if isinstance(identity, models.Identity):
+                identity = identity.identity
+            identity.merge(others=type(identity).objects.filter(pk__in=self.request.POST.getlist('id')))
             return Response(status=204)
 
 

@@ -34,8 +34,6 @@ class Person(ManageableModel, IdentityBase):
                     setattr(self, field_name, getattr(other, field_name))
             if other.sex != '0' and self.sex == '0':
                 self.sex = other.sex
-        pass
-
 
     def save(self, *args, **kwargs):
         from ..name.models import Name

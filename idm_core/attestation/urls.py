@@ -14,5 +14,4 @@ urlpatterns = [
         views.SourceDocumentWizardView.as_view(), name='source-document-new-self'),
     url(r'^(?P<identity_type>[a-z-]+)/(?P<identity_id>' + uuid_re + ')/attestation/new/$',
         views.SourceDocumentWizardView.as_view(), name='source-document-new'),
-
 ]

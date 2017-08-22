@@ -25,7 +25,7 @@ class ManageableModelSerializer(serializers.ModelSerializer):
 
     def __init__(self, *args, **kwargs):
         kwargs['partial'] = kwargs.get('partial', True)
-        return super().__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def validate(self, attrs):
         from .models import Application

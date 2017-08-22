@@ -8,7 +8,6 @@ import dirtyfields.dirtyfields
 from django.db import migrations, models
 import django.db.models.deletion
 import django_fsm
-import idm_core.identity.models
 
 
 class Migration(migrations.Migration):
