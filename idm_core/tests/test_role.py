@@ -2,7 +2,6 @@ from django.test import TestCase
 
 from idm_core.person.models import Person
 from idm_core.organization.models import Organization, Role, RoleType, OrganizationRole
-from idm_core.identity.models import Identity
 
 
 class RoleTestCase(TestCase):

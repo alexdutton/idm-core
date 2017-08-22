@@ -1,8 +1,7 @@
 from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 from django.utils import timezone
-from django.utils.functional import cached_property
-from django_fsm import FSMField, transition, RETURN_VALUE, FSMFieldMixin
+from django_fsm import FSMField, transition, RETURN_VALUE
 
 from idm_core.application.mixins import ManageableModel
 from idm_core.delayed_save.models import DelayedSave

@@ -2,13 +2,11 @@ import uuid
 
 import collections
 from dirtyfields import DirtyFieldsMixin
-from django.conf import settings
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
-from django.db import models, connection
+from django.db import models
 from django_fsm import FSMField, transition, RETURN_VALUE
-import templated_email
 
 
 # ISO/IEC 24760-1:2011
@@ -54,7 +52,7 @@ class User(AbstractUserWithoutUsername):
         return str(self.username)
 
     def get_short_name(self):
-        "Returns the short name for the user."
+        """Returns the short name for the user."""
         try:
             return str(self.identity)
         except Exception:

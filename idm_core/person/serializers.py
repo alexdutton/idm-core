@@ -1,12 +1,10 @@
-from django.contrib.contenttypes.models import ContentType
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
 from idm_core.application.mixins import ManageableModelSerializer
 from idm_core.contact.serializers import EmbeddedEmailSerializer
 from idm_core.identifier.serializers import EmbeddedIdentifierSerializer, IdentifiableSerializer
-from idm_core.identity.serializers import InvertedBooleanField, TypeMixin, RelatedIdentitySerializer, \
-    related_identity_to_representation
+from idm_core.identity.serializers import TypeMixin, related_identity_to_representation
 from idm_core.name.serializers import EmbeddedNameSerializer, NameSerializer
 from idm_core.nationality.serializers import EmbeddedNationalitySerializer
 from idm_core.organization.serializers import EmbeddedAffiliationSerializer

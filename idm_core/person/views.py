@@ -1,5 +1,4 @@
 from django.db import transaction
-from django.db.models import Q
 from django.http import HttpResponse
 from rest_framework import permissions
 from rest_framework.decorators import detail_route
@@ -7,7 +6,6 @@ from rest_framework.exceptions import ValidationError
 
 from drf_fsm_transitions.viewset_mixins import get_viewset_transition_action_mixin
 from idm_core.identifier.filters import IdentifierFilterBackend
-from idm_core.identity import exceptions
 from idm_core.identity.filters import IdentityPermissionFilterBackend
 from idm_core.identity.views import IdentityViewSet
 from idm_core.organization.models import Affiliation

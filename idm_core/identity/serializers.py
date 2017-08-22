@@ -1,7 +1,7 @@
 from functools import singledispatch
 from rest_framework import serializers
 from rest_framework.relations import RelatedField
-from rest_framework.serializers import HyperlinkedModelSerializer, ValidationError, ModelSerializer
+from rest_framework.serializers import HyperlinkedModelSerializer, ValidationError
 
 from . import models
 

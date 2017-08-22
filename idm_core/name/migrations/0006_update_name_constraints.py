@@ -17,10 +17,12 @@ class Migration(migrations.Migration):
     operations = [
         migrations.RunSQL(
             "DROP INDEX name_any_unique",
-            "CREATE UNIQUE INDEX name_any_unique ON name_name (identity_id, context_id) WHERE context_id IN ('presentational', 'legal', 'card')",
+            ("CREATE UNIQUE INDEX name_any_unique ON name_name (identity_id, context_id) "
+             "WHERE context_id IN ('presentational', 'legal', 'card')"),
         ),
         migrations.RunSQL(
-            "CREATE UNIQUE INDEX name_any_unique ON name_name (identity_id, state, context_id) WHERE context_id IN ('presentational', 'legal', 'card') AND state IN ('proposed', 'accepted')",
+            ("CREATE UNIQUE INDEX name_any_unique ON name_name (identity_id, state, context_id) "
+             "WHERE context_id IN ('presentational', 'legal', 'card') AND state IN ('proposed', 'accepted')"),
             "DROP INDEX name_any_unique",
         ),
     ]

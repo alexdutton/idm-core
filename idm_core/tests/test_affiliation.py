@@ -6,7 +6,6 @@ from django.utils import timezone
 
 from idm_core.person.models import Person
 from idm_core.organization.models import Organization, AffiliationType, Affiliation
-from idm_core.identity.models import Identity
 
 
 class CreationTestCase(TestCase):

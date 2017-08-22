@@ -37,7 +37,7 @@ class RemoteUserAuthentication(BaseAuthentication):
     def authenticate(self, request):
         user = authenticate(remote_user=request.META.get(self.header))
         if user and user.is_active:
-            return (user, None)
+            return user, None
 
 
 def process_userinfo(user, claims):

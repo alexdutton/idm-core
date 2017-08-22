@@ -2,7 +2,6 @@ import http.client
 import json
 import uuid
 
-import time
 from django.apps import apps
 from django.contrib.auth import get_user_model
 from django.db import transaction

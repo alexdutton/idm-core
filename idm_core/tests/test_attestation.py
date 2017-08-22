@@ -9,7 +9,6 @@ from idm_core.attestation.models import Attestation
 from idm_core.attestation.models import SourceDocument
 from idm_core.contact.models import Address, ContactContext
 from idm_core.name.models import Name
-from idm_core.identity.models import Identity
 from idm_core.person.models import Person
 
 

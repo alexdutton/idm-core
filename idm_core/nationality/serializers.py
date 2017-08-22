@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
-from idm_core.attestation.serializers import Attestable, AttestationSerializer
+from idm_core.attestation.serializers import Attestable
 from idm_core.person.models import Person
 from . import models
 

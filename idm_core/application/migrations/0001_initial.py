@@ -39,18 +39,22 @@ class Migration(migrations.Migration):
             name='ApplicationMayManageContentType',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('application', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='application.Application')),
-                ('content_type', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='contenttypes.ContentType')),
+                ('application', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
+                                                  to='application.Application')),
+                ('content_type', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
+                                                   to='contenttypes.ContentType')),
             ],
         ),
         migrations.AddField(
             model_name='application',
             name='manageable_content_types',
-            field=models.ManyToManyField(through='application.ApplicationMayManageContentType', to='contenttypes.ContentType'),
+            field=models.ManyToManyField(through='application.ApplicationMayManageContentType',
+                                         to='contenttypes.ContentType'),
         ),
         migrations.AddField(
             model_name='application',
             name='merged_into',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='merged_from', to='application.Application'),
+            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE,
+                                    related_name='merged_from', to='application.Application'),
         ),
     ]

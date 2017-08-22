@@ -1,7 +1,6 @@
 import datetime
 import http.client
 import uuid
-from urllib.parse import urlencode
 
 from django.db import transaction
 from django.test import TransactionTestCase
@@ -45,15 +44,15 @@ class MergingTestCase(TransactionTestCase):
     def testEverythingMoved(self):
         with transaction.atomic():
             primary = self.create_person_from_json({
-            'names': [{
-                "context": "legal",
-                "components": [{"type": "given", "value": "Alice"}],
-            }],
-            'identifiers': [{
-                "type": "username",
-                "value": "abcd0001",
-            }],
-        })
+                'names': [{
+                    "context": "legal",
+                    "components": [{"type": "given", "value": "Alice"}],
+                }],
+                'identifiers': [{
+                    "type": "username",
+                    "value": "abcd0001",
+                }],
+            })
             secondary = self.create_person_from_json({
                 'names': [{
                     "context": "presentational",

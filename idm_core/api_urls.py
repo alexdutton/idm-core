@@ -6,7 +6,6 @@ import idm_core.contact.api_views
 import idm_core.identifier.views
 import idm_core.name.api_views
 import idm_core.nationality.views
-import idm_core.relationship.views
 import idm_core.organization.api
 import idm_core.person.views
 import idm_core.application.views

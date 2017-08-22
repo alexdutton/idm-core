@@ -8,6 +8,3 @@ register = template.Library()
 def available_state_transitions(value, arg):
     return {transition.name
             for transition in value.get_available_user_state_transitions(arg)}
-    return {transition.name
-            for transition in value
-            if transition.has_perm(transition.__self__, arg)}

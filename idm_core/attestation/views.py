@@ -58,7 +58,6 @@ class SourceDocumentWizardView(SourceDocumentView, SessionWizardView):
     file_storage = FileSystemStorage(location=os.path.join(settings.MEDIA_ROOT, 'source-wizard-tmp'))
     template_name = 'attestation/sourcedocument_wizard.html'
 
-
     def get_attestables(self):
         attestables = []
         for model in apps.get_models():
