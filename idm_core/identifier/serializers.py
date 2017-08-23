@@ -37,6 +37,5 @@ class EmbeddedIdentifierSerializer(IdentifierSerializer):
         fields = ('type', 'value', 'identity')
 
 
-
 class IdentifiableSerializer(serializers.ModelSerializer):
     identifiers = EmbeddedIdentifierSerializer(many=True)

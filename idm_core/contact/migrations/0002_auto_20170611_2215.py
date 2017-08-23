@@ -79,18 +79,18 @@ class Migration(migrations.Migration):
         ),
         migrations.AlterUniqueTogether(
             name='telephone',
-            unique_together=set([('identity_content_type', 'identity_id', 'order')]),
+            unique_together={('identity_content_type', 'identity_id', 'order')},
         ),
         migrations.AlterUniqueTogether(
             name='onlineaccount',
-            unique_together=set([('identity_content_type', 'identity_id', 'order')]),
+            unique_together={('identity_content_type', 'identity_id', 'order')},
         ),
         migrations.AlterUniqueTogether(
             name='email',
-            unique_together=set([('identity_content_type', 'identity_id', 'order')]),
+            unique_together={('identity_content_type', 'identity_id', 'order')},
         ),
         migrations.AlterUniqueTogether(
             name='address',
-            unique_together=set([('identity_content_type', 'identity_id', 'order')]),
+            unique_together={('identity_content_type', 'identity_id', 'order')},
         ),
     ]

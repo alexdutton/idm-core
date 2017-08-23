@@ -1,4 +1,3 @@
-import django_fsm
 from django import template
 
 register = template.Library()

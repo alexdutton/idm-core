@@ -19,7 +19,8 @@ class Migration(migrations.Migration):
             name='Address',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('attested_by', django.contrib.postgres.fields.ArrayField(base_field=models.SlugField(), blank=True, default=[], size=None)),
+                ('attested_by', django.contrib.postgres.fields.ArrayField(base_field=models.SlugField(), blank=True,
+                                                                          default=[], size=None)),
                 ('identity_id', models.UUIDField()),
                 ('validated', models.BooleanField(default=False)),
                 ('order', models.PositiveSmallIntegerField()),

@@ -39,6 +39,7 @@ def now():
     # Wrapping so we can mock it out when testing
     return timezone.now()
 
+
 class Relationship(ManageableModel):
     start_date = models.DateTimeField(default=now)
     end_date = models.DateTimeField(null=True, blank=True)

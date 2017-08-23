@@ -1,4 +1,5 @@
 import email
+import logging
 
 import django
 import kombu
@@ -42,7 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'haystack',
     'idm_brand',
-    'idm_core', #.apps.IDMCoreConfig',
+    'idm_core',
     'idm_core.application.apps.ApplicationConfig',
     'idm_core.attestation.apps.AttestationConfig',
     'idm_core.identity.apps.IdentityConfig',
@@ -72,7 +73,7 @@ else:
 
 MIDDLEWARE_CLASSES = [
     'django.middleware.common.CommonMiddleware',
-    #'reversion.middleware.RevisionMiddleware',
+    #  'reversion.middleware.RevisionMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.auth.middleware.RemoteUserMiddleware',
@@ -132,9 +133,9 @@ CLAIM_URL = os.environ.get('CLAIM_URL', 'http://localhost:8001/claim/{}/')
 # AMQP
 BROKER_ENABLED = bool(os.environ.get('BROKER_ENABLED'))
 BROKER_TRANSPORT = os.environ.get('BROKER_TRANSPORT', 'amqp')
-BROKER_HOSTNAME= os.environ.get('BROKER_HOSTNAME', 'localhost')
+BROKER_HOSTNAME = os.environ.get('BROKER_HOSTNAME', 'localhost')
 BROKER_SSL = os.environ.get('BROKER_SSL', 'yes').lower() not in ('no', '0', 'off', 'false')
-BROKER_VHOST= os.environ.get('BROKER_VHOST', '/')
+BROKER_VHOST = os.environ.get('BROKER_VHOST', '/')
 BROKER_USERNAME = os.environ.get('BROKER_USERNAME', 'guest')
 BROKER_PASSWORD = os.environ.get('BROKER_PASSWORD', 'guest')
 BROKER_PREFIX = os.environ.get('BROKER_PREFIX', 'idm.core.')
@@ -163,7 +164,8 @@ HAYSTACK_SIGNAL_PROCESSOR = 'celery_haystack.signals.CelerySignalProcessor'
 OIDC_AUTH = {
     'DEFAULT_PROVIDER': {
         'issuer': os.environ.get('OIDC_ISSUER', 'http://localhost:8001/'),
-        'authorization_endpoint': os.environ.get('OIDC_AUTHORIZATION_ENDPOINT', 'http://localhost:8001/openid/authorize'),
+        'authorization_endpoint': os.environ.get('OIDC_AUTHORIZATION_ENDPOINT',
+                                                 'http://localhost:8001/openid/authorize'),
         'token_endpoint': os.environ.get('OIDC_TOKEN_ENDPOINT', 'http://localhost:8001/openid/token'),
         'userinfo_endpoint': os.environ.get('OIDC_USERINFO_ENDPOINT', 'http://localhost:8001/openid/userinfo'),
         'jwks_uri': os.environ.get('OIDC_JWKS_URI', 'http://localhost:8001/openid/jwks'),
@@ -186,8 +188,6 @@ IDM_BROKER = {
 
 SESSION_COOKIE_NAME = 'idm-core-sessionid'
 
-import logging
-
 LOGIN_URL = 'oidc-login'
 LOGOUT_URL = 'logout'
 
@@ -199,7 +199,7 @@ EMAIL_BACKEND = os.environ.get('DJANGO_EMAIL_BACKEND', 'django.core.mail.backend
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        #'idm_core.auth.RemoteUserAuthentication',
+        # 'idm_core.auth.RemoteUserAuthentication',
         'drf_negotiate.authentication.NegotiateAuthentication',
     ),
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',

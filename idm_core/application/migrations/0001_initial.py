@@ -28,7 +28,10 @@ class Migration(migrations.Migration):
                 ('qualified_label', models.CharField(blank=True, max_length=1024)),
                 ('sort_label', models.CharField(blank=True, max_length=1024)),
                 ('primary_username', models.CharField(blank=True, max_length=32)),
-                ('state', django_fsm.FSMField(choices=[('established', 'established'), ('active', 'active'), ('archived', 'archived'), ('suspended', 'suspended'), ('merged', 'merged')], default='established', max_length=50)),
+                ('state', django_fsm.FSMField(choices=[('established', 'established'), ('active', 'active'),
+                                                       ('archived', 'archived'), ('suspended', 'suspended'),
+                                                       ('merged', 'merged')], default='established',
+                                              max_length=50)),
             ],
             options={
                 'abstract': False,

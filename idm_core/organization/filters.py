@@ -1,6 +1,4 @@
 import django_filters
-from django import forms
-from django.forms import widgets
 from rest_framework.filters import BaseFilterBackend
 
 from idm_core.course.models import Course

@@ -21,7 +21,7 @@ class NameConfig(AppConfig):
                                            context__only_one_accepted=True).values_list('context_id', flat=True)
         existing_multiple_names = collections.defaultdict(set)
         for name in target.names.filter(state='accepted',
-                                           context__only_one_accepted=False):
+                                        context__only_one_accepted=False):
             existing_multiple_names[name.context_id].add(name.marked_up)
 
         for name in Name.objects.filter(state='accepted').exclude(context_id__in=single_names):

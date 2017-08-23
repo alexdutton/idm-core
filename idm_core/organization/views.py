@@ -27,10 +27,10 @@ class OrganizationDetailView(LoginRequiredMixin, IdentityDetailView):
     model = models.Organization
 
     def get_object(self, queryset=None):
-        object = super().get_object(queryset)
-        if not self.request.user.has_perm('organization.manage_organization', object):
+        identity = super().get_object(queryset)
+        if not self.request.user.has_perm('organization.manage_organization', identity):
             raise PermissionDenied
-        return object
+        return identity
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

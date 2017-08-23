@@ -1,12 +1,9 @@
 import uuid
-from datetime import timedelta
 
-import django_fsm
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.urls import reverse
-from django.utils.timezone import now
 
 from idm_core.acceptance.models import AcceptableModel
 from idm_core.attestation.mixins import Attestable

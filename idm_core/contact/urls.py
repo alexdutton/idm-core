@@ -25,5 +25,4 @@ urlpatterns = [
         views.AddressListView.as_view(), name='address-list-self'),
     url(r'^(?P<identity_type>[a-z-]+)/(?P<identity_id>' + uuid_re + ')/address/$',
         views.AddressListView.as_view(), name='address-list'),
-
 ]

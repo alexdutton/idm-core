@@ -1,9 +1,7 @@
-import logging
 import uuid
 
 import celery
 from celery.utils.log import get_task_logger
-import kombu.message
 from django.db import transaction
 
 logger = get_task_logger(__name__)

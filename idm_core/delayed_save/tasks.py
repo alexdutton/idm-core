@@ -22,6 +22,6 @@ def save_object(content_type_id, object_id):
     delayed_save = DelayedSave.objects.get(content_type_id=content_type_id, object_id=object_id)
     if delayed_save.when < timezone.now():
         logger.info("Attempting to save object: %s", delayed_save)
-        object = delayed_save.object
+        obj = delayed_save.object
         delayed_save.delete()
-        object.save()
+        obj.save()

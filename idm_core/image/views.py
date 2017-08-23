@@ -1,4 +1,3 @@
-import collections
 from django.contrib.contenttypes.models import ContentType
 from django.db import transaction
 from django.http import Http404
@@ -17,6 +16,7 @@ from . import forms, models
 class ImageView(View):
     model = models.Image
     identity = None
+    is_self = None
 
     def dispatch(self, request, *args, **kwargs):
         if 'identity_type' in self.kwargs:

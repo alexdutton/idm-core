@@ -17,6 +17,3 @@ class OrganizationIndex(CelerySearchIndex, indexes.Indexable):
 
     def get_model(self):
         return models.Organization
-
-    # def index_queryset(self):
-    #     return models.Organization.objects.filter(state=)

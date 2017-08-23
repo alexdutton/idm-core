@@ -47,10 +47,10 @@ class Migration(migrations.Migration):
         ),
         migrations.AlterUniqueTogether(
             name='identifier',
-            unique_together=set([('type', 'value')]),
+            unique_together={('type', 'value')},
         ),
         migrations.AlterIndexTogether(
             name='identifier',
-            index_together=set([('type', 'identity_content_type', 'identity_id'), ('type', 'value')]),
+            index_together={('type', 'identity_content_type', 'identity_id'), ('type', 'value')},
         ),
     ]

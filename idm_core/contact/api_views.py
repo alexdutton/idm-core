@@ -1,5 +1,4 @@
 from rest_framework import permissions, viewsets
-from rest_framework.pagination import PageNumberPagination
 
 from idm_core.identity.views import IdentitySubViewMixin
 from . import models, serializers

@@ -123,7 +123,7 @@ class Name(Attestable, DirtyFieldsMixin, AcceptableModel):
         self.plain_full = ''.join(c['value'] for c in components_with_whitespace)
         self.marked_up = '<name>{}</name>'.format(
             ''.join('<{type}>{value}</{type}>'.format(type=c['type'], value=escape(c['value'])) if isinstance(c, dict) else c
-                     for c in components))
+                    for c in components))
         self.familiar = ''
         for component in components_with_whitespace:
             if component['type'] == 'given':

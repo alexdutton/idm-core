@@ -1,12 +1,12 @@
 from django.db import transaction
 from django.http import HttpResponseBadRequest
 from django.shortcuts import redirect
-from django.views import View
+from django.views.generic.detail import SingleObjectMixin
 from django_fsm import has_transition_perm
 from rest_framework.exceptions import PermissionDenied
 
 
-class FSMTransitionViewMixin(View):
+class FSMTransitionViewMixin(SingleObjectMixin):
     available_transitions = set()
 
     def get_transition_kwargs(self, name):

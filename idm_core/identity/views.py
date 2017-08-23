@@ -47,10 +47,10 @@ class IdentityViewSet(IdentifierFilterViewSetMixin, ModelViewSet):
     @detail_route(methods=['post'])
     def activate(self, request, pk=None):
         with transaction.atomic():
-            object = self.get_object()
-            if isinstance(object, models.Identity):
-                object = object.identity
-            object.activate()
+            identity = self.get_object()
+            if isinstance(identity, models.Identity):
+                identity = identity.identity
+            identity.activate()
             return Response(status=204)
 
     @detail_route(methods=['post'])

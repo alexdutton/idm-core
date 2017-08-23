@@ -47,6 +47,6 @@ class Migration(migrations.Migration):
         ),
         migrations.AlterUniqueTogether(
             name='image',
-            unique_together=set([('identity_id', 'context')]),
+            unique_together={('identity_id', 'context')},
         ),
     ]

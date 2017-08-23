@@ -1,19 +1,16 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.contenttypes.models import ContentType
 from django.db import transaction
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.views import View
-from django.views.generic import TemplateView, ListView, DetailView
-from django.views.generic.edit import UpdateView, CreateView
+from django.views.generic import ListView, DetailView
+from django.views.generic.edit import CreateView
 
-from idm_core.attestation.models import SourceDocument
 from idm_core.identity.models import Identity
 from idm_core.name.forms import SimpleNameForm
 from idm_core.utils.mixins import FSMTransitionViewMixin
 from . import models
-from idm_core.person.models import Person
 from idm_core.selfservice.views.base import SameIdentityMixin
 
 __all__ = ['NameListView', 'NameDetailView']

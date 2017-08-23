@@ -66,6 +66,7 @@ class PersonSerializer(PlainPersonSerializer):
         self.fields['identifiers'].create(identifiers)
         return person
 
+
 @related_identity_to_representation.register(models.Person)
 def related_person_to_representation(person, context):
     return PersonSerializer(context=context).to_representation(person)

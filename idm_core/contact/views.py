@@ -1,4 +1,3 @@
-from django.contrib.contenttypes.models import ContentType
 from django.http import Http404
 from django.views import View
 from django.views.generic import ListView, DetailView

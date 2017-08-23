@@ -40,7 +40,6 @@ class MergingTestCase(TransactionTestCase):
             with transaction.atomic():
                 primary.merge(secondary)
 
-
     def testEverythingMoved(self):
         with transaction.atomic():
             primary = self.create_person_from_json({
