@@ -67,8 +67,6 @@ class Name(Attestable, DirtyFieldsMixin, AcceptableModel):
     first = models.TextField(blank=True)
     last = models.TextField(blank=True)
 
-    active = models.BooleanField(default=True)
-
     components = JSONSchemaField(schema=components_schema)
     context = models.ForeignKey(NameContext)
 
@@ -170,7 +168,7 @@ class Name(Attestable, DirtyFieldsMixin, AcceptableModel):
 
 def name_changed(instance: Name, **kwargs):
     identity = instance.identity
-    names = list(identity.names.filter(active=True).order_by('id'))
+    names = list(identity.names.filter(state='accepted').order_by('id'))
     names_by_context = collections.defaultdict(list)
     for name in names:
         names_by_context[name.context_id].append(name)

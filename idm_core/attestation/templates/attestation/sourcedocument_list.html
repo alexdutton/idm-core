@@ -25,11 +25,13 @@
         </thead>
         <tbody>{% for object in object_list %}
             <tr>
-                <td><a href="{{ object.get_absolute_url }}">{{ object.label }}</a></td>
+                <td><a href="{{ object.get_absolute_url }}">{{ object.label|default:"<em>unnamed</em>" }}</a></td>
                 <td>{{ object.type }}</td>
                 <td>{{ object.uploaded_date }}</td>
                 <td>{{ object.encrypted|yesno }}</td>
-                <td>{{ object.attests|join:", " }}</td>
+                <td>
+                    {% for obj in object.attestation_set.all %}
+                        {% if obj.get_absolute_url %}<a href="{{ obj.get_absolute_url }}">{{ obj.attests }}</a>{% else %}{{ obj.attests }}{% endif %}{% if not forloop.last %}, {% endif %}{% endfor %}</td>
             </tr>{% endfor %}
         </tbody>
     </table>

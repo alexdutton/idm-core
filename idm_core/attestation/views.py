@@ -2,6 +2,7 @@ import os
 from django.apps import apps
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
+from django.db import transaction
 from django.http import Http404
 from django.shortcuts import redirect
 from django.urls import reverse
@@ -77,9 +78,17 @@ class SourceDocumentWizardView(SourceDocumentView, SessionWizardView):
             return {}
 
     def done(self, form_list, form_dict, **kwargs):
-        form_dict['upload'].save()
+        with transaction.atomic():
+            form_dict['upload'].save()
+            source_document = form_dict['upload'].instance
+            attestations = []
+            for field, value in form_dict['attestation'].cleaned_data.items():
+                if value:
+                    attestations.append(models.Attestation(source_document=source_document,
+                                                           attests=form_dict['attestation'].fields[field].attestable))
+            models.Attestation.objects.bulk_create(attestations)
 
-        if 'identity_type' in self.kwargs:
-            return redirect(reverse('attestation:source-document-list', kwargs=self.kwargs))
-        else:
-            return redirect(reverse('attestation:source-document-list-self', kwargs=self.kwargs))
+            if 'identity_type' in self.kwargs:
+                return redirect(reverse('attestation:source-document-list', kwargs=self.kwargs))
+            else:
+                return redirect(reverse('attestation:source-document-list-self', kwargs=self.kwargs))

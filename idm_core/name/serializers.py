@@ -80,7 +80,7 @@ class NameSerializer(Attestable, serializers.HyperlinkedModelSerializer):
     class Meta:
         model = models.Name
 
-        fields = ('identity', 'plain', 'plain_full', 'marked_up', 'familiar', 'sort', 'first', 'last', 'active',
+        fields = ('identity', 'plain', 'plain_full', 'marked_up', 'familiar', 'sort', 'first', 'last', 'state',
                   'components', 'parse', 'context', 'attestations', 'url')
 
         read_only_fields = (
