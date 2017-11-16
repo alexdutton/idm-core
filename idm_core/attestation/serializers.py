@@ -13,11 +13,11 @@ class SupportsField(serializers.RelatedField):
 
 
 class AttestationSerializer(serializers.HyperlinkedModelSerializer):
-    supports = SupportsField(read_only=True)
+    source_document = serializers.HyperlinkedRelatedField(read_only=True, view_name='api:source-document-detail')
 
     class Meta:
         model = models.Attestation
-        fields = ('source_document', 'attests')
+        fields = ('source_document',)
 
 
 class SourceDocumentTypeSerializer(serializers.HyperlinkedModelSerializer):

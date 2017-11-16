@@ -3,6 +3,11 @@
   fields:
     label: "card photograph"
     subject_to_acceptance: true
-    aspect_ratio: 0.666667
+    min_aspect_ratio_x: 177
+    min_aspect_ratio_y: 230
+    max_aspect_ratio_x: 177
+    max_aspect_ratio_y: 230
+    max_width: 177
+    max_height: 230
     instructions: |
       <p>Help</p>

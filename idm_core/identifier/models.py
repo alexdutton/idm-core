@@ -25,6 +25,7 @@ class Identifier(Attestable, models.Model):
 
     type = models.ForeignKey(IdentifierType)
     value = models.CharField(max_length=64)
+    primary = models.BooleanField(default=True)
 
     class Meta:
         unique_together = (('type', 'value'),)

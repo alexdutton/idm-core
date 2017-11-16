@@ -24,7 +24,7 @@ class SourceDocument(models.Model):
     validated_by = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='validated_source_documents')
     active = models.BooleanField(default=False)
     label = models.CharField(max_length=256, blank=True)
-    document = models.FileField()
+    document = models.FileField(upload_to='source-document/%Y/%m/%d/')
     encrypted = models.BooleanField(default=False)
 
     def __str__(self):

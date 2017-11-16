@@ -126,6 +126,9 @@ ROOT_URLCONF = 'idm_core.urls'
 STATIC_URL = '/static/'
 STATIC_ROOT = os.environ.get('DJANGO_STATIC_ROOT')
 
+MEDIA_ROOT = os.environ.get('DJANGO_MEDIA_ROOT',
+                            os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'media')))
+
 API_BASE = os.environ.get('API_BASE', 'http://localhost:8000/')
 
 CLAIM_URL = os.environ.get('CLAIM_URL', 'http://localhost:8001/claim/{}/')

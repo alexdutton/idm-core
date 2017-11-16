@@ -4,6 +4,7 @@ from rest_framework_nested import routers
 import idm_core.attestation.api_views
 import idm_core.contact.api_views
 import idm_core.identifier.views
+import idm_core.image.api_views
 import idm_core.name.api_views
 import idm_core.nationality.views
 import idm_core.organization.api
@@ -34,9 +35,10 @@ person_router.register('attestable', idm_core.attestation.api_views.AttestableVi
 person_router.register('attestable', idm_core.attestation.api_views.AttestableViewSet, base_name='identity-attestable')
 
 router.register('name', idm_core.name.api_views.NameViewSet, base_name='name')
+router.register('image', idm_core.image.api_views.ImageViewSet)
 router.register('nationality', idm_core.nationality.views.NationalityViewSet)
-router.register('source-document-type', idm_core.attestation.api_views.SourceDocumentTypeViewSet)
-router.register('source-document', idm_core.attestation.api_views.SourceDocumentViewSet)
+router.register('source-document-type', idm_core.attestation.api_views.SourceDocumentTypeViewSet, base_name='source-document-type')
+router.register('source-document', idm_core.attestation.api_views.SourceDocumentViewSet, base_name='source-document')
 router.register('attestation', idm_core.attestation.api_views.AttestationViewSet)
 router.register('affiliation', idm_core.organization.api.AffiliationViewSet)
 router.register('role', idm_core.organization.api.RoleViewSet)

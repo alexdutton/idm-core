@@ -20,7 +20,11 @@ class ImageContext(models.Model):
     id = models.CharField(max_length=16, primary_key=True)
     label = models.CharField(max_length=255)
     subject_to_acceptance = models.BooleanField()
-    aspect_ratio = models.FloatField(null=True, blank=True)
+    min_aspect_ratio_x = models.IntegerField(null=True, blank=True)
+    min_aspect_ratio_y = models.IntegerField(null=True, blank=True)
+    max_aspect_ratio_x = models.IntegerField(null=True, blank=True)
+    max_aspect_ratio_y = models.IntegerField(null=True, blank=True)
+    prefer_jpeg = models.BooleanField(default=True)
     instructions = models.TextField()
 
     # Generous defaults
@@ -37,7 +41,7 @@ class Image(AcceptableModel):
 
     context = models.ForeignKey(ImageContext)
 
-    image = models.ImageField()
+    image = models.ImageField(upload_to='image/%Y/%m/%d/')
 
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)

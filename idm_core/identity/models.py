@@ -88,6 +88,7 @@ class IdentityBase(DirtyFieldsMixin, Contactable, Identifiable, models.Model):
     identity_permissions = GenericRelation('identity.IdentityPermission', 'identity_id', 'identity_content_type')
     source_documents = GenericRelation('attestation.SourceDocument', 'identity_id', 'identity_content_type')
     identifiers = GenericRelation('identifier.Identifier', 'identity_id', 'identity_content_type')
+    images = GenericRelation('image.Image', 'identity_id', 'identity_content_type')
 
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
