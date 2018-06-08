@@ -29,6 +29,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': os.environ.get('DATABASE_NAME', 'idm_core'),
+        'HOST': os.environ.get('DATABASE_HOST', 'localhost'),
+        'USER': os.environ.get('DATABASE_USER', 'postgres')
     },
 }
 
